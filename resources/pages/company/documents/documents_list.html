@@ -1,0 +1,88 @@
+
+
+<div class="gridinner">
+
+	<div class="tablepage">
+	
+		<table id="companydocs_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="docname">Document Name</th>
+	               	<th data-colname="alertdate(docexpiration)">Expiration Date</th>
+	               	<th data-colname="docnotes">Notes</th>
+	               	<th data-colname="docstatus">Status</th>
+					<th data-colname="file(compdoc_files)">Documents</th>               												                	
+	            </tr>
+	        </thead>
+	    </table>
+
+		<div class="tablepagerow">
+			<span id="totalCompanyDocs"></span>
+			<div>
+				<button type="button" id="new-companydoc"><i class="fa fa-plus">&nbsp;</i>New Document</button>
+				<button type="button" id="edit-companydoc"><i class="fa fa-edit">&nbsp;</i>Edit Document</button>
+				<button type="button" id="delete-companydoc"><i class="fa fa-minus">&nbsp;</i>Delete Document</button>
+			</div>
+			<span></span>
+		</div>		
+
+</div>
+
+</div>
+	
+	
+
+<script type="text/javascript">
+
+! function(){
+
+		var doctable = null;
+    
+      	//1. populate documents
+		$.getJSON('/api/company/document/getAll', function(data) {
+ 
+	  		// render the table
+			doctable = table().createtable("#companydocs_table")
+							.populatedata(data)
+								.done();
+							
+			d3.select("#totalCompanyDocs").text("Total Docs:"+data.length);					
+	    
+		});
+		
+		//2. add new
+		d3.select("#new-companydoc")
+	    	.on("click", function(){
+	    		$.get('pages/company/documents/new_companydoc.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"80%"});
+	    		});     	
+	    });		
+	    
+	    //3.delete
+      	d3.select("#edit-companydoc")
+	    	.on("click", function(){
+	    			var selectedrow = doctable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+			    		$.get('pages/company/documents/edit_companydoc.html', function(htmlcontent){
+					    	modal.open({content: htmlcontent, width:"80%"}, function(){
+					    		editDoc(selectedrow);
+					    	});
+			    		});     	
+	    			}
+	    });	    
+	    
+	    //4.delete
+      	d3.select("#delete-companydoc")
+	    	.on("click", function(){
+	    			var selectedrow = doctable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+			    		$.getJSON('/api/company/document/delete', { docid : selectedrow.docid }, function(data) {
+							alert(data.message);
+	      					loadtab("/pages/company/documents/documents_list.html");				
+						});
+	    			}
+	    });
+
+}();
+
+</script>

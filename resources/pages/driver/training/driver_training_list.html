@@ -1,0 +1,109 @@
+
+	<div class="tablepage">
+	
+		<div class="tablepagerow">
+			<b><label> Training List for <span id="drivername"></span></label></b>		
+			<ul id="pager" class="tabs"></ul>	
+		</div>
+		
+		<table id="trns_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="companytraining.name">Training Name</th>
+	               	<th data-colname="datetaken">Date Taken</th>
+	               	<th data-colname="companytraining.schedule">Schedule</th>
+	               	<th data-colname="alertdate(nextduedate)">Next Due </th>
+	               	<th data-colname="remarks">Remarks </th>
+					<th data-colname="file(certs_file)">Certificates</th>               												                	
+	            </tr>
+	        </thead>
+	    </table>
+
+		<div class="tablepagerow">
+			<span id="totalRows"></span>
+			<div>
+				<button type="button" id="new-trn"><i class="fa fa-plus">&nbsp;</i>Take Training</button>
+				<button type="button" id="archive-trn"><i class="fa fa-file-o">&nbsp;</i>View Training</button>
+				<button type="button" id="delete-trn"><i class="fa fa-minus">&nbsp;</i>Delete Training</button>
+			</div>
+			<select id="pagesizer">
+				<option>Page size: 20</option>
+				<option>Page size: 25</option>
+				<option>Page size: 30</option>
+				<option>Page size: 40</option>
+			</select>
+		</div>		
+
+	</div>
+
+	
+
+<script type="text/javascript">
+
+! function(){
+
+		// driver name display
+		d3.selectAll("#drivername").text(Current.driver.firstname + " " + Current.driver.lastname);
+
+		var trntable = null;
+    
+      	//1. populate documents
+		$.getJSON('/api/driver/training/getAll', { driverid : Current.driver.id }, function(data) {
+ 
+	  		// render the table
+			trntable = table().createtable("#trns_table")
+							.populatedata(data)
+							.setpagesizeselector("#pagesizer")
+							.setpager("#pager")	
+							.done();
+							
+			d3.select("#totalRows").text("Total Rows:"+data.length);					
+	    
+		});
+		
+		//2. add new
+		d3.select("#new-trn")
+	    	.on("click", function(){
+	    	
+	    		$.get('pages/driver/training/new_driver_training.html', function(htmlcontent){
+			    	
+			    	modal.open({content: htmlcontent, width:"70%"});
+		    		
+	    		});     	
+	    });		
+	    
+	    //3. add new
+		d3.select("#archive-trn")
+	    	.on("click", function(){
+	    	
+	    		var selectedrow = trntable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+	    			
+	    				$.get('pages/driver/training/edit_driver_training.html', function(htmlcontent){
+			    			modal.open({content: htmlcontent, width:"70%"}, function(){
+			    				editTraining(selectedrow);
+			    			});
+	    				});
+	    			}	     	
+	    });
+	    
+	    //4.delete
+      	d3.select("#delete-trn")
+	    	.on("click", function(){
+	    			var selectedrow = trntable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+	    			
+	    				if(!confirm("Are you sure you want to delete?")){
+	    					return;
+	    				}
+	    			
+			    		$.getJSON('/api/driver/training/delete', { driverid : Current.driver.id, trnid : selectedrow.trnid }, function(data) {
+							alert(data.message);
+	      					loadtab("/pages/driver/training/driver_training_list.html");				
+						});
+	    			}
+	    });
+
+}();
+
+</script>

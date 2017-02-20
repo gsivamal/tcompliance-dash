@@ -1,0 +1,418 @@
+
+<div id="acci-form">
+
+	<div class="grid">
+
+		<label class="title">New Accident/Incident</label>
+	
+		<div class="cell">	
+			<label> Accident Name:</label>
+			<input data-dbcolname="acciname" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">	
+			<label> Accident Date :</label>
+			<div class="field">
+				<input id="accidate" size="10" data-dbcolname="accidate" type="text" data-validation="mandatory" placeholder="mm/dd/yyyy"/>
+				<input id="accitime" size="5"  data-dbcolname="accitime" type="text" data-validation="mandatory" placeholder="hh:mm"/>
+			</div>	
+		</div>
+	
+		<div class="cell">	
+			<label> City :</label>
+			<input data-dbcolname="accicity" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> State:</label>
+			<select id="accistate" data-dbcolname="accistate" data-validation="mandatory"></select>
+		</div>
+		
+		<div class="cell">	
+			<label> # of Injuries :</label>
+			<input data-dbcolname="noofinjuries" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">	
+			<label> # of Fatalities :</label>
+			<input data-dbcolname="nooffatalities" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="gridrow">
+		    <div class="row">
+			  <div class="col-2"><input id="isdriverinvolved" data-dbcolname="isdriverinvolved" type="checkbox"/>Is Driver involved ?</label> </div>
+			  <div class="col-6">
+			  		<select id="driverlist" data-dbcolname="driver" disabled="true"></select>
+   			  </div>
+		    </div>
+		</div>  
+		
+		<div class="gridrow">
+		    <div class="row">
+			  <div class="col-2"><labal><input id="isequipinvolved" data-dbcolname="isequipinvolved" type="checkbox"/>Is Equipment damaged?</label> </div>
+		      <div class="col-6">
+					<div class="multiselect">
+						<label data-dbcolname="equips" id="equiplist" data-validation="mandatory" disabled="true">(+)  0 selected</label>
+						<div id="equip_container" class="multiselect-container"></div>		
+					</div>
+		      </div>
+		    </div>
+		</div>  
+		
+		<div class="cell">	
+			<labal><input data-dbcolname="isdrivercited" type="checkbox"/>Is Driver cited for moving violation ?&nbsp;</label>
+		</div>
+		
+		<div class="cell">	
+			<labal><input data-dbcolname="isequiptowed" type="checkbox"/>Is vehicle(s) towed for disabling damage ?&nbsp;</label>
+		</div>
+	
+		<div class="gridrow">	
+			<div class="row">	
+				<div class="col-10"><label><input data-dbcolname="ishazardreleased" type="checkbox"/>Is Hazardous materials released ?</label></div>
+			</div>
+		</div>
+
+		<div class="gridrow">	
+			<label> Accident docs(if any):</label>
+			<input id="acci_files" data-dbcolname="acci_files" type="file" multiple/>
+			<label>one or multiple</label>
+		</div>	
+	
+		<div class="gridrow">
+			<label> Description</label>
+			<textarea data-dbcolname="accidesc" rows="6" cols="60%" data-validation="mandatory"></textarea>
+		</div>
+
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<button type="button" id="saveacci-btn"><i class="fa fa-floppy-o">&nbsp;</i>Save</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+	//format all phone element type
+	formutil.formatfields("#acci-form");	
+	
+	var lastmonth = new Date();
+	  lastmonth.setDate(1);
+	  lastmonth.setMonth(lastmonth.getMonth()-3);
+    
+	$("#accidate").datepick({minDate: lastmonth});	
+	
+	$("#accitime").timepicker({
+                        //'minTime' : new Date(),
+                        'durationTime' : new Date(),
+                        'timeFormat': 'h:i A',
+                        'step': 5
+                    });	 	
+	
+	var accistate;
+	var equiplist;
+	var driverlist;
+
+	//populate master data - state
+	$.getJSON('/data/state.json', function(data) {
+		accistate = dropdown().create("#accistate")
+						.populatedata(data);
+	});
+	
+	d3.select("#isdriverinvolved")
+				.on("change", function(){
+					var isdriverinvolved = d3.select(this).node().checked;
+					if(isdriverinvolved){
+						d3.select("#driverlist")
+							.attr("disabled", null);
+					}else{
+					
+						d3.select("#driverlist").node().options.selectedIndex = 0;
+					
+						d3.select("#driverlist")
+							.attr("disabled", isdriverinvolved);
+					}
+					//console.log("isdriverinvolved:"+isdriverinvolved);
+				});
+	
+	
+	d3.select("#isequipinvolved")
+				.on("change", function(){
+					var isdriverinvolved = d3.select(this).node().checked;
+					if(isdriverinvolved){
+						d3.select("#equiplist")
+							.attr("disabled", null);
+					}else{
+					
+						//d3.select("#equiplist").node().options.selectedIndex = 0;
+					
+						d3.select("#equiplist")
+							.attr("disabled", isdriverinvolved);
+					}
+					//console.log("isdriverinvolved:"+isdriverinvolved);
+				});
+
+	
+    $('#saveacci-btn').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#acci-form");
+		
+        //2. save product
+		if(!validation_error){
+		
+			var equipacci_data = formutil.serializeObject("#acci-form");
+			
+			var formData = new FormData();
+				//formData.append("driverid", Current.driver.id);
+				formData.append("accidata", JSON.stringify(equipacci_data));
+
+				//set the file
+				var files = d3.select("#acci_files").node().files;
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}
+											
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/accident/save',
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+					
+						var aftersave = workflow.create("#acci-form").aftersave();
+							aftersave.disableAll();
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+		            }
+		            
+		            //return false; //
+	       		 });
+		}
+	});    
+	
+	
+	var openNewAccident = function(fromscreen) {   
+	
+		  if(fromscreen === "driver"){
+		  
+		  		d3.select("#isdriverinvolved").node().checked = true;
+		  		d3.select("#driverlist")
+							.attr("disabled", null);
+							
+				//driver list
+				$.getJSON('/api/driver/getAll', function(data) {
+				
+					// render the driver list
+					driverlist = d3.select("#driverlist");
+					
+					driverlist.selectAll("option")
+				        	.data(data)
+				        	.enter()
+				        	.append("option")
+				        	 .text(function(dtm) {
+								return dtm.firstname + ", " + dtm.lastname; 
+					        })
+					        .attr("value", function(dtm) {     		 	
+								return dtm.id; 
+					        });
+					        
+					//salai: what is this for ? the value set above attr        
+			  		driverlist.each(function() {
+						this.value = Current.driver.id; 
+					});
+					        
+				});	
+				
+				//equip list
+				$.getJSON('/api/equip/getAll', function(data) {
+					
+						// render the equip list
+						//equiplist = d3.select("#equiplist");
+						
+						//equiplist.selectAll("option")
+				       // 	.data(data)
+				        //	.enter()
+				       // 	.append("option")
+				       // 	 .text(function(dtm) {
+						//		return dtm.equipid; 
+					    //    })
+					    //    .attr("value", function(dtm) {     		 	
+						//		return dtm.id; 
+					    //    });
+					    
+						var edata = [];		
+								data.forEach(function(equip, index) {
+									var eq = { "id" : equip.equipid, "name" : equip.equipid };
+									edata.push(eq);
+								});	
+								
+								multiselectd3()
+										.create("#equiplist", "#equip_container")
+										.populatedata(edata);					    
+					});								
+		  
+		  } else {
+		  
+		  		d3.select("#isequipinvolved").node().checked = true;
+				d3.select("#equiplist")
+							.attr("disabled", null);		  	
+							
+				//driver list
+				$.getJSON('/api/driver/getAll', function(data) {
+				
+					// render the driver list
+					driverlist = d3.select("#driverlist");
+					
+					driverlist.selectAll("option")
+				        	.data(data)
+				        	.enter()
+				        	.append("option")
+				        	 .text(function(dtm) {
+								return dtm.firstname + ", " + dtm.lastname; 
+					        })
+					        .attr("value", function(dtm) {     		 	
+								return dtm.id; 
+					        });
+				});									
+		  		
+				//equip list
+				$.getJSON('/api/equip/getAll', function(data) {
+					
+						// render the equip list
+						//equiplist = d3.select("#equiplist");
+						
+						//equiplist.selectAll("option")
+				        //	.data(data)
+				        //	.enter()
+				        //	.append("option")
+				        //	 .text(function(dtm) {
+						//		return dtm.equipid; 
+					    //    })
+					   // //    .attr("value", function(dtm) {     		 	
+						//		return dtm.id; 
+					   //     });
+					        
+						//    equiplist.each(function() {
+				  				//console.log(" Current.equip.id:"+Current.equip.id);
+						//		this.value = Current.equip.id; 
+						//	});   
+						
+						var edata = [];		
+						data.forEach(function(equip, index) {
+							var eq = { "id" : equip.equipid, "name" : equip.equipid };
+							edata.push(eq);
+						});	
+						
+						multiselectd3()
+								.create("#equiplist", "#equip_container")
+								.populatedata(edata);			
+																
+					});	
+		  }
+		  
+		  	$('#cancel').click(function() {    
+				//current modal, only one modal can be open at any time
+				modal.close();
+				
+				if(fromscreen === "driver"){
+					loadtab("/pages/accident/accident_list.html", function(){
+			 			openAccidentList("driver");
+			 		});
+				} else {
+					loadtab("/pages/accident/accident_list.html", function(){
+			 			openAccidentList("equip");
+			 		});
+				}	    	
+			}); 
+	
+	}
+	
+	var viewAccident = function(selectedacciid){
+	
+			$('#cancel').click(function() {    
+				//current modal, only one modal can be open at any time
+				modal.close();
+			}); 
+
+			//disable Save button, update not allowed, it creates duplicate entry otherwise
+			d3.select("#saveacci-btn")
+					.attr("disabled","true");
+	
+			$.get('api/accident/get', { acciid : selectedacciid }, function(accident) {
+			
+				formutil.rebind("#acci-form", accident);
+				
+				//dropdown rebind
+				accistate.setselected(accident.accistate);
+				
+				//driver list
+				$.getJSON('/api/driver/getAll', function(data) {
+					// render the driver list
+					driverlist = d3.select("#driverlist");
+					driverlist.selectAll("option")
+				        	.data(data)
+				        	.enter()
+				        	.append("option")
+				        	 .text(function(dtm) {
+								return dtm.firstname + ", " + dtm.lastname; 
+					        })
+					        .attr("value", function(dtm) {     		 	
+								return dtm.id; 
+					        });
+			  		driverlist.each(function() {
+						this.value = accident.driver; 
+					});     
+				});	
+				
+				$.getJSON('/api/equip/getAll', function(data) {
+				
+					var edata = [];		
+						data.forEach(function(equip, index) {
+							var eq = { "id" : equip.equipid, "name" : equip.equipid };
+							edata.push(eq);
+						});	
+		
+					multiselectd3()
+						.create("#equiplist", "#equip_container")
+						.populatedata(edata)
+						.setselected(accident.equips)
+						.disable();
+				});
+				
+				//equip list
+				//$.getJSON('/api/equip/getAll', function(data) {
+						// render the equip list
+				//		equiplist = d3.select("#equiplist");
+				//		equiplist.selectAll("option")
+				//        	.data(data)
+				//        	.enter()
+				 //       	.append("option")
+				 //       	 .text(function(dtm) {
+				//				return dtm.equipid; 
+				//	        })
+				//	        .attr("value", function(dtm) {     		 	
+				//				return dtm.id; 
+				//	        });
+				//	    equiplist.each(function() {
+				//			this.value = accident.equipment; 
+				//		});
+				//});	
+				
+			});	
+	
+	}
+
+
+
+
+</script>

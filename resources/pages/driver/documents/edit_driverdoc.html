@@ -1,0 +1,115 @@
+
+<div id="driverdoc-form">
+
+	<div class="grid">
+
+		<label class="title">Edit Document</label>
+	
+		<div class="cell">	
+			<label>Doc Name:</label>
+			<input id="docname" data-dbcolname="docname" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="gridrow">	
+			<label>Date of Expiration:</label>
+			<input id="expirydate" data-dbcolname="expirydate" type="text" placeholder="mm/dd/yyyy"/>
+		</div>
+		
+		<div class="gridrow">	
+			<label> Scan copy(one or multiple):</label>
+			<input id="doc_files" data-dbcolname="doc_files" type="file" multiple />
+		</div>	
+	
+		<div class="gridrow">
+			<label> Status:</label>
+			<span data-dbcolname="status"></span>
+		</div>
+	
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="update-doc"><i class="fa fa-cloud-upload">&nbsp;</i>Upload</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+
+  function editdoc(selectedrow){
+
+	formutil.rebind("#driverdoc-form", selectedrow);
+	
+	$("#expirydate").datepick({minDate: new Date()});
+	
+    $('#update-doc').click(function() {  
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#driverdoc-form");
+		
+        //2. save product
+		if(!validation_error){
+		
+			var driverdoc_data = formutil.serializeObject("#driverdoc-form");
+			
+			//set docid, since this is edit
+			driverdoc_data.docid = selectedrow.docid;
+
+			var formData = new FormData();
+				formData.append("driverid", Current.driver.id);
+				formData.append("docdata", JSON.stringify(driverdoc_data));
+				
+				//set the multiple file
+				var files = d3.select("#doc_files").node().files;
+			
+				if(files.length == 0){
+					alert("Please select the scan copy and continue!");
+					return;
+				}	
+				
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}
+											
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/driver/document/update', //upload scanned cert
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+    					
+    					var aftersave = workflow.create("#driverdoc-form").aftersave();
+							aftersave.disableAll();
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+    					
+		            }
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the cert list
+    	loadtab("/pages/driver/documents/document_list.html");
+    	
+	});    
+	    
+}
+
+
+
+
+</script>

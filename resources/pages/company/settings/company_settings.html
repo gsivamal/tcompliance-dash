@@ -1,0 +1,56 @@
+
+
+<div class="gridinner">
+
+	<div class="tablepage">
+	
+		<table id="settings_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="name">Name</th>
+	               	<th data-colname="value">Value</th>
+	            </tr>
+	        </thead>
+	    </table>
+
+		<div class="footer">
+			<span id="totalEntries"></span>
+			<span></span>
+		</div>		
+
+</div>
+
+</div>
+	
+	
+
+<script type="text/javascript">
+
+! function(){
+
+		var settingstable = null;
+    
+	      	//1. populate users
+			$.getJSON('/api/company/settings', function(data) {
+
+				//settings are single json, need to convert to json array to use in table			
+				var settings = [];
+				for (var p in data) {
+					if( data.hasOwnProperty(p) ) {
+						var entry = { "name":p, "value": data[p]};
+						settings.push(entry);
+			    	}	 
+			  	}     
+	 
+		  	// render the table
+			settingstable = table().createtable("#settings_table")
+							.populatedata(settings)
+								.done();
+							
+			d3.select("#totalEntries").text("Total Entries:"+settings.length);					
+	    
+		});
+
+}();
+
+</script>

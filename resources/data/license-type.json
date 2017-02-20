@@ -1,0 +1,30 @@
+[
+        {
+        	"id" : "ACDL",
+			"name" : "Class A CDL"
+        },	
+        {
+        	"id" : "BCDL",
+			"name" : "Class B CDL"
+        },	
+        
+        {
+        	"id" : "CCDL",
+			"name" : "Class C CDL"
+        },
+        
+        {
+        	"id" : "ANC",
+			"name" : "Class A Non-CDL"
+        },	
+        {
+        	"id" : "BNC",
+			"name" : "Class B Non-CDL"
+        },        
+        {
+        	"id" : "CNC",
+			"name" : "Class C Non-CDL"
+        }
+]
+
+

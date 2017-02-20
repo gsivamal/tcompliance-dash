@@ -1,0 +1,107 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<b><label> Equipment Certificates for <span id="equipid"></span></label></b>
+		<ul id="pager" class="tabs"></ul>
+	</div>	
+
+	<table id="equipcert_table">
+        <thead>
+            <tr>
+            	<th data-colname="certname">Cert Name</th>
+               	<th data-colname="alertdate(certexpiry)">Expiration Date</th>
+               	<th data-colname="certstatus">Status</th>	
+				<th data-colname="file(cert_files)">Documents</th>               												                	
+            </tr>
+        </thead>
+    </table>
+	
+	<div class="tablepagerow">
+			<span id="totalCerts"></span>
+			<div>
+				<button type="button" id="new-cert"><i class="fa fa-plus">&nbsp;</i>New Certificate</button>
+				<button type="button" id="edit-cert"><i class="fa fa-edit">&nbsp;</i>Edit Certificate</button>
+				<button type="button" id="delete-cert"><i class="fa fa-minus">&nbsp;</i>Delete Certificate</button>
+			</div>	
+			<select id="pagesizer">
+				<option>Page size: 20</option>
+				<option>Page size: 25</option>
+				<option>Page size: 30</option>
+				<option>Page size: 50</option>
+			</select>
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+		
+	    var certtable = null
+	    
+	    if(Current.equip.id != 0){
+	    
+			d3.select("#equipid")
+				.text(Current.equip.equipid);
+					
+		  	//1. populate certs
+			$.getJSON('/api/equip/cert/getAll', { equipid : Current.equip.id }, function(data) {
+			
+				// render the table
+				certtable = table().createtable("#equipcert_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								.setpager("#pager")									
+									.done();
+									
+				d3.select("#totalCerts").text("Total Certificates :"+data.length)
+									
+			});
+	    
+	    }
+	    
+	    //1. Add new
+ 		d3.select("#new-cert")
+	    	.on("click", function(){	    	
+	    		$.get('pages/equip/certificate/new_cert.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"60%"});
+				});
+	    });
+	    
+	    //2. edit cert
+      	d3.select("#edit-cert")
+	    	.on("click", function(){
+	    			var selectedrow = certtable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+	    			
+			    		$.get('pages/equip/certificate/edit_cert.html', function(htmlcontent){
+					    	modal.open({content: htmlcontent, width:"60%"}, function(){
+					    		editCert(selectedrow);
+					    	});
+						});
+	    			}
+	    });
+	        
+	    
+	    //3. Delete cert
+      	d3.select("#delete-cert")
+	    	.on("click", function(){
+	    			var selectedrow = certtable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+	    			
+	    				if(!confirm("Are you sure you want to delete?")){
+	    					return;
+	    				}
+	    			
+			    		$.getJSON('/api/equip/cert/delete', { equipid : Current.equip.id, certid : selectedrow.certid }, function(data) {
+							alert(data.message);
+	      					loadtab("/pages/equip/certificate/cert_list.html");					
+						});
+	    			}
+	    });
+	    
+	    
+}();
+	
+</script>

@@ -1,0 +1,14 @@
+[
+        {
+        	"id" : "US",
+        	"name" : "USA"
+        },
+        {
+        	"id" : "MX",
+        	"name" : "Mexico"
+        },
+        {
+        	"id" : "CA",
+        	"name" : "Canada"
+        }
+]

@@ -1,0 +1,79 @@
+
+	<div class="grid">
+
+			<ul id="timecardsidetabs" class="sidetabs">
+				<li><input type="button" id="weekly_btn" value="Weekly Report" class="active"/></li>
+				<li><input type="button" id="monthly_btn" value="Monthly Report"/></li>
+				<li><input type="button" id="equipreport_btn" value="Equipment Report"/></li>
+				<li><input type="button" id="changeeport_btn" value="Change Report"/></li>
+			</ul>
+		
+			<div id="sidetabcontent"></div>
+			
+		</div>
+	
+	</div>			
+
+<script type="text/javascript">
+
+! function(){
+
+		var inputs = d3.select("#timecardsidetabs").selectAll("li").selectAll("input")
+
+		//default
+		loadsidetab("/pages/company/timecard/timecard_driver_weekly_report.html");
+		
+		// sidetab1
+ 		d3.select("#weekly_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//default tab
+			loadsidetab("/pages/company/timecard/timecard_driver_weekly_report.html");
+		});
+		
+		// sidetab2
+ 		d3.select("#monthly_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//load tab
+			loadsidetab("/pages/company/timecard/timecard_driver_monthly_report.html");
+		});
+		
+		// sidetab3
+ 		d3.select("#equipreport_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);					
+			d3.select(this).attr("class", "active");
+			
+			//load tab
+			loadsidetab("/pages/company/timecard/timecard_equip_report.html");
+		});
+		
+		// sidetab4
+ 		d3.select("#changeeport_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);					
+			d3.select(this).attr("class", "active");
+			
+			//load tab
+			loadsidetab("/pages/company/timecard/timecard_change_report.html");
+		});
+		
+		
+}();
+	
+	
+</script>
+

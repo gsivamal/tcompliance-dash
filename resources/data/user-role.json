@@ -1,0 +1,10 @@
+[
+        {
+        	"id" : "owner",
+        	"name" : "Owner"
+        },
+        {
+        	"id" : "operator",
+        	"name" : "Operator"
+        }        
+]

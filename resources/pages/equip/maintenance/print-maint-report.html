@@ -1,0 +1,200 @@
+
+<div class="middle" style="min-height:500px;"> 
+			
+			<div id="printmaint-form" style="padding:20px 20px 10px 20px;">
+			
+				<div class="row"  style="text-align:center;font-weight:bold;font-size:120%;">
+					<div class="col-3"></div>
+					<div class="col-5">			
+						<label>INSPECTION, REPAIR & MAINTENANCE RECORD</label>
+						<label>Under 49 C.F.R 396.3</label>
+					</div>
+					<div class="col-3"></div>		
+				</div>
+			
+				<div class="spacer"/>
+				
+		        <div class="grid" style="font-size:80%;margin:10px;">
+						  
+		          <label align="center" style="width:99%;font-size:140%;font-weight:bold;">VEHICLE IDENTIFICATION</label>
+		        
+		          <div class="gridrow">
+		            <div class="row">            
+		              <div class="col-5">
+		                <div style="display:flex;flex-flow: column;">
+		                  <input data-dbcolname="make" type="text" style="border:none;border-bottom:1px solid gray;"/>
+		                  <label> Make </label>
+		                </div>    
+		              </div>            
+		              <div class="col-1"></div>
+		              <div class="col-6">
+		                <div style="display:flex;flex-flow: column;">
+		                  <input data-dbcolname="equipid" type="text" style="border:none;border-bottom:1px solid gray;"/>
+		                  <label> Serial Number </label>
+		                </div>    
+		              </div> 
+		            </div>
+		         </div>   
+		
+		         <div class="gridrow">
+		            <div class="row">              
+		              <div class="col-5">
+		                <div style="display:flex;flex-flow: column;">
+		                  <input data-dbcolname="mfgyear" type="text" style="border:none;border-bottom:1px solid gray;"/>
+		                  <label> Year </label>
+		                </div>    
+		              </div>            
+		              <div class="col-1"></div>
+		              <div class="col-6">
+		                <div style="display:flex;flex-flow: column;">
+		                  <input data-dbcolname="tire-size" type="text" style="border:none;border-bottom:1px solid gray;"/>
+		                  <label> Tire Size </label>
+		                </div>    
+		              </div>              
+		            </div>            
+		           </div>  
+		          
+		          <div class="gridrow">
+		            <div class="row">              
+		              <div class="col-5">
+		                <div style="display:flex;flex-flow: column;">
+		                  <input data-dbcolname="dot" type="text" style="border:none;border-bottom:1px solid gray;"/>
+		                  <label> Company Number/ID </label>
+		                </div>    
+		              </div>            
+		              <div class="col-1"></div>
+		              <div class="col-6">
+		                <div style="display:flex;flex-flow: column;">
+		                  <input data-dbcolname="contact" type="text" style="border:none;border-bottom:1px solid gray;"/>
+		                  <label> Owner(if leased) </label>
+		                </div>    
+		              </div>              
+		            </div>            
+		           </div> 
+		        
+		       	</div>
+        		
+        		<div class="spacer"/>
+        		<div class="spacer"/>
+        
+			     <div class="tablepage">
+
+		        		<table id="printpmaint_table" style="width:100%;">
+					        <thead>
+					            <tr>
+					               	<th data-colname="append(maintdate,mainthour)">Maint Date</th>
+					               	<th data-colname="mainttype">Type</th>	
+					            	<th data-colname="maintname">Name</th>
+					               	<th data-colname="currentodo">ODO Reading</th>
+									<th data-colname="remarks">Remarks</th>               												                	
+					            </tr>
+					        </thead>
+					    </table>
+					  		                
+						<div class="tablepagerow">
+							<span id="totalrows"></span>
+							<div>
+								<button type="button" id="print-maint-report"><i class="fa fa-printer">&nbsp;</i>Print</button>
+								|
+								<button type="button" id="cancel">Cancel</button>
+							</div>
+							<select id="pagesizer">
+								<option>Page size: 5</option>
+								<option>Page size: 10</option>
+								<option>Page size: 15</option>
+								<option>Page size: 20</option>
+							</select>
+						</div>
+						
+				   </div> 
+				
+		</div>
+	</div>
+
+<div class="spacer"/>
+
+
+<script type="text/javascript">
+
+! function(){
+
+}();
+
+
+var openreport = function(equipid) {
+
+		$.getJSON('api/equip/get', { id : equipid }, function(equipdata) {	
+		
+			//load company
+			$.getJSON('api/company/get', function(comp) {
+			
+				equipdata.dot = comp.dot;
+				equipdata.contact = comp.contact;
+			
+				formutil.rebind("#printmaint-form", equipdata);
+			
+			});
+			
+		});
+		
+
+			
+		//1. populate certs
+		$.getJSON('/api/equip/maintenance/getAll', { equipid : equipid }, function(data) {
+		
+				// render the table
+				table().createtable("#printpmaint_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								//.setpager("#pager")											
+									.done();
+									
+				d3.select("#totalrows").text("Rows :"+data.length)
+									
+		});
+
+	
+ 		d3.select("#cancel")
+			.on("click", function() {    
+	  			modal.close();  			
+	  			//load tab
+				loadtab("/pages/equip/maintenance/maint_list.html");   
+		}); 
+};
+
+
+	//save as pdf
+	$('#print-maint-report').click(function() {			
+		html2canvas($("#printmaint-form"), {
+					useCORS:true,
+			        onrendered: function(canvas) {				            
+			            var imgData = canvas.toDataURL("image/jpg");
+			            
+						/* Here are the numbers (paper width and height) that I found to work. 
+							It still creates a little overlap part between the pages, but good enough for me.
+							if you can find an official number from jsPDF, use them. */
+							
+						var imgWidth = 200; 
+						var pageHeight = 250;  
+						var imgHeight = canvas.height * imgWidth / canvas.width;
+						var heightLeft = imgHeight;
+						
+						var doc = new jsPDF('p', 'mm', 'a4');
+						var position = 0;
+						
+						doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+						heightLeft -= pageHeight;
+						
+						while (heightLeft >= 0) {
+							position = heightLeft - imgHeight;
+							doc.addPage();
+							doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+							heightLeft -= pageHeight;
+						}
+						doc.save('EquipmentMaitenance-Report.pdf'); 				
+					}//onrendered
+			});			
+		});
+
+
+</script>

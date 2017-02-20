@@ -1,0 +1,47 @@
+/** For Jquery modal */
+#overlay {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:#000;
+	opacity:0.5;
+	filter:alpha(opacity=50);
+}
+
+#modal {
+	position:absolute;
+	background:rgba(0,0,0,0.2);
+	border-radius:14px;
+	padding:8px;
+	/* z-index: 2  salai- added to bring the modal front*/
+}
+
+#contentmodal {
+	border-radius:8px;
+	background:#fff;
+	padding:5px;
+}
+
+#close {
+	position:absolute;
+	background: transparent url('/img/close.png') no-repeat scroll 0 0;
+	width:24px;
+	height:27px;
+	display:block;
+	text-indent:-9999px;
+	top:18px;
+	right:15px;
+}
+
+
+
+
+
+
+
+
+
+
+

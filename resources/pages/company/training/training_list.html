@@ -1,0 +1,77 @@
+
+<div class="gridinner">
+
+	<div class="tablepage">
+	
+		<table id="trns_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="code">Training Code</th>
+	            	<th data-colname="name">Training Name</th>
+	            	<th data-colname="schedule">Schedule</th>
+	               	<th data-colname="createdate">Create Date</th>
+	               	<th data-colname="status">Status</th>
+					<th data-colname="file(materials_file)">Materials</th>               												                	
+	            </tr>
+	        </thead>
+	    </table>
+
+		<div class="tablepagerow">
+			<span id="totalRows"></span>
+			<div>
+				<button type="button" id="new-trn"><i class="fa fa-plus">&nbsp;</i>New Training</button>
+				<button type="button" id="delete-trn"><i class="fa fa-minus">&nbsp;</i>Delete Training</button>
+			</div>
+			<span></span>
+		</div>		
+
+	</div>
+
+</div>
+	
+	
+
+<script type="text/javascript">
+
+! function(){
+
+		var trntable = null;
+    
+      	//1. populate documents
+		$.getJSON('/api/company/training/getAll', function(data) {
+ 
+	  		// render the table
+			trntable = table().createtable("#trns_table")
+							.populatedata(data)
+								.done();
+							
+			d3.select("#totalRows").text("Total Rows:"+data.length);					
+	    
+		});
+		
+		//2. add new
+		d3.select("#new-trn")
+	    	.on("click", function(){
+	    	
+	    		$.get('pages/company/training/new_training.html', function(htmlcontent){
+			    	
+			    	modal.open({content: htmlcontent, width:"70%"});
+		    		
+	    		});     	
+	    });		
+	    
+	    //3.delete
+      	d3.select("#delete-trn")
+	    	.on("click", function(){
+	    			var selectedrow = trntable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+			    		$.getJSON('/api/company/training/delete', { trnid : selectedrow.trnid }, function(data) {
+							alert(data.message);
+	      					loadtab("/pages/company/training/training_list.html");				
+						});
+	    			}
+	    });
+
+}();
+
+</script>

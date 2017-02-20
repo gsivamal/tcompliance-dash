@@ -1,0 +1,104 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<b><label> MVR for <span id="drivername"></span> </label></b>
+		<ul id="pager" class="tabs"></ul>	
+	</div>  
+	
+	<table id="mvr_table">
+        <thead>
+            <tr>
+            	<th data-colname="mvrreqid">Req ID</th>
+            	<th data-colname="file(consent_snapshot_file)">MVR Consent</th>
+				<th data-colname="file(sov_snapshot_file)">Violations Statement</th>               												                	
+               	<th data-colname="requestdate">Request Date</th>
+               	<th data-colname="completedate">Complete Date</th>
+               	<th data-colname="status">Status</th>
+               	<th data-colname="file(mvr_file)">MVR Report</th>
+               	<th data-colname="file(reviewer_file)">MVR Reviewer Sign</th>	
+            </tr>
+        </thead>
+    </table>
+    
+	<div class="tablepagerow">
+			<span id="totalMvrs"></span>
+			<div>
+				<button type="button" id="create-consent"><i class="fa fa-thumbs-o-up">&nbsp;</i>1. Sign MVR Consent</button>
+				<button type="button" id="create-sov"><i class="fa fa-clone">&nbsp;</i>2. Sign Statement of Violations</button>
+				<button type="button" id="review-mvr"><i class="fa fa-pencil">&nbsp;</i>3. MVR Review</button>
+			</div>
+			<select id="pagesizer">
+				<option>Page size: 20</option>
+				<option>Page size: 25</option>
+				<option>Page size: 30</option>
+				<option>Page size: 50</option>
+			</select>
+	</div>    
+	
+</div>
+
+
+
+<script type="text/javascript">
+
+! function(){
+
+		d3.select("#drivername")
+				.text(Current.driver.firstname + " " + Current.driver.lastname);
+		
+		var mvrtable = null
+	    
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/driver/mvr/getAll', { driverid : Current.driver.id }, function(data) {
+			
+			if(data.length > 0){
+				// render the table
+				mvrtable = table().createtable("#mvr_table")
+								.populatedata(data)
+									.setpagesizeselector("#pagesizer")
+									.setpager("#pager")					
+									.done();
+									
+				d3.select("#totalMvrs").text("Total Docs :"+data.length)			
+			}		
+		});
+		
+		
+		//1. Create consent
+	    d3.select("#create-consent")
+	    	.on("click", function(){	    	
+	    		$.get('pages/driver/mvr/create_mvr_consent.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"60%"});
+				});
+	    });     	
+		
+   		//2.create sov
+	    d3.select("#create-sov")
+	    	.on("click", function(){	    	
+				var selectedmvr = mvrtable.getselectedids()[0];
+				if(selectedmvr !== undefined){
+		    		$.get('pages/driver/mvr/create_stmt_of_violations.html', function(htmlcontent){
+				    	modal.open({content: htmlcontent, width:"65%"}, function(){
+				    			createsov(selectedmvr.mvrreqid);
+			    		});
+		    		});
+		    	}     					
+	    });     	
+		
+	  	//3. review mvr
+		d3.select("#review-mvr")
+	    	.on("click", function(){
+	    		var selectedmvr = mvrtable.getselectedids()[0];
+	    		if(selectedmvr !== undefined){
+		    		$.get('pages/driver/mvr/create_mvr_review.html', function(htmlcontent){
+				    	modal.open({content: htmlcontent, width:"65%"}, function(){
+				    			reviewmvr(selectedmvr.mvrreqid);
+			    		});
+					});
+				}
+	    })     	
+	    
+	}();
+	
+</script>

@@ -1,0 +1,88 @@
+
+
+<div class="hrLine"/>
+
+<form>
+  <input id="service" type="text" list="services" autofocus placeholder="Bluetooth Service">
+  <input id="name" type="text" placeholder="Device Name">
+  <input id="namePrefix" type="text" placeholder="Device Name Prefix">
+  <button id="getbb">Get Bluetooth Device Info</button>
+  
+  
+</form>
+
+<label></label>
+
+<label id="blutoothinfo"></label>
+ 
+
+<script type="text/javascript">
+
+! function(){
+
+	if (!navigator.bluetooth) {
+			d3.select("#blutoothinfo").text('Web Bluetooth API is not available in this computer.\n' +
+				'Please make sure the Web Bluetooth flag is enabled.');
+			return;
+	} 
+	
+	
+	d3.select("#getbb")
+		 .on('click', function(d,i){ 
+		
+		  let options = {filters: []};
+		  
+		alert("options:"+options);  
+	
+		  let filterService = document.getElementById('service').value;
+
+		alert("filterService"+filterService);
+				
+		  
+		  if (filterService.startsWith('0x')) {
+		    filterService = parseInt(filterService, 16);
+		  }
+		  
+		  if (filterService) {
+		    options.filters.push({services: [filterService]});
+		  }
+		
+		  let filterName = document.getElementById('name').value;
+		  if (filterName) {
+		    options.filters.push({name: filterName});
+		  }
+		
+		  let filterNamePrefix = document.getElementById('namePrefix').value;
+		  if (filterNamePrefix) {
+		    options.filters.push({namePrefix: filterNamePrefix});
+		  }
+		
+		  alert('Requesting Bluetooth Device...');
+		  
+		  navigator.bluetooth.requestDevice(options)
+		  .then(device => {
+		    alert('> Name:             ' + device.name);
+		    alert('> Id:               ' + device.id);
+		    alert('> Device Class:     ' + device.deviceClass);
+		    alert('> Vendor Id Source: ' + device.vendorIDSource);
+		    alert('> Vendor Id:        ' + device.vendorID);
+		    alert('> Product Id:       ' + device.productID);
+		    alert('> Product Version:  ' + device.productVersion);
+		    alert('> UUIDs:            ' + device.uuids.join('\n' + ' '.repeat(20)));
+		    if (device.adData) {
+		      alert('> Tx Power:         ' + device.adData.txPower + ' dBm');
+		      alert('> RSSI:             ' + device.adData.rssi + ' dBm');
+		    }
+		  })
+		  .catch(error => {
+		    alert('Error: ' + error);
+		  });
+		
+		  return false;	
+	
+	});
+	
+	    
+	}();
+	
+</script>

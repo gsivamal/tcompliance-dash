@@ -1,0 +1,83 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<b><label> Your Client List </label></b>
+		<ul id="pager" class="tabs"></ul>	
+	</div>  
+	
+	<table id="client_table">
+        <thead>
+            <tr>
+            	<th data-colname="id">Company ID</th>
+            	<th data-colname="name">Name</th>
+            </tr>
+        </thead>
+    </table>
+    
+	<div class="tablepagerow">
+		<span id="totalDrivers"></span>
+		<div>
+			<button type="button" id="new-customer"><i class="fa fa-plus">&nbsp;</i>New Customer</button>
+			<button type="button" id="view-dashboard"><i class="fa fa-edit">&nbsp;</i>View Dashboard</button>
+			<button type="button" id="delete-customer"><i class="fa fa-minus">&nbsp;</i>Delete</button>
+		</div>
+		<select id="pagesizer">
+			<option>Page size: 5</option>
+			<option>Page size: 10</option>
+			<option>Page size: 15</option>
+			<option>Page size: 20</option>
+		</select>
+	</div>    
+    
+</div>
+
+
+
+<script type="text/javascript">
+
+! function(){
+
+	var clienttable = null;
+
+	//load company
+	$.getJSON('api/company/get', function(data) {
+		
+		//set the company json
+		Current.company = data;
+		
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/audit/client/getAll', function(data) {
+			
+			if(data.length > 0){
+				// render the table
+				clienttable = table().createtable("#client_table")
+								.populatedata(data)
+									//.setpagesizeselector("#pagesizer")
+									//.setpager("#pager")					
+									.done();
+			}		
+		});
+	    
+	});
+	
+    // view dashboard
+    d3.select("#view-dashboard")
+    	.on("click", function(){
+    		var selectedrow = clienttable.getselectedids()[0];
+    		if(selectedrow !== undefined){
+    			var selectedid = selectedrow.id;
+    			//Current.company = selectedrow;
+    			
+    			alert(JSON.stringify(Current.company));
+    			
+      			window.open(
+				  'http://smar.tcompliance.com:4570/noauth?companyid='+Current.company.id,
+				  '_blank' // new window
+				);
+  			}				
+    });	
+
+}();
+	
+</script>

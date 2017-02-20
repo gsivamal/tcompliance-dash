@@ -1,0 +1,101 @@
+
+	<div class="grid">
+
+			<ul id="inspsidetabs" class="sidetabs">
+				<li><input type="button" id="today_btn" value="Today" class="active"/></li>
+				<li><input type="button" id="thismonth_btn" value="This Month"/></li>
+				<li><input type="button" id="lastmonth_btn" value="Last Month"/></li>
+			</ul>
+		
+			<div id="sidetabcontent" style="border-left:1px solid gray;margin-top:14px"></div>
+			
+		</div>
+	
+	</div>			
+
+<script type="text/javascript">
+
+
+! function(){
+
+		var inputs = d3.select("#inspsidetabs").selectAll("li").selectAll("input");
+		
+		var today = new Date();
+		
+		loadsidetab("/pages/trip/timecard/new_timecard-entry.html", function(){
+			opentimecardentry(today.formatDate());
+		});
+		
+		// sidetab1
+ 		d3.select("#today_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//default tab
+			loadsidetab("/pages/trip/timecard/new_timecard-entry.html", function(){
+				opentimecardentry(today.formatDate());
+			});
+		});
+		
+		// sidetab2
+ 		d3.select("#thismonth_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//load tab
+			loadsidetab("/pages/trip/timecard/timecard-month-table.html", function(){
+				opentimecard(today.getMonthIdx(), today.getFullYear());		
+			});
+		});
+		
+		// sidetab3
+ 		d3.select("#roadinsp_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);					
+			d3.select(this).attr("class", "active");
+			
+			//load tab
+			loadsidetab("/pages/company/inspection/roadsideinsp/all_roadsideinsps.html");
+		});
+		
+		//sidetab4		
+		d3.select("#lastmonth_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);					
+			d3.select(this).attr("class", "active");
+			
+			//load tab
+			loadsidetab("/pages/trip/timecard/timecard-month-table.html", function(){
+				opentimecard(today.getMonthIdx()-1, today.getFullYear());
+			});
+		});		
+		
+		
+}();
+
+
+var settabselection = function(tabid) {
+
+	var inputs = d3.select("#inspsidetabs").selectAll("li").selectAll("input")
+
+	// remove all previous styles
+	inputs.attr("class", null);
+
+	// sidetab
+	d3.select(tabid).attr("class", "active");
+
+}
+	
+	
+</script>
+

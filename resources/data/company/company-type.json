@@ -1,0 +1,10 @@
+[
+        {
+        	"id" : "Intra-state",
+        	"name" : "Intra-state"
+        },
+        {
+        	"id" : "Inter-state",
+        	"name" : "Inter-state"
+        }
+]

@@ -1,0 +1,226 @@
+
+<div> 
+			
+		<div id="trailer-form" style="background:bisque;padding:10px;border-radius: 3px;font-size:95%;">
+			<div class="row">
+				<div class="col-2"><label> 1. Select Trailer &nbsp; </label> </div>	
+				<div class="col-2"><select id="trailerlist" data-dbcolname="equipid"/></div>	
+				<div class="col-2"></div>
+				<div class="col-2"><label> Created Driver : &nbsp; </label> </div>	
+				<div class="col-2"><span data-dbcolname="driver"/></div>		
+			</div>
+			<div class="hrLine" style="margin:5px;color:white;border-bottom: 1px solid white;"/> 				
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_brakeconnection"/> Brake Connections</label> </div> 
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_doors"/> Doors</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_springs"/> Springs</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_trailerbrakes"/> Brakes</label> </div> 
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_hitch"/> Hitch</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_tarpaulin"/> Tarpaulin</label> </div> 
+			</div>			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_couplingchains"/> Coupling Chains</label> </div> 
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_landinggear"/> Landing Gear</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_tires"/> Tires</label> </div> 
+			</div>			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_couplingkingpin"/> Coupling (King) Pin </label> </div> 
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_lightsall"/> Lights - All</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_wheelsandrims"/> Wheels & Rims</label> </div> 
+			</div>			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_roof"/> Roof</label> </div> 
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_other"/> Other</label> </div>   
+			<div class="col-4">  </div> 
+			</div>			
+			<div class="spacer"/>
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3">
+						<label> The Condition of this trailer is :</label>
+					</div>
+					<div class="col-7">
+					 	<input type="radio" name="driverstatus" data-dbcolname="driverstatus" value="satisfactory" disabled="true"/> <label style="color:green;font-weight:bold;"> Satisfactory </label>
+					 	<input type="radio" name="driverstatus" data-dbcolname="driverstatus" value="needrepairwork" disabled="true"/> <label style="color:red;font-weight:bold;"> Need Repair Work </label>
+					</div>
+				</div>	
+    		</div>			
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3 top">
+						<label> Remarks:</label>
+					</div> 	
+					<div class="col-8">
+						<textarea style="width:100%;" id="remarks" data-dbcolname="remarks" rows="4"></textarea>
+					</div>
+				</div>	 	
+			</div>
+
+	      	<div id="trailer-form-mechanic" style="display:none;margin:0px;">
+	      		<div class="spacer"/> 
+				<div class="gridrow">
+					<div class="row">	
+						<div class="col-12" id="trailerpreview"></div>
+					</div>
+				</div>	      	
+				<div class="row" style="background:lightgray;">
+					<div class="col-12">
+						<label style="font-weight:bold;text-decoration: underline;">Mechanics Certification </label>	
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-3"><label><input type="radio" name="mechstatus" data-dbcolname="mechstatus" value="neworder" checked/>New</label></div>
+					<div class="col-3"><label><input type="radio" name="mechstatus" data-dbcolname="mechstatus" value="corrected"/>Corrected</label></div>		
+					<div class="col-6"><label><input type="radio" name="mechstatus" data-dbcolname="mechstatus" value="futurecorrection"/>Need not be Corrected for Safe Operation of the vehicle</label></div>
+				</div>	
+	    		<div class="spacer"/>
+				<div class="row">
+					<div class="col-3"><label> Mechanic's Signature :</label></div>	
+					<div class="col-5"><div id="trailermechanicsign"></div></div>
+					<div class="col-1"><label> Date :</label></div>
+					<div class="col-2"><input id="mechsigndate" data-dbcolname="mechsigndate" type="text" size="10"/></div>	
+				</div>	
+			</div>	<!-- trailer form mechanic -->
+			
+			<div class="spacer"/> <div class="spacer"/> <div class="hrLine"/>			
+			<div class="row addmargin" align="center">
+				<button type="button" id="update-workorder"><i class="fa fa-save">&nbsp;</i>Update Work Order</button>
+				&nbsp;|&nbsp;
+				<button type="button" id="cancel">Cancel</button>
+			</div>			
+			<div class="row" align="center">
+				<span id="message"></span>
+			</div>
+			
+		</div>	<!-- trailer form -->
+
+</div>
+
+
+<script type="text/javascript">
+
+
+var viewinsp = function(equipid){
+
+	//global aftersave :O)
+	var aftersave = workflow.create("#trailer-form").aftersave();
+	
+	var trailermechanicsign = signature1().create("trailermechanicsign", Current.driver.firstname  + " " + Current.driver.lastname);	
+	$("#mechsigndate").datepick({minDate: new Date()});
+	
+	//disable driver status
+	d3.selectAll("input[name='trailerstatusdriver']").attr("disabled","true");	
+	
+	$.getJSON('api/driver/equip/inspection/get', { id : equipid }, function(trailerinspdata) {
+	
+		console.log("In Rebind trailerform:"+ equipid + ", trailerinspdata:"+ JSON.stringify(trailerinspdata));
+	
+		$.getJSON('api/equip/get', { id : equipid }, function(eq) {
+						var equip = [{ "id": eq.id, "name" : (eq.equipid+" - "+eq.type) }];
+						dropdown().create("#trailerlist").populatedata(equip); //1 item populate
+					});	
+		
+		formutil.rebind("#trailer-form", trailerinspdata);	
+		
+		//show mechanic section if anything selected
+		d3.select("#trailer-form-mechanic").style("display","block");
+		
+		//rebind photos
+		if(trailerinspdata.trailerphoto_file != undefined){
+			var photos = trailerinspdata.trailerphoto_file.csvToArray();
+			d3.select("#trailerpreview")
+				.selectAll("img")
+				.data(photos)
+				.enter()
+				.append("img")
+				.attr("src", function(p){
+					console.log("Photo:"+p);
+					return p;
+				})
+				.attr("width","200")
+				.attr("height","100");
+		}
+		
+		
+		$.getJSON(trailerinspdata.mechsign, function(signdata) {
+			trailermechanicsign.putJsonImageData( signdata );		
+		})
+		.error(function() { console.log("^ friendly error message, as there is no signature json in the draft!, ignore") });
+	
+		//rebind date
+		if(trailerinspdata.mechsigndate.length > 0)
+			$("#mechsigndate").datepick('setDate', new Date(trailerinspdata.mechsigndate) );
+	});
+	
+	
+	d3.select("#update-workorder").on("click", function(){
+	 
+	 	//alert("update-workorder");
+    
+		var trailerformdata = {}; //formutil.serializeObject("#trailer-form"); 						
+			
+		//validation:1		
+		if(trailermechanicsign.isBlank()){
+			var msg = {"id" : equipid, "message" : "ERROR: Signature is needed to update the work order!" };
+			aftersave.setStatusMessage(msg);
+			return;
+		}
+		//validation:2
+		var mechsigndate = $("#mechsigndate").datepick('getDate')[0];
+		if(mechsigndate == undefined){				
+			var msg = {"id" : equipid, "message" : "ERROR: Signature Date is needed to update the work order!" };
+			aftersave.setStatusMessage(msg);
+			return;
+		}	
+		
+		//update field:1
+		trailerformdata.mechsign = trailermechanicsign.getImageData();
+		//update field:2
+		trailerformdata.mechsigndate = mechsigndate.formatDate();
+		//update field:3
+		trailerformdata.remarks = d3.select("#remarks").property("value");
+		//update field:4
+		trailerformdata.mechstatus = d3.selectAll('input[name="mechstatus"]:checked').node().value;
+		
+		//need this to update bg code
+		trailerformdata.usedas = "trailer";
+		
+		//alert("trailerformdata:"+JSON.stringify(trailerformdata));
+		
+		//disableAll
+		aftersave.disableAll();
+			
+		var formData = new FormData();
+			formData.append("driverid", Current.driver.id);
+			formData.append("equipid", equipid);
+			formData.append("equipinspdata", JSON.stringify(trailerformdata));
+			
+		// send via XHR - look ma, no headers being set!
+    	$.ajax({
+            url: '/api/driver/equip/inspection/update',
+            type: 'post', 
+            cache: false,
+            data: formData,				        	
+            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+            contentType: false,	
+            success: function(resp) {
+				aftersave.changetext("#cancel","Done"); //changetext enables the el
+				aftersave.setStatusMessage(resp);
+            }
+   		 });
+	});	
+	
+	
+ 	d3.select("#cancel")
+		.on("click", function() {    
+  			modal.close();	    
+  			
+  			loadpage("/pages/mech/mech-queue.html");
+	}); 
+
+}
+
+
+</script>

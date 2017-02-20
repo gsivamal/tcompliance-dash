@@ -1,0 +1,172 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<b><label> DQ File for <span class="drivername"></span></label></b>
+		<ul></ul>	
+	</div>
+
+	<table id="driverdocuments_table">
+        <thead>
+            <tr>
+            	<th data-colname="docname">Doc Name</th>
+               	<th data-colname="alertdate(expirydate)">Expiration Date</th>
+               	<th data-colname="status">Status</th>	
+				<th data-colname="file(doc_files)">Documents</th>               												                	
+            </tr>
+        </thead>
+    </table>
+
+	<br></br>
+
+	<div class="tablepagerow">
+		<b><label> Additional Documents for <span class="drivername"></span></label></b>
+		<ul></ul>	
+	</div>
+
+	<table id="driveraddldocs_table">
+        <thead>
+            <tr>
+            	<th data-colname="docname">Doc Name</th>
+               	<th data-colname="alertdate(expirydate)">Expiration Date</th>
+               	<th data-colname="status">Status</th>	
+				<th data-colname="file(doc_files)">Documents</th>               												                	
+            </tr>
+        </thead>
+    </table>
+    
+	<div class="tablepagerow">
+		<span id="totalDocs"></span>
+		<div>
+			<button type="button" id="add-dqdoc"><i class="fa fa-plus">&nbsp;</i>Add Documents</button>
+			<button type="button" id="edit-dqdoc"><i class="fa fa-edit">&nbsp;</i>Edit Documents</button>
+			<button type="button" id="delete-dqdoc"><i class="fa fa-minus">&nbsp;</i>Delete Documents</button>
+		</div>
+		<p></p>
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+		
+	    var doctable = null;
+	    var dqtable = null;
+	    
+	    if(Current.driver.id != 0){
+	    
+		  	//1. populate documents
+			$.getJSON('/api/driver/get', { id : Current.driver.id }, function(data) {
+			
+				d3.selectAll(".drivername")
+					.text(data.firstname + " " + data.lastname);
+			
+				var driverdocs = [	{"docname" : "Driver Applicaion", "status" : "NA", "expirydate" : "NA", "doc_files" : data.driverappl_file },
+									{"docname" : "License", "status" : data.license_status, "expirydate" : data.licenseexpdate, "doc_files" : data.license_file },
+									{"docname" : "SSN Card", "status" : "NA", "expirydate" : "NA", "doc_files" : data.ssn_file },
+									{"docname" : "Medical Certificate", "status" : data.medcert_status, "expirydate" : data.medcertexpirydate, "doc_files" : data.medcert_file }
+									];
+									
+				// render the table
+				dqtable = table().createtable("#driverdocuments_table")
+									.populatedata(driverdocs)
+										.done();					
+									
+									
+				// get additional docs
+				$.getJSON('/api/driver/document/getAllAdditionalDocs', { driverid : Current.driver.id }, function(docsdata) {		
+				
+					//docsdata.forEach(function(ddoc, index) {
+					//	driverdocs.push(ddoc);						
+					//});			
+				
+					// render the table
+					doctable = table().createtable("#driveraddldocs_table")
+						.populatedata(docsdata)
+							.done();
+							
+					d3.select("#totalDocs").text("Total Documents :"+ docsdata.length);		
+				
+				});	
+						
+			});
+			
+		    //2. Add more
+	 		d3.select("#add-dqdoc")
+		    	.on("click", function(){	    	
+		    		$.get('pages/driver/documents/new_driverdoc.html', function(htmlcontent){
+				    	modal.open({content: htmlcontent, width:"60%"});
+					});
+		    });   
+		    
+		   	//3. Edit doc
+	 		d3.select("#edit-dqdoc")
+		    	.on("click", function(){
+		    		var selectedrow = doctable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+	    				
+	    				//alert(JSON.stringify(selectedrow));
+	    			
+	    				$.get('pages/driver/documents/edit_driverdoc.html', function(htmlcontent){
+				    		modal.open({content: htmlcontent, width:"60%"}, function(){
+				    			editdoc(selectedrow);
+				    		});
+						});
+	    			}
+		    });  
+		    
+		    //4. Delete doc
+	 		d3.select("#delete-dqdoc")
+		    	.on("click", function(){	    	
+		    		
+		    		var selectedrow = doctable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+	    			
+	    				if(!confirm("Are you sure you want to delete?")){
+	    					return;
+	    				}
+	    			
+	    				if(selectedrow.docname == "Driver Applicaion" ||
+									selectedrow.docname == "License" ||
+									selectedrow.docname == "SSN Card" ||
+									selectedrow.docname == "Medical Certificate"){
+									
+									alert("DQ File Items cannot be deleted, you can edit instead, if expired!");
+									return;
+						} else {									
+	    			
+				    		$.getJSON('/api/driver/document/delete', { driverid : Current.driver.id, docid : selectedrow.docid }, function(data) {
+								alert(data.message);
+		      					loadtab("/pages/driver/documents/document_list.html");					
+							});
+						
+						}
+	    			}
+		    		
+		    });   
+		    			
+			
+			//4. pdf with fillable forms, not used, but may be later...
+			d3.select("#print-medcert")
+				.on("click", function(){
+				
+					$.get('/pdf/open', { driverid : Current.driver.id, reportname :  'medical-cert'}, function(data){
+					
+						 var blob = new Blob([data]);
+				            var link = document.createElement('a');
+				            link.href = window.URL.createObjectURL(blob);
+				            link.download = "Medical-Examination-Report-Form-MCSA-5875-"+Current.driver.lastname+"-"+new Date()+".fdf";
+				            link.click();
+					
+					});
+				
+				})
+			
+	
+	    
+	    }
+	    
+}();
+	
+</script>

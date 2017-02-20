@@ -1,0 +1,76 @@
+{ 
+	"tractor" : [
+				{
+		        	"id" : "TRACTOR",
+					"name" : "Tractor"
+		        }
+			],
+	"truck" : [
+				{
+		        	"id" : "STRAIGHT",
+					"name" : "Straight truck"
+		        },	
+		        {
+		        	"id" : "TANK",
+					"name" : "Tank truck"
+		        }
+			],
+			
+	"trailer" : [	
+		        {
+		        	"id" : "FLAT",
+					"name" : "Flat bed"
+		        },	
+		        {
+		        	"id" : "REFRIGERATED",
+					"name" : "Refrigerated"
+		        },
+		        {
+		        	"id" : "BELLYDUMP",
+					"name" : "Belly dump"
+		        },	
+		        {
+		        	"id" : "VAN",
+					"name" : "Van"
+		        },       
+		        {
+		        	"id" : "LIVESTOCK",
+					"name" : "Livestock"
+		        },
+				{
+		        	"id" : "LOWBOY",
+					"name" : "Lowboy"
+		        },
+				{
+		        	"id" : "CAR-HAULER",
+					"name" : "Car hauler"
+		        },		        		        
+		        {
+		        	"id" : "TANK",
+					"name" : "Tank"
+		        }
+			],
+		
+	"other" : [
+		 		{
+		        	"id" : "DOLLY",
+					"name" : "Converter dolly"
+		        }
+		    ],
+		      
+	"hazmat" : [
+	 		{
+	        	"id" : "MC330",
+				"name" : "MC 330"
+	        },
+	        {
+	        	"id" : "MC338",
+				"name" : "MC 338"
+	        }
+	      ]
+
+}	
+		
+		
+
+

@@ -1,0 +1,941 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  font-family: "Lucida Sans", sans-serif;
+}
+body {
+  padding: 0px 20px 0px 20px;
+}
+body .row::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+body .fa-italic {
+  font-style: italic;
+}
+body .row.bottom {
+  display: flex;
+  align-items: flex-end;
+}
+body .row.center {
+  display: flex;
+  align-items: center;
+}
+body .row.addmargin {
+  margin: 6px;
+}
+body [class*="col-"] {
+  float: left;
+  padding: 2px;
+}
+body [class*="col-"].pullleft {
+  display: flex;
+  justify-content: flex-start;
+}
+body [class*="col-"].pullright {
+  display: flex;
+  justify-content: flex-end;
+}
+body [class*="col-"].center {
+  display: flex;
+  justify-content: center;
+}
+body .col-1 {
+  width: 8.33%;
+}
+body .col-1-5 {
+  width: 12.49%;
+}
+body .col-2 {
+  width: 16.66%;
+}
+body .col-3 {
+  width: 25%;
+}
+body .col-4 {
+  width: 33.33%;
+}
+body .col-5 {
+  width: 41.66%;
+}
+body .col-6 {
+  width: 50%;
+}
+body .col-7 {
+  width: 58.33%;
+}
+body .col-8 {
+  width: 66.66%;
+}
+body .col-9 {
+  width: 75%;
+}
+body .col-10 {
+  width: 83.33%;
+}
+body .col-11 {
+  width: 91.66%;
+}
+body .col-12 {
+  width: 100%;
+}
+body .hrLine {
+  width: 100%;
+  height: 1px;
+  color: #ccc;
+  float: left;
+  border-bottom: 1px solid #ccc;
+}
+body .smallspacer {
+  height: 8px;
+}
+body .spacer {
+  height: 12px;
+}
+body .roundbutton {
+  padding: 5px 10px 5px 10px;
+  border-radius: 10px;
+  color: white;
+}
+body .roundbutton.success {
+  border: 1px solid #5cb85c;
+  background-color: #5cb85c;
+}
+body .roundbutton.error {
+  border: 1px solid #c43c35;
+  background-color: #c43c35;
+}
+body .roundbutton.primary {
+  border: 1px solid #3276b1;
+  background-color: #3276b1;
+}
+body .roundbutton.danger {
+  border: 1px solid #d2322d;
+  background-color: #d2322d;
+}
+body .roundbutton.warning {
+  border: 1px solid #ed9c28;
+  background-color: #ed9c28;
+}
+body .roundbutton.cadet {
+  border: 1px solid cadetblue;
+  background-color: cadetblue;
+}
+body canvas {
+  background: rgba(255, 255, 0, 0.5);
+  cursor: url('../img/pentip.png'), auto;
+}
+body .menuitem {
+  display: flex;
+  background-color: teal;
+  width: 13%;
+  margin: 8px;
+  padding: 0.6em 0.2em 0.6em 0.5em;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+body .menuitem > a {
+  color: white;
+  text-decoration: none;
+}
+body .menuitem > a:visited {
+  color: orange;
+}
+body .menuitem.icon {
+  width: 3%;
+  display: flex;
+  justify-content: center;
+}
+body .menuitem.steelblue {
+  background-color: steelblue;
+}
+body .menuitem.black {
+  background-color: black;
+}
+body #content {
+  min-height: 600px;
+}
+body #sidetabcontent {
+  width: 80%;
+}
+body .multiselect {
+  display: block;
+  cursor: pointer;
+  position: absolute;
+}
+body .multiselect-container {
+  display: none;
+  /* default not expand */
+}
+body .multiselect-container > div {
+  overflow: hidden;
+  display: flex;
+  border: 1px solid gray;
+  background: white;
+  padding-right: 10px;
+}
+body .multiselect-container > label {
+  display: flex;
+  cursor: pointer;
+  border: 1px solid gray;
+  background: white;
+  padding-right: 10px;
+}
+body .googlemap {
+  width: 92%;
+  height: 350px;
+}
+body table {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+body table tbody tr:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+body table th {
+  border: 1px solid #c0c0c0;
+  padding-left: 5px;
+  padding-top: 4px;
+  background-color: #404040;
+  color: #fff;
+}
+body table td {
+  border: 1px solid #c0c0c0;
+  padding-left: 5px;
+  padding-top: 4px;
+}
+body .tabs {
+  padding-left: 0px;
+  margin-bottom: 2px;
+  /* to keep close the div contents */
+}
+body .tabs > li {
+  display: table-cell;
+  padding: 0px 2px 0px 2px;
+  border: 1px solid gray;
+  border-bottom: none;
+}
+body .tabs > li > input {
+  background: white;
+  border: 1px solid #fff;
+  color: black;
+}
+body .tabs > li > input.active {
+  background: lightseagreen;
+  color: #fff;
+  border-bottom: #fff;
+}
+body .sidetabs {
+  padding-left: 0px;
+}
+body .sidetabs > li {
+  display: flex;
+  border: 1px solid gray;
+  border-right: #fff;
+}
+body .sidetabs > li > input {
+  background: white;
+  border: 3px solid #fff;
+  color: black;
+  height: 30px;
+  width: 100%;
+  text-align: right;
+}
+body .sidetabs > li > input.active {
+  background: navy;
+  color: #fff;
+  border-right: #fff;
+  height: 30px;
+}
+body .smalllabel {
+  display: block;
+  font-size: 88%;
+  padding: 2px;
+  font-weight: normal;
+}
+body .smalllabel.bold {
+  font-weight: bold;
+}
+body .grid {
+  display: flex;
+  flex-flow: row wrap;
+  border: 1px solid gray;
+  border-radius: 2px;
+  padding: 4px;
+  margin: 0 auto;
+}
+body .grid .title {
+  display: inline-block;
+  background: #404040;
+  color: white;
+  width: 99%;
+  padding-left: 1%;
+}
+body .grid .labelbig {
+  display: block;
+  font-size: 1.17em;
+  font-weight: bold;
+  padding: 2px;
+}
+body .grid .sub-title {
+  display: inline-block;
+  background: #c0c0c0;
+  color: #404040;
+  padding-left: 1%;
+  width: 99%;
+}
+body .grid > .cell {
+  display: table-cell;
+  float: left;
+  width: 40%;
+  padding: 4px;
+}
+body .grid > .cell > label {
+  display: inline-block;
+  width: 35%;
+}
+body .grid > .cell > .field {
+  display: inline;
+}
+body .grid > .cell > div {
+  display: inline-block;
+}
+body .grid > .gridrow {
+  display: table-cell;
+  float: left;
+  width: 100%;
+  padding: 4px;
+}
+body .grid > .gridrow > label {
+  display: inline-block;
+  width: 14%;
+}
+body .grid.noborder {
+  border: 0px;
+}
+body .grid.noborder > div {
+  padding: 1px;
+}
+body .box {
+  padding: 8px 15px 50px 15px;
+  margin: 0 auto;
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+}
+body .middle {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+body .flex-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+body .apppage {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding-left: 200px;
+  padding-right: 200px;
+}
+body .apppage > .appbutton {
+  font-size: 25px;
+  height: 70px;
+  width: 70px;
+  background: linear-gradient(blue, navy);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 2px 2px 2px #888888;
+  margin: 20px;
+  padding: 50px;
+}
+body .apppage > .appbutton:hover {
+  cursor: pointer;
+  background: navy;
+}
+body .gridinner {
+  margin-top: 14px;
+  margin-left: 5px;
+}
+body input[data-validation=mandatory] {
+  border: 1px solid gray;
+  border-right: 3px solid green;
+}
+body textarea[data-validation=mandatory] {
+  border: 1px solid gray;
+  border-right: 3px solid gray;
+}
+body label[data-validation=mandatory] {
+  border: 1px solid gray;
+  border-right: 3px solid gray;
+}
+body input[type=file] {
+  border: 1px solid gray;
+}
+body div[class=multiselect] {
+  border: 1px solid gray;
+}
+body #terms_language {
+  font-family: arial;
+  color: #000000;
+  font-size: 9pt;
+  border: 1px solid #003366;
+  padding: 4px;
+}
+body .tablepage {
+  display: flex;
+  flex-direction: column;
+  margin: 0px 10px 0px 10px;
+}
+body .tablepage > table {
+  width: 100%;
+}
+body .tablepage > .tablepagerow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+body .badge1 {
+  position: relative;
+  cursor: pointer;
+}
+body .badge1[data-badge]:after {
+  content: attr(data-badge);
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 0.7em;
+  background: orangered;
+  color: white;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  line-height: 18px;
+  border-radius: 50%;
+  box-shadow: 0 0 1px #333;
+}
+body .tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+body .tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+body .tooltip > .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 1s;
+}
+body .tooltip > .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+body #notifications-list {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  list-style: none;
+  font-size: 95%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+body #notifications-list > li > div {
+  display: flex;
+  align-items: center;
+  color: #333;
+  height: 25px;
+}
+body #notifications-list > li > div:hover {
+  cursor: pointer;
+  background: lightblue;
+  font-weight: bold;
+}
+body #notifications-list > li > div > label {
+  margin: 4px;
+}
+body #notifications-list > li > div > input {
+  margin: 4px;
+}
+body #checkboxes {
+  border-radius: 2px;
+  background: lightgray;
+}
+body #checkboxes div {
+  border-bottom: 1px solid white;
+}
+body #checkboxes div:hover {
+  cursor: pointer;
+  background: #3276b1;
+  font-weight: bold;
+}
+body #checkboxes div input {
+  vertical-align: middle;
+  margin: 6px;
+}
+body #checkboxes div label {
+  vertical-align: middle;
+  margin: 6px;
+}
+body #caret {
+  position: relative;
+  margin-left: 40%;
+  background: lightgray;
+  width: 2px;
+  border-bottom: 12px solid lightgray;
+  border-left: 6px solid white;
+  border-right: 6px solid white;
+}
+body .logbook {
+  width: 865px;
+}
+body .logbook > .toptitle > span {
+  display: inline-block;
+  width: 37px;
+  padding-left: -4px;
+}
+body .logbook > .logbookrow {
+  display: flex;
+}
+body .logbook > .logbookrow.top {
+  border-top: 0.1px solid cadetblue;
+}
+body .logbook > .logbookrow.bottom {
+  border-bottom: 1px solid cadetblue;
+  align-items: baseline;
+}
+body .logbook > .logbookrow.middle {
+  width: 100%;
+  height: 1px;
+  color: #ccc;
+  border-bottom: 1px solid #ccc;
+}
+body .logbook > .logbookrow > div {
+  display: inline-block;
+  width: 1px;
+  background-color: cadetblue;
+}
+body .logbook > .logbookrow > div:nth-child(1) {
+  height: 25px;
+}
+body .logbook > .logbookrow > div:nth-child(2) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(3) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(4) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(5) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(6) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(7) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(8) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(9) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(10) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(11) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(12) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(13) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(14) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(15) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(16) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(17) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(18) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(19) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(20) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(21) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(22) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(23) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(24) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(25) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(26) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(27) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(28) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(29) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(30) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(31) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(32) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(33) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(34) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(35) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(36) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(37) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(38) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(39) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(40) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(41) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(42) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(43) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(44) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(45) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(46) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(47) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(48) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(49) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(50) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(51) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(52) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(53) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(54) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(55) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(56) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(57) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(58) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(59) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(60) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(61) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(62) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(63) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(64) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(65) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(66) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(67) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(68) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(69) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(70) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(71) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(72) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(73) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(74) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(75) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(76) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(77) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(78) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(79) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(80) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(81) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(82) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(83) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(84) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(85) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(86) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(87) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(88) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(89) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(90) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(91) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(92) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(93) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(94) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(95) {
+  height: 15px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(96) {
+  height: 9px;
+  margin-left: 8px;
+}
+body .logbook > .logbookrow > div:nth-child(97) {
+  height: 25px;
+  margin-left: 8px;
+}
+body .cell-item {
+  display: flex;
+  flex-direction: row;
+}
+body .connection {
+  display: block;
+  border: 2px solid #b51c29;
+  position: relative;
+  left: 0px;
+}
+body .connection.vert {
+  border: 1px solid #b51c29;
+}

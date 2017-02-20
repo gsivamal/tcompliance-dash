@@ -1,0 +1,383 @@
+
+ <div id="driver-form"> 
+	
+	 <div class="grid">
+
+		<label class="title"> Driver</label>
+		
+		<div class="cell">
+			<label> First Name</label>
+			<input data-dbcolname="firstname" type="text" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> Middle Name</label>
+			<input data-dbcolname="middlename" type="text"/>
+		</div>
+	
+		<div class="cell">
+			<label> Last Name</label>
+			<input data-dbcolname="lastname" type="text" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> DOB </label>
+	        <input data-dbcolname="dob" id="driver-dob" type="text" placeholder="mm/dd/yyyy" data-validation="mandatory"/>	
+		</div>
+	
+		<div class="cell">
+			<label> Gender</label>
+			<select id="gender" data-dbcolname="gender"></select>
+		</div>
+	
+		<label class="sub-title">Address</label>
+	
+		<div class="cell">
+			<label> Address1</label>
+			<input data-dbcolname="address1" type="text" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> Address2</label>
+			<input data-dbcolname="address2" type="text"/>
+		</div>
+	
+		<div class="cell">
+			<label> City</label>
+			<input data-dbcolname="city" type="text" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> Zip</label>
+			<input data-dbcolname="zip" type="text" data-format="uszip" placeholder="     -   " data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> State</label>
+			<select name="state" id="state" data-dbcolname="state" data-validation="mandatory"></select>
+		</div>
+	
+		<div class="cell">
+			<label> Country</label>
+			<select id="country" data-dbcolname="country"></select>
+		</div>
+	
+		<label class="sub-title">Contact Details</label>
+	
+		<!-- salai: type=phone not supported all browsers yet -->
+		<div class="cell">
+			<label>Cell</label>
+			<input data-dbcolname="cell" type="text" data-format="usphone" placeholder="   -   -    " data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label>Home</label>
+			<input data-dbcolname="home" type="text" data-format="usphone" placeholder="   -   -    "/>
+		</div>
+	
+		<div class="cell">
+			<label> Email</label>
+			<input data-dbcolname="email" type="text" data-format="email" placeholder="id@mail.com" data-validation="mandatory"/>
+		</div>
+		
+		<label class="sub-title">License </label>
+		
+		<div class="cell">
+			<label> License #</label>
+			<input data-dbcolname="license" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> Upload License </label>
+			<input data-dbcolname="license_file" type="file" data-validation="mandatory"/>
+		</div>	
+	
+		<div class="cell">
+			<label> Expiration Date</label>
+	        <input data-dbcolname="licenseexpdate" id="licenseexpdate" type="text" placeholder="mm/dd/yyyy" data-validation="mandatory"/>	
+		</div>
+		
+		<div class="cell">
+			<label> Type</label>
+			<select id="licensetype" data-dbcolname="licensetype" data-validation="mandatory"></select>
+		</div>
+		
+		<div class="cell">
+			<label> Issued State</label>
+			<select id="issuedstate" data-dbcolname="issuedstate" data-validation="mandatory"></select>
+		</div>
+		
+		<div class="cell">
+			<div>
+				 <input type="radio" name="category" data-dbcolname="inter-intra-state" data-validation="mandatory" value="INTERSTATE"> Interstate</input>
+				 <input type="radio" name="category" data-dbcolname="inter-intra-state" data-validation="mandatory" value="INTRASTATE"> Intrastate </input>
+				 <input type="radio" name="category" data-dbcolname="inter-intra-state" data-validation="mandatory" value="BOTH"> Both </input>
+			</div>			
+		</div>
+				
+		<div class="cell">
+			<label> Endorsement </label>
+			<input data-dbcolname="endoresement" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> Restrictions </label>
+			<input data-dbcolname="restrictions" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<label class="sub-title">SSN / Medical Certificate</label>
+		
+		<div class="cell">
+			<label> SSN #</label>
+			<input data-dbcolname="ssn" type="text" data-format="usssn" placeholder="123-12-1234" data-validation="mandatory"/>
+		</div>	
+	
+		<div class="cell">
+			<label> Upload SSN Card </label>
+			<input data-dbcolname="ssn_file" type="file" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> Medical Cert Exp Date </label>
+	  		<input data-dbcolname="medcertexpirydate" id="medcertexpirydate" type="text" data-validation="mandatory" placeholder="mm/dd/yyyy" />	
+		</div>	
+	
+		<div class="cell">
+			<label> Upload Medical Cert </label>
+			<input data-dbcolname="medcert_file" type="file"/>
+		</div>
+		
+		<label class="sub-title">Driver Application</label>
+	
+		<div class="cell">
+			<label> Driver Application
+				<i class="fa fa-info-circle tooltip"><span class="tooltiptext">Upload existing application, if any already</span></i>
+			</label>
+			<input data-dbcolname="driverappl_file" type="file"/>
+		</div>
+		
+		<div class="cell">
+			<label> Driver Status</label>
+			<select id="status" data-dbcolname="status"></select>
+		</div>
+	
+		<div class="cell">
+			<label> Date Hired </label>
+	  		<input data-dbcolname="datehired" id="datehired" type="text" placeholder="mm/dd/yyyy" />	
+		</div>
+		
+		<div class="cell">
+			<label> Date Terminated </label>
+	  		<input data-dbcolname="dateterminated" id="dateterminated" type="text" placeholder="mm/dd/yyyy" />	
+		</div>	
+			
+	
+		<div class="gridrow">
+			<label> Notes</label>
+			<textarea data-dbcolname="notes" rows="6" cols="60%" data-validation="mandatory"></textarea>
+		</div>
+
+ 	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-driver"><i class="fa fa-floppy-o">&nbsp;</i>Save Driver</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+
+! function(){
+
+		//format all phone element type
+		formutil.formatfields("#driver-form");	
+		
+		//help page for driver application
+		//help.forelement("#help_appl").text("Upload existing application, if any already");
+		
+	    $("#licenseexpdate").datepick({minDate: new Date()});
+	    $("#driver-dob").datepick({minDate: new Date(Date.parse("Jan 01, 1940"))});
+	    $("#medcertexpirydate").datepick({minDate: new Date()});
+	    $("#datehired").datepick({minDate: new Date(Date.parse("Jan 01, 1950"))});
+	    $("#dateterminated").datepick({minDate: new Date()});
+
+
+}();
+
+
+var initData = function(){
+	
+		
+		//1. populate master data - state
+		$.get('/data/state.json', function(data) {
+			  dropdown().create("#state")
+					.populatedata(data);
+			  dropdown().create("#issuedstate")
+					.populatedata(data);
+		});
+		
+		//2. populate master data - country
+		$.get('/data/country.json', function(data) {
+			  dropdown().create("#country")
+					.populatedata(data);
+		});	
+		
+		//3. license type select	
+		$.get('/data/license-type.json', function(data) {
+			  dropdown().create("#licensetype")
+					.populatedata(data);
+		});	
+		
+		//4. populate reference data - status
+		$.get('/data/driver-status.json', function(data) {
+			 dropdown().create("#status")
+				    .populatedata(data);
+		});	
+		
+		//5.gender
+		$.get('/data/gender.json', function(data) {
+			  dropdown().create("#gender")
+					.populatedata(data);
+		});
+		
+		//6.inter-intra-state
+		$.get('/data/inter-intra-state.json', function(data) {
+			  dropdown().create("#inter-intra-state")
+					.populatedata(data);
+		});
+		
+		// Enable the file size validation and ask File Name and Description, move to plugins file, 
+		//$('#company-logo').change(function(e) {	
+		//		var files = e.target.files;
+		//});	  
+		
+	} //initData	
+
+
+	var editDriver = function() {
+	
+		$.get('api/driver/get', { id : Current.driver.id }, function(driver) {
+			
+				formutil.rebind("#driver-form", driver);
+
+				//var driverform = d3.select("#driver-form");
+					
+				//1. state - rebind				
+				$.get('/data/state.json', function(data) {
+					  dropdown().create("#state")
+							.populatedata(data)
+							.setselected(driver.state);
+					  dropdown().create("#issuedstate")
+							.populatedata(data)
+							.setselected(driver.issuedstate);
+				});
+				
+				//2. populate master data - country
+				$.get('/data/country.json', function(data) {
+					  dropdown().create("#country")
+							.populatedata(data)
+							.setselected(driver.country);
+				});	
+				
+				//3. license type select	
+				$.get('/data/license-type.json', function(data) {
+					  dropdown().create("#licensetype")
+							.populatedata(data)
+							.setselected(driver.licensetype);
+				});	
+				
+				//4. populate reference data - status
+				$.get('/data/driver-status.json', function(data) {
+					 dropdown().create("#status")
+						    .populatedata(data)
+						    .setselected(driver.status);
+				});	
+				
+				//5.gender
+				$.get('/data/gender.json', function(data) {
+					  dropdown().create("#gender")
+							.populatedata(data)
+							.setselected(driver.gender);
+				});
+				
+				//6.inter-intra-state
+				$.get('/data/inter-intra-state.json', function(data) {
+				
+			  		dropdown().create("#inter-intra-state")
+						.populatedata(data)
+						.setselected(driver.intstate);
+				});
+
+		});
+			
+	}
+	
+	// Driver save
+	d3.select('#save-driver').on("click", function() {	
+	
+		var aftersave = workflow.create("#driver-form").aftersave();
+	
+		//1. validation first
+		var validation_error = formutil.validateInputFields("#driver-form");
+		
+        //2. save product
+		if(!validation_error){
+		
+			//disable save button, otherwise they might click 2 times
+			aftersave.disableAll();
+		
+	 		var driverdata = formutil.serializeObject("#driver-form");
+
+       		var formData = formutil.serializeFileObject("#driver-form");
+
+	 		//0 for new Driver creation, otherwise real id value set
+	 		if(Current.driver == null)
+	 			formData.append("driverid", 0);
+	 		else
+				formData.append("driverid", Current.driver.id);
+	 				
+			formData.append("driverdata", JSON.stringify(driverdata));
+	    	
+	    	// send via XHR - look ma, no headers being set!
+	    	$.ajax({
+	            url: '/api/driver/save', //upload scanned docs
+	            type: 'post', 
+	            cache: false,
+	            data: formData,				        	
+	            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+	            contentType: false,	
+	            success: function(data) {
+	               	//console.log('ok');
+	               	
+	               	Current.driver = {};
+	               	Current.driver.id = data.id;
+	               	
+					aftersave.changetext("#cancel","Done"); //changetext enables the el
+					aftersave.setStatusMessage(data);	     
+	            }
+	            //return false; //
+       		 });
+		}
+        
+    }); //save button click
+    
+    $('#cancel').click(function() {
+    
+    	//click cancel or done, reset the driver selection
+    	Current.driver = null;
+    
+    	//goto driver list
+    	loadpage("/pages/driver/driver_list.html");
+        
+	});    	
+	
+
+	
+</script>
+

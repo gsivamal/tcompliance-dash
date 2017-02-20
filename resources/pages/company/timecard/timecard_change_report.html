@@ -1,0 +1,143 @@
+
+ <div id="tcchange-form" class="tablepage">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-exchange">&nbsp;&nbsp;Change Report</i>
+		</label>
+		<div>	
+	  		Year : &nbsp;<select id="yearlist"/>
+		</div>		
+		<ul id="tcchange_table_pager" class="tabs"></ul>
+	</div>
+	
+	<div class="spacer"/>
+
+	<table id="tcchange_table">
+       		<thead><tr>
+       				<th data-colname="driver" 		width="15%">Driver</th>
+	            	<th data-colname="dutydate" 		width="10%">Day</th>
+
+					<th data-colname="prev_starttime"	width="10%">Start Time</th>
+	               	<th data-colname="prev_endtime"		width="10%">End Time</th>
+
+	               	<th data-colname="starttime"	width="5%">Start Time(Changed)</th>
+	               	<th data-colname="endtime"		width="5%">End Time(Changed)</th>
+
+					<th data-colname="change_totalworked"	width="10%">(+/-) in Total Worked</th>    
+
+					<th data-colname="prev_totaldriving"	width="10%"	>Total Hours Driving</th>  
+					<th data-colname="totaldriving"	width="10%">Total Hours Driving(Changed)</th>  
+
+					<th data-colname="updatedby"		width="15%">Updated By</th>  
+	            </tr>
+	       	</thead>
+	        <tbody>
+	        		
+	       </tbody>
+    </table>
+
+	<div class="tablepagerow">
+			<span id="totalRows"></span>
+			<div>
+				<button type="button" id="savepdf-tc"><i class="fa fa-file-pdf-o">&nbsp;&nbsp;</i>PDF Report</button>
+			</div>
+			<div></div>
+	</div>
+										
+</div>
+
+
+<script type="text/javascript">
+	
+
+! function(){
+
+	//1. yearlist
+	var yearlist = d3.select("#yearlist");
+	
+	// let you view last 3 years tc data
+	var years = [ { "year": Current.year }, { "year": Current.year-1 }, { "year": Current.year-2 } ];
+
+	yearlist.selectAll("option")
+    	.data(years)
+    	.enter()
+    	.append("option")
+        	 .text(function(dtm) {
+				return dtm.year; 
+		});
+		
+	yearlist.on("change", function(){
+				getTimecards();
+			});	
+	
+	
+	var getTimecards = function(){
+	
+			var selectedyear = d3.select("#yearlist").node().value;
+			
+			$.getJSON('/api/driver/timecard/getForWholeYear', { year:selectedyear}, function(data) {	
+			
+			
+				if(data.length > 0){
+			
+					var tcdata = [];
+					
+					data.forEach(function(tcentry, index) {
+					
+						console.log("tcentry.prev_starttime"+tcentry.prev_starttime);
+						if(tcentry.prev_starttime != undefined || tcentry.end_starttime != undefined || tcentry.prev_totaldriving != undefined){
+							tcdata.push(tcentry);
+						}
+					});
+						
+					table().createtable("#tcchange_table")
+								.populatedata(tcdata)
+								.done();
+				}
+			});
+		
+		} //getTimecards
+	
+
+		//default summary 
+		getTimecards();
+		
+		
+		//save as pdf
+		$('#savepdf-tc').click(function() {			
+			html2canvas($("#tcchange-form"), {
+						useCORS:true,
+				        onrendered: function(canvas) {				            
+				            var imgData = canvas.toDataURL("image/jpg");
+				            
+							/* Here are the numbers (paper width and height) that I found to work. 
+								It still creates a little overlap part between the pages, but good enough for me.
+								if you can find an official number from jsPDF, use them. */
+								
+							var imgWidth = 200; 
+							var pageHeight = 250;  
+							var imgHeight = canvas.height * imgWidth / canvas.width;
+							var heightLeft = imgHeight;
+							
+							var doc = new jsPDF('p', 'mm', 'a4');
+							var position = 0;
+							
+							doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+							heightLeft -= pageHeight;
+							
+							while (heightLeft >= 0) {
+								position = heightLeft - imgHeight;
+								doc.addPage();
+								doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+								heightLeft -= pageHeight;
+							}
+							doc.save('Change-Report.pdf'); 				
+						}//onrendered
+				});			
+		});
+		
+}();
+
+
+	
+</script>

@@ -1,0 +1,18 @@
+[
+        {
+        	"id" : "New",
+        	"name" : "New"
+        },
+        {
+        	"id" : "OnRoad",
+        	"name" : "OnRoad"
+        },
+        {
+        	"id" : "PostTrip Inspection",
+        	"name" : "PostTrip Inspection"
+        },
+        {
+        	"id" : "Completed",
+        	"name" : "Completed"
+        }        
+]

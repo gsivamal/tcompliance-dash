@@ -1,0 +1,24 @@
+[
+        {
+        	"id" : "ACTV",
+			"name" : "Active"
+        },	
+        {
+        	"id" : "DISC",
+			"name" : "Discontinued"
+        },
+        {
+        	"id" : "RETR",
+			"name" : "Retired"
+        },
+        {
+        	"id" : "DAMG",
+			"name" : "Damaged"
+        },	
+        {
+        	"id" : "OTH",
+			"name" : "Other"
+        }
+]
+
+

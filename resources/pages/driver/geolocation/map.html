@@ -1,0 +1,118 @@
+<html lang="en">
+  <head>
+    <style>
+    #map {
+      height: 500px;
+      width: 1000px;
+    }
+    </style>
+    <title>Vehicle Tracking</title>
+  </head>
+  <body>
+    <h4>Vehicle Location</h4>
+    <div id="map"></div>
+    <script type="text/javascript">
+    
+      var source = new ol.source.Vector({
+        url: '/pages/driver/geolocation/data/8day-M2.5.json',
+        format: new ol.format.GeoJSON()
+      });
+      
+     
+     var flightsSource 
+     var addLater = function(feature, timeout) {
+		  window.setTimeout(function() {
+		    feature.set('start', new Date().getTime());
+		    flightsSource.addFeature(feature);
+		  }, timeout);
+		};
+		      
+      
+     flightsSource = new ol.source.Vector({
+		  wrapX: false,
+		  attributions: 'Flight data by ' +
+		        '<a href="http://openflights.org/data.html">OpenFlights</a>,',
+		  loader: function() {
+		    var url = '/pages/driver/geolocation/data/flights.json';
+		    fetch(url).then(function(response) {
+		      return response.json();
+		    }).then(function(json) {
+		      var flightsData = json.flights;
+		      for (var i = 0; i < flightsData.length; i++) {
+		        var flight = flightsData[i];
+		        var from = flight[0];
+		        var to = flight[1];
+		
+		        // create an arc circle between the two locations
+		        var arcGenerator = new arc.GreatCircle(
+		            {x: from[1], y: from[0]},
+		            {x: to[1], y: to[0]});
+		
+		        var arcLine = arcGenerator.Arc(100, {offset: 10});
+		        if (arcLine.geometries.length === 1) {
+		          var line = new ol.geom.LineString(arcLine.geometries[0].coords);
+		          line.transform(ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
+		
+		          var feature = new ol.Feature({
+		            geometry: line,
+		            finished: false
+		          });
+		          // add the feature with a delay so that the animation
+		          // for all features does not start at the same time
+		          addLater(feature, i * 50);
+		        }
+		      }
+		     // map.on('postcompose', animateFlights);
+		    });
+		  }
+		});
+    
+      var map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        target: 'map',
+    
+        layers: [
+        
+          new ol.layer.Tile({
+            title: 'Global Imagery',
+           	source: new ol.source.OSM()
+          }),
+          
+          new ol.layer.Vector({
+            title: 'Hour of Service',
+            source: source,            
+            style: new ol.style.Style({
+				image: new ol.style.Icon({
+            	anchor: [0.5, 1],
+            	src: '/pages/driver/geolocation/data/truckicon.png'
+          	})
+          })
+            
+            
+          })
+        ],
+        view: new ol.View({
+          projection: 'EPSG:4326',
+          center: [-96.970286, 32.925443],
+          zoom: 12
+        })
+      });
+      
+      var moveFeature = function(event) {
+        var vectorContext = event.vectorContext;
+        var frameState = event.frameState;
+
+		//alert(event);
+		
+		
+        // tell OL3 to continue the postcompose animation
+        map.render();
+      };
+      
+      
+       map.on('postcompose', moveFeature);
+       map.render();
+    
+    </script>
+  </body>
+</html>  

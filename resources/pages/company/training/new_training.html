@@ -1,0 +1,131 @@
+
+<div id="trn-form">
+
+	<div class="grid"> 
+	
+		<label class="title">New Training </label>
+	
+		<div class="cell">
+			<label> Code:</label>
+			<input id="code" data-dbcolname="code" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+		</div>
+	
+		<div class="cell">	
+			<label> Name :</label>
+			<input id="name" data-dbcolname="name" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> Schedule:</label>
+			<select id="schedule" data-dbcolname="schedule" data-validation="mandatory"></select>
+		</div>
+		
+		<div class="cell">
+			<div class="fields">
+				<input type="checkbox" data-dbcolname="ishazmat" name="ishazmat" value="ishazmat"> is HazMat<br>
+				<input type="checkbox" data-dbcolname="isgroup" name="isgroup" value="isgroup"> Group Training<br>
+			</div>
+		</div>
+		
+		<div class="gridrow">	
+			<label> Materials scan copy:</label>
+			<input id= "materials_file" data-dbcolname="materials_file" type="file" multiple/>			
+			<label>one or multiple</label>
+		</div>
+		
+		<div class="cell">
+			<label> Status</label>
+			<select id="status" data-dbcolname="status"></select>
+		</div>
+		
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-trn"><i class="fa fa-floppy-o">&nbsp;</i>Save Training</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+$(function(){    
+    
+	$("#maintdate").datepick({minDate: new Date()});
+	
+	//populate master data - test type
+	d3.json('/data/company/training-schedule.json', function(error,data) {
+		dropdown().create("#schedule")
+				.populatedata(data);
+	});
+	
+	// status
+	d3.json('/data/status.json', function(error,data) {
+		  dropdown().create("#status")
+				.populatedata(data);
+	});
+
+    $('#save-trn').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#trn-form");
+		
+        //2. save maintenance
+		if(!validation_error){
+		
+		    var aftersave = workflow.create("#trn-form").aftersave();
+				aftersave.disableAll();
+		
+			var trn_data = formutil.serializeObject("#trn-form");
+			
+			var formData = new FormData();
+				formData.append("trainingdata", JSON.stringify(trn_data));
+				
+				//set the file
+				var files = d3.select("#materials_file").node().files;
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}			
+				
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/company/training/save',
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+    					
+		            }
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the mvr list
+    	loadtab("/pages/company/training/training_list.html");
+    	
+	});    
+	    
+});
+
+
+
+
+</script>

@@ -1,0 +1,111 @@
+
+<div id="companydoc-form">
+
+	<div class="grid">
+
+		<label class="title">New Document</label>
+	
+		<div class="cell">	
+			<label> Document Name </label>
+			<input id="docname" data-dbcolname="docname" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="gridrow">	
+			<label> Date of Expiration</label>
+			<input id="docexpiration" data-dbcolname="docexpiration" type="text" placeholder="mm/dd/yyyy"/>
+		</div>
+		
+		<div class="gridrow">	
+			<label> Scan copy</label>
+			<input id="compdoc_files" data-dbcolname="compdoc_files" type="file" multiple/>
+			<span>one or multiple</span>
+		</div>	
+		
+		<div class="gridrow">
+			<label> Notes</label>
+			<textarea data-dbcolname="docnotes" rows="6" cols="60%"></textarea>
+		</div>		
+	
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-companydoc"><i class="fa fa-cloud-upload">&nbsp;</i>Upload</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+
+$(function(){    
+    
+	$("#docexpiration").datepick({minDate: new Date()});
+	
+    $('#save-companydoc').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#companydoc-form");
+		
+        //2. save document
+		if(!validation_error){
+		
+			var compdoc_data = formutil.serializeObject("#companydoc-form");
+			
+			//confirm never expires
+			if(compdoc_data.docexpiration == ""){
+				if(!confirm("Are you sure, there is no Date of Expiration for this document?")){
+    					return;
+   				}
+			}
+			
+			var formData = new FormData();
+				formData.append("compdocdata", JSON.stringify(compdoc_data));
+				
+				//set the file
+				var files = d3.select("#compdoc_files").node().files;
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}
+											
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/company/document/save',
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+    					
+    					var aftersave = workflow.create("#companydoc-form").aftersave();
+							aftersave.disableAll();
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+    					
+		            }
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the doc list
+    	loadtab("/pages/company/documents/documents_list.html");
+    	
+	});    
+	    
+});
+
+
+
+
+</script>

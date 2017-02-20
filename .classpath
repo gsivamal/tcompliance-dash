@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/eclipse_45_platform"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-pool2-2.4.2.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/freemarker-2.3.23.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/java-jwt-2.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/javax.servlet-api-3.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/jedis-2.7.3.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/jetty-server-9.3.2.v20150730.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/jetty-servlet-9.3.2.v20150730.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/jetty-util-9.3.6.v20151106.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/jetty-webapp-9.3.2.v20150730.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/jsr305-3.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/shiro-core-1.2.3.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/slf4j-api-1.6.4.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/websocket-api-9.3.2.v20150730.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/websocket-client-9.3.2.v20150730.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/websocket-server-9.3.2.v20150730.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/websocket-servlet-9.3.2.v20150730.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/FDFToolkitForJava/jFdfTk.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/_app-shared"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/javamail/javax.mail-1.5.6.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/javamail/javax.mail-api-1.5.6.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/httpcomponents-client-4.5.2/fluent-hc-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/httpcomponents-client-4.5.2/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/httpcomponents-client-4.5.2/httpclient-win-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/httpcomponents-client-4.5.2/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/httpcomponents-client-4.5.2/httpmime-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/gps/marineapi-0.9.0.jar"/>
+	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/gps/nrjavaserial-3.12.0.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

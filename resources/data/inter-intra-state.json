@@ -1,0 +1,10 @@
+[
+        {
+        	"id" : "interstate",
+			"name" : "Interstate"
+        },	
+        {
+        	"id" : "intrastate",
+			"name" : "Intrastate"
+        }
+]

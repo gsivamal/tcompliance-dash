@@ -1,0 +1,160 @@
+
+<div class="middle"> 
+			
+			<div id="roadside-insp-form">
+
+				<div class="row">
+					<div class="col-12">
+						<h2><b> <span id="title"></span> </b></h2>
+					</div>		
+				</div>
+			
+				<div class="spacer"/>
+				
+				<div class="row">
+					<div class="col-3">
+						<label> Date/Time </label>
+					</div>	
+					<div class="col-6">
+						<input id="roadinspdate" size="10" data-dbcolname="roadinspdate" type="text" data-validation="mandatory" placeholder="mm/dd/yyyy"/>
+						&nbsp;
+						<input id="roadinsptime" size="5"  data-dbcolname="roadinsptime" type="text" data-validation="mandatory" placeholder="hh:mm"/>
+					</div>					
+				</div>
+				
+				<div class="spacer"/>
+
+				<div class="row">
+					<div class="col-3">
+						<label> Place </label>
+					</div>	
+					<div class="col-6">
+						<textarea style="width:100%;" id="place" data-dbcolname="place" rows="2" data-validation="mandatory"></textarea>
+					</div>					
+				</div>
+				
+				<div class="spacer"/>
+
+				<div class="row">
+					<div class="col-3">
+						<label> Notes about the Inspection </label>
+					</div>	
+					<div class="col-6">
+						<textarea style="width:100%;" id="notes" data-dbcolname="notes" rows="8" data-validation="mandatory"></textarea>
+					</div>					
+				</div>
+				
+				<div class="spacer"/>
+				
+				<div class="row">
+					<div class="col-3">
+						<label> Inspecter Report/Doc:</label>
+					</div>	
+					<div class="col-7">
+						<input id= "inspector_file" data-dbcolname="inspector_file" type="file" multiple/>
+					</div>	
+					<div class="col-1">
+						&nbsp;&nbsp;<i class="fa fa-files-o tooltip"><span class="tooltiptext">one or multiple</span></i>
+					</div>	
+				</div>
+				
+				<div class="spacer"/>
+
+				<div class="row addmargin" align="center">
+					<button type="button" id="save-roadinsp"><i class="fa fa-check">&nbsp;</i>Submit</button>
+					<button type="button" id="cancel">Cancel</button>
+				</div>
+				
+				<div class="row" align="center">
+					<div class="col-12">
+						<span id="message"></span>
+					</div>	
+				</div>			
+
+		</div>
+
+
+	</div>
+
+<div class="spacer"/>
+
+
+<script type="text/javascript">
+
+
+! function(){
+
+	var today = new Date();
+	d3.select("#title")
+			.text( "New Road Side Inspection - " + today.formatDate() );
+
+	$("#roadinspdate").datepick({minDate: today});	
+
+    $("#roadinsptime").timepicker({
+                        //'minTime' : new Date(),
+                        'durationTime' : new Date(),
+                        'timeFormat': 'h:i A',
+                        'step': 5
+                    });	 
+	
+	
+
+	formutil.formatfields("#roadside-insp-form"); 
+	    
+	//save entry    
+    $('#save-roadinsp').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#roadside-insp-form");
+		
+        //2. save maintenance
+		if(!validation_error){
+		
+ 			var aftersave = workflow.create("#roadside-insp-form").aftersave();
+				aftersave.disableAll();
+
+			var insp_data = formutil.serializeObject("#roadside-insp-form");
+	
+			//console.log(JSON.stringify(insp_data));
+
+			var formData = new FormData();
+				formData.append("driverid", Current.driver.id);
+				formData.append("inspdata", JSON.stringify(insp_data));
+				
+				//set the file
+				var files = d3.select("#inspector_file").node().files;
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}
+				
+				// send via XHR - look ma, no headers being set!
+				$.ajax({
+				    url: '/api/driver/trip/inspection/roadside/save',
+				    type: 'post', 
+				    cache: false,
+				    data: formData,				        	
+				    processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				    contentType: false,	
+				    success: function(resp) {
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+				    }
+				    //return false; //
+				 });
+		}
+	});
+	
+ 	d3.select("#cancel")
+		.on("click", function() {
+			modal.close();			
+
+			//load tab
+			loadsidetab("/pages/company/inspection/roadsideinsp/all_roadsideinsps.html");
+			
+			settabselection("#roadinsp_btn");	    
+	}); 
+
+}();
+
+
+</script>

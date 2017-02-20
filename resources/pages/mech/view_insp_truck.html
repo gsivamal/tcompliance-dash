@@ -1,0 +1,262 @@
+
+<div>
+			
+		<div id="truck-form" style="background:gainsboro;padding:10px;border-radius: 3px;font-size:95%;">
+			<div class="row">
+				<div class="col-2"><label> Truck/Tractor No.</label> </div>	
+				<div class="col-2"><select id="trucklist" data-dbcolname="equipid"></select></div>	
+				<div class="col-2"></div>
+				<div class="col-2"><label> Created Driver : &nbsp; </label> </div>	
+				<div class="col-2"><span data-dbcolname="driver"/></div>	
+			</div> 
+			<div class="hrLine" style="margin:5px;color:white;border-bottom: 1px solid white;"/> 			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_aircompressor"/> Air Compressor</label> </div>  
+			<div class="col-4"> <label style="color:darkmagenta;"> <input type="checkbox" data-dbcolname="chk_lights"/> Lights</label> </div> 
+			<div class="col-4"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_safetyequip"/> Safety Equipments</label> </div>
+			</div>	
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_airlines"/> Air Lines</label> </div>  
+			<div class="col-4"> <label style="color:darkmagenta;"><input type="checkbox" data-dbcolname="chk_headstop"/> &nbsp;- Head - Stop</label> </div> 
+			<div class="col-4"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_fireentinguisher"/> &nbsp;- Fire Extinguisher</label> </div>
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_battery"/> Battery</label> </div>   
+			<div class="col-4"> <label style="color:darkmagenta;"><input type="checkbox" data-dbcolname="chk_taildash"/>&nbsp;- Tail - Dash</label> </div>   
+			<div class="col-4"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_flagsflaresfuses"/>&nbsp;- Flags-Flares-Fuses</label> </div> 
+			</div>			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_brakeaccessories"/>Brake Accessories</label> </div>   
+			<div class="col-4"> <label style="color:darkmagenta;"><input type="checkbox" data-dbcolname="chk_turnindicators"/>&nbsp;- Turn Indicators</label> </div>   
+			<div class="col-4"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_sparebulbsfuses"/> &nbsp;- Spare Bulbs & Fuses</label> </div> 
+			</div>			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_brakes"/> Brakes</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_mirrors"/> Mirrors</label> </div>   
+			<div class="col-4"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_sparesealbeam"/> &nbsp;- Spare Seal Beam</label> </div> 
+			</div>			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_carburetor"/> Carburetor</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_muffler"/> Muffler</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_springs"/> Springs</label> </div> 
+			</div>			
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_clutch"/> Clutch</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_oilpressure"/> Oil Pressure</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_startter"/> Starter</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_defroster"/> Defroster</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_onboardrecorder"/> On-board Recorder</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_steering"/> Steering</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_driveline"/> Drive Line</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_radiator"/>Radiator</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_tachograph"/>Tachograph</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_engine"/>Engine</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_rearend"/>Rear End</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_tires"/>Tires</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_fifthwheel"/>Fifth Wheel</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_reflectors"/>Reflectors</label> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_transmission"/>Transmission</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_frontaxle"/>Front Axle</label> </div>   
+			<div class="col-4"> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_wheelsandrims"/>Wheels & Rims</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_fueltanks"/>Fuel Tanks</label> </div>   
+			<div class="col-4"> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_windows"/>Windows</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_heater"/>Heater</label> </div>   
+			<div class="col-4"> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_windshieldwipers"/>Windshield Wipers</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_horn"/>Horn</label> </div>   
+			<div class="col-4"> </div>   
+			<div class="col-4"> <label><input type="checkbox" data-dbcolname="chk_other"/>Other</label> </div> 
+			</div>
+			<div class="spacer"/>
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3">
+						<label> The Condition of this vehicle is :</label>
+					</div>
+					<div class="col-7">
+					 	<input type="radio" name="driverstatus" data-dbcolname="driverstatus" value="satisfactory" disabled="true"/> <label style="color:green;font-weight:bold;"> Satisfactory </label>
+					 	<input type="radio" name="driverstatus" data-dbcolname="driverstatus" value="needrepairwork" disabled="true"/> <label style="color:red;font-weight:bold;"> Need Repair Work </label>
+					</div>
+				</div>	
+    		</div>
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3 top">
+						<label> Remarks:</label>
+					</div> 	
+					<div class="col-8">
+						<textarea style="width:100%;" id="remarks" data-dbcolname="remarks" rows="4"></textarea>
+					</div>
+				</div>	 	
+			</div>
+	      	<div id="truck-form-mechanic">
+	      		<div class="spacer"/> 
+				<div class="gridrow">
+					<div class="row">	
+						<div class="col-12" id="truckpreview"></div>
+					</div>
+				</div>
+				<div class="row" style="background:thistle;">
+					<div class="col-12">
+						<label style="font-weight:bold;text-decoration: underline;">Mechanics Certification </label>	
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-3"><label><input type="radio" name="mechstatus" data-dbcolname="mechstatus" value="neworder" checked/>New</label></div>
+					<div class="col-3"><label><input type="radio" name="mechstatus" data-dbcolname="mechstatus" value="corrected"/>Corrected</label></div>
+					<div class="col-6"><label><input type="radio" name="mechstatus" data-dbcolname="mechstatus" value="futurecorrection"/>Need not be Corrected for Safe Operation of the vehicle</label></div>
+				</div>	
+				
+		    	<div class="spacer"/>
+
+				<div class="row">
+					<div class="col-3"><label> Mechanic's Signature :</label></div>	
+					<div class="col-5"><div id="truckmechanicsign"></div></div>
+					<div class="col-1"><label> Date :</label></div>
+					<div class="col-2"><input id="mechsigndate" data-dbcolname="mechsigndate" type="text" size="10"/></div>	
+				</div>	
+			</div>	<!-- truck form mechanic -->
+			
+			<div class="spacer"/> <div class="spacer"/> <div class="hrLine"/>			
+			<div class="row addmargin" align="center">
+				<button type="button" id="update-workorder"><i class="fa fa-save">&nbsp;</i>Update Work Order</button>
+				&nbsp;|&nbsp;
+				<button type="button" id="cancel">Cancel</button>
+			</div>			
+			<div class="row" align="center">
+				<span id="message"></span>
+			</div>
+			
+		</div>	<!-- truck form -->	
+
+</div>
+
+<div class="spacer"/>
+
+
+<script type="text/javascript">
+
+
+var viewinsp = function(equipid){
+
+	//alert("tripid:"+ tripid + ", equipid:"+ equipid);
+
+	//global aftersave :O)
+	var aftersave = workflow.create("#truck-form").aftersave();			
+	
+	var truckmechanicsign = signature1().create("truckmechanicsign", Current.driver.firstname  + " " + Current.driver.lastname);
+	
+	$("#mechsigndate").datepick({minDate: new Date()});
+	
+	//disable driver status
+	d3.selectAll("input[name='truckstatusdriver']").attr("disabled","true");	
+	
+	$.getJSON('api/driver/equip/inspection/get', { id : equipid }, function(truckinspdata) {
+	
+		console.log("In Rebind Truckform:"+ equipid + ", truckinspdata:"+ JSON.stringify(truckinspdata));
+	
+		$.getJSON('api/equip/get', { id : equipid }, function(eq) {
+						var equip = [{ "id": eq.id, "name" : (eq.equipid+" - "+eq.type) }];
+						dropdown().create("#trucklist").populatedata(equip); //1 item populate
+					});	
+		
+		formutil.rebind("#truck-form", truckinspdata);	
+		
+		$.getJSON(truckinspdata.mechsign, function(signdata) {
+			truckmechanicsign.putJsonImageData( signdata );		
+		})
+		.error(function() { console.log("^ friendly error message, as there is no signature json in the draft!, ignore") });
+		
+		//rebind date
+		if(truckinspdata.mechsigndate.length > 0)
+			$("#mechsigndate").datepick('setDate', new Date(truckinspdata.mechsigndate) );	
+		
+	});
+	
+	
+	 d3.select("#update-workorder").on("click", function(){
+	 
+	 	//alert("update-workorder");
+    
+		var truckformdata = {}; //formutil.serializeObject("#truck-form"); 						
+			
+		//validation:1		
+		if(truckmechanicsign.isBlank()){
+			var msg = {"id" : equipid, "message" : "ERROR: Signature is needed to update the work order!" };
+			aftersave.setStatusMessage(msg);
+			return;
+		}
+		//validation:2
+		var mechsigndate = $("#mechsigndate").datepick('getDate')[0];
+		if(mechsigndate == undefined){				
+			var msg = {"id" : equipid, "message" : "ERROR: Signature Date is needed to update the work order!" };
+			aftersave.setStatusMessage(msg);
+			return;
+		}	
+		
+		//update field:1
+		truckformdata.mechsign = truckmechanicsign.getImageData();
+		//update field:2
+		truckformdata.mechsigndate = mechsigndate.formatDate();
+		//update field:3
+		truckformdata.remarks = d3.select("#remarks").property("value");
+		//update field:4
+		truckformdata.mechstatus = d3.selectAll('input[name="mechstatus"]:checked').node().value;
+		
+		//need this to update bg code
+		truckformdata.usedas = "truck";
+		
+		//alert("truckformdata:"+JSON.stringify(truckformdata));
+		
+		//disableAll
+		aftersave.disableAll();
+			
+		var formData = new FormData();
+			formData.append("driverid", Current.driver.id);
+			formData.append("equipid", equipid);
+			formData.append("equipinspdata", JSON.stringify(truckformdata));
+			
+		// send via XHR - look ma, no headers being set!
+    	$.ajax({
+            url: '/api/driver/equip/inspection/update',
+            type: 'post', 
+            cache: false,
+            data: formData,				        	
+            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+            contentType: false,	
+            success: function(resp) {
+				aftersave.changetext("#cancel","Done"); //changetext enables the el
+				aftersave.setStatusMessage(resp);
+            }
+   		 });
+	});		
+	
+ 	d3.select("#cancel")
+		.on("click", function() {    
+  			modal.close();	    
+  			
+  			loadpage("/pages/mech/mech-queue.html");
+	}); 
+
+}
+
+
+</script>

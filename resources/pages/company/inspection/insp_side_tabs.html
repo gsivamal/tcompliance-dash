@@ -1,0 +1,118 @@
+
+	<div class="grid">
+
+			<ul id="inspsidetabs" class="sidetabs">
+				<li><input type="button" id="pretrip_btn" value="Pre-trip Insp" class="active"/></li>
+				<li><input type="button" id="posttrip_btn" value="Post-trip Insp"/></li>
+				<li><input type="button" id="allinsp_btn" value="All Inspections"/></li>
+				<li><input type="button" id="roadinsp_btn" value="Road Side Insp"/></li>
+			</ul>
+		
+			<div id="sidetabcontent" style="border-left:1px solid gray;margin-top:14px;padding:0px 0px 10px 10px;width:88%;"></div>
+			
+		</div>
+	
+	</div>			
+
+<script type="text/javascript">
+
+
+! function(){
+
+		//set the Current company
+		if(Current.company == null){
+			$.getJSON('api/company/get', function(data) {
+				//set the company json
+				Current.company = data;
+			})
+			.error(function() {
+				alert("You donot have Driver File created yet, please create one with this email/login id"); 
+			});
+			
+		}
+
+		//set the Current driver, new way of doing it :)
+		if(Current.driver == null) {
+			$.getJSON("api/user/get",function(data){
+				$.getJSON('/api/driver/get', { email : data.email }, function(driver) {			
+					// get the logged in Driver
+					Current.driver = driver;				
+		
+					//default tab load
+					loadsidetab("/pages/company/inspection/pretrip/new_pretrip_inspection.html");		
+				})
+				.error(function() { alert("Driver profile not found, Please create a Driver record with this login email and continue!"); });
+			});
+		} else {
+			//default tab load
+			loadsidetab("/pages/company/inspection/pretrip/new_pretrip_inspection.html");
+		}
+
+		var inputs = d3.select("#inspsidetabs").selectAll("li").selectAll("input")
+		
+		// sidetab1
+ 		d3.select("#pretrip_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//default tab
+			loadsidetab("/pages/company/inspection/pretrip/new_pretrip_inspection.html");
+		});
+		
+		// sidetab2
+ 		d3.select("#posttrip_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//load tab
+			loadsidetab("/pages/company/inspection/posttrip/new_posttrip_inspection.html");
+		});
+		
+		// sidetab3
+ 		d3.select("#roadinsp_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);					
+			d3.select(this).attr("class", "active");
+			
+			//load tab
+			loadsidetab("/pages/company/inspection/roadsideinsp/all_roadsideinsps.html");
+		});
+		
+		//sidetab4		
+		d3.select("#allinsp_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);					
+			d3.select(this).attr("class", "active");
+			
+			//load tab
+			loadsidetab("/pages/company/inspection/all_insps.html");
+		});		
+		
+}();
+
+
+var settabselection = function(tabid) {
+
+	var inputs = d3.select("#inspsidetabs").selectAll("li").selectAll("input")
+
+	// remove all previous styles
+	inputs.attr("class", null);
+
+	// sidetab
+	d3.select(tabid).attr("class", "active");
+
+}
+	
+	
+</script>
+

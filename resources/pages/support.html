@@ -1,0 +1,139 @@
+
+<div> 
+			<h2><b> <label> Support </label> </b></h2>
+			
+			<div class="hrLine"></div>
+			
+			<div id="phone-support-form">
+
+				<div class="row">
+					<div class="col-12">
+						<h3><i class="fa fa-phone">&nbsp;&nbsp;</i><b> <label> Call us </label> </b></h3>
+					</div>		
+				</div>
+				
+				<div class="row">
+					<div class="col-12">
+						<label> Phone Support : (214)-566-3915 </label>
+					</div>		
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<label> Alternate Phone: (214)-566-2635 </label>
+					</div>		
+				</div>
+			</div>	
+				
+			
+			<div id="email-support-form">
+
+				<div class="row">
+					<div class="col-12">
+						<h3><i class="fa fa-keyboard-o">&nbsp;&nbsp;</i> <b> <label> Write to us </label> </b></h3>
+					</div>		
+				</div>
+			
+				<div class="row">
+					<div class="col-1">
+						<label> Subject </label>
+					</div>	
+					<div class="col-6">
+						<input type="text" id="subject" data-validation="mandatory"></input>
+					</div>					
+				</div>
+				
+				<div class="spacer"/>
+
+				<div class="row">
+					<div class="col-1">
+						<label> Description </label>
+					</div>	
+					<div class="col-9">
+						<textarea style="width:75%;" id="emailmessage" rows="8" data-validation="mandatory"></textarea>
+					</div>					
+				</div>
+				
+				<div class="spacer"/>
+				
+				<div class="row addmargin" align="center">
+					<button type="button" id="submit-ticket"><i class="fa fa-check">&nbsp;</i>Submit Ticket</button>
+				</div>
+				
+				<div class="row" align="center">
+					<div class="col-12">
+						<span id="message"></span>
+					</div>	
+				</div>			
+
+		</div>
+
+
+	</div>
+
+<div class="spacer"/>
+
+
+<script type="text/javascript">
+
+
+! function(){
+
+	//save entry    
+    $('#submit-ticket').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#email-support-form");
+		
+        //2. save maintenance
+		if(!validation_error){
+		
+ 			var aftersave = workflow.create("#email-support-form").aftersave();
+				aftersave.disableAll();
+ 			
+				//aftersave.setStatusMessage({"id":"1", "message":"Please wait..."});
+				
+				var counter = 0;
+				var dot = "";
+				var repeatMe = function(){
+				    clearInterval(interval);
+				    interval = setInterval(repeatMe, 1000);
+				    console.log(counter);
+				    dot = dot + ".";
+				    aftersave.setStatusMessage({"id" : counter, "message" : "Please wait..."+dot });
+				    counter += 1;
+				    if(counter > 5)
+				    	clearInterval(interval);
+				}
+				var interval = setInterval(repeatMe, counter);
+				
+
+			var formData = new FormData();
+				//TODO: need to set the driver id later
+				//if(Current.driver != null)
+				//	formData.append("driverid", Current.driver.id);
+					
+				formData.append("subject", d3.select("#subject").property("value"));
+				formData.append("message", d3.select("#emailmessage").property("value"));
+				
+				// send via XHR - look ma, no headers being set!
+				$.ajax({
+				    url: '/api/application/email/send',
+				    type: 'post', 
+				    cache: false,
+				    data: formData,				        	
+				    processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				    contentType: false,	
+				    success: function(resp) {
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+				    }
+				    //return false; //
+				 });
+		}
+	});
+ 	
+
+}();
+
+
+</script>

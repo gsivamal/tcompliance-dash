@@ -1,0 +1,120 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<b><label> Accident Register for <span id="entityname"></span></label></b>
+		<ul id="pager" class="tabs"></ul>	
+	</div>
+	
+	<table id="acci_table">
+        <thead>
+            <tr>
+            	<th data-colname="acciname">Accident Name</th>
+               	<th data-colname="accidate">Accident Date</th>
+               	<th data-colname="accicity">City</th>
+               	<th data-colname="accistate">State</th>
+               	<th data-colname="accidesc">Description</th>
+				<th data-colname="file(acci_files)">Documents</th>               												                	
+            </tr>
+        </thead>
+    </table>
+
+	<div class="tablepagerow">
+			<span id="totalAccidents"></span>
+			<div>
+				<button type="button" id="new-accident"><i class="fa fa-plus">&nbsp;</i>New Accident</button>
+				<button type="button" id="view-accident"><i class="fa fa-edit">&nbsp;</i>View Accident</button>
+				<button type="button" id="delete-accident"><i class="fa fa-minus">&nbsp;</i>Delete Accident</button>
+			</div>
+			<select id="pagesizer">
+				<option>Page size: 20</option>
+				<option>Page size: 25</option>
+				<option>Page size: 40</option>
+				<option>Page size: 50</option>
+			</select>
+	</div>
+	
+</div>
+
+
+<script type="text/javascript">
+
+var openAccidentList = function(fromscreen) {
+		
+	    var accitable = null
+	    
+	    if(fromscreen === "driver"){
+	    
+	    	d3.select("#entityname")
+					.text(Current.driver.firstname + " "+ Current.driver.lastname);
+	    
+		  	//1. populate accidents
+			$.getJSON('/api/accident/getAll', { driverid : Current.driver.id }, function(data) {
+				// render the table
+				accitable = table().createtable("#acci_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								.setpager("#pager")	
+									.done();
+				d3.select("#totalAccidents").text("Total Accidents :"+data.length)					
+			});
+			
+		} else {
+	
+			d3.select("#entityname")
+					.text(Current.equip.equipid);
+	
+	  		//1. populate accidents
+			$.getJSON('/api/accident/getAll', { equipid : Current.equip.equipid }, function(data) {
+				// render the table
+				accitable = table().createtable("#acci_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								.setpager("#pager")	
+									.done();
+				d3.select("#totalAccidents").text("Total Accidents :"+data.length)					
+			});
+	
+		}	
+		    
+		    //1. Add new accident
+	 		d3.select("#new-accident")
+		    	.on("click", function(){	    	
+		    		$.get('pages/accident/new_accident.html', function(htmlcontent){
+				    	modal.open({content: htmlcontent}, function(){
+				    		openNewAccident(fromscreen);
+				    	});
+					});
+		    });   
+		    
+		    //2. view-accident 
+		    d3.select("#view-accident")
+		    	.on("click", function(){	    	
+		    		$.get('pages/accident/new_accident.html', function(htmlcontent){
+		    			var selectedrow = accitable.getselectedids()[0];
+		    			if(selectedrow != undefined){
+				    		modal.open({content: htmlcontent}, function(){
+				    			viewAccident( selectedrow.acciid );	
+				    		});
+		    			}
+					});
+		    });
+		    
+		    //3.delete accident
+		    d3.select("#delete-accident")
+		    	.on("click", function(){
+		    			var selectedrow = accitable.getselectedids()[0];
+		    			if(selectedrow != undefined){
+				    		$.getJSON('/api/accident/delete', { acciid : selectedrow.acciid }, function(data) {
+								alert(data.message);
+		      					loadtab("/pages/accident/accident_list.html");					
+							});
+		    			}
+		    });
+	    
+	
+	    
+
+}
+	
+</script>

@@ -1,0 +1,304 @@
+
+<div id="drugtest-form"> 
+
+	<div class="grid">
+	
+		<label class="title">New Drug Test</label>
+		
+		<div>
+			<label class="labelbig">Drug/Alcohol Test for <span class="drivername"/> (<span id="licensetype"/>)</label>
+		</div>
+		
+		<label class="sub-title">Lab/Collection Site :</label>
+		
+		<div class="gridrow">
+			<label>Zip code&nbsp;<i class="fa fa-search"></i></label>
+			<input id="zip" type="text"></input>
+		</div>
+		
+		<div class="cell">
+			<label> Collection Site</label>
+			<select id="site" data-dbcolname="site" data-validation="mandatory"></select>
+		</div>
+		
+		<div class="cell">
+			<textarea id="sitedetails" rows="5" cols="40%"/>
+		</div>
+
+		<label class="sub-title">Test Details :</label>
+		
+		<div class="cell">
+				<input type="radio" name="isdot" value="dottest" checked> DOT Test</input>
+				<input type="radio" name="isdot" value="nondottest"> 
+					<label> <strike>Non-DOT Test</strike>
+						<i class="fa fa-info-circle tooltip">
+							<span class="tooltiptext">Upcoming feature, we are working hard to get this implemented ...</span>
+						</i>
+					</label>
+				</input>
+		</div>
+
+		<div class="cell">
+		</div>
+
+		<div class="cell">
+			<label> Test Reason</label>
+			<select id="testreason" data-dbcolname="testreason" data-validation="mandatory"></select>
+		</div>
+		
+		<div class="cell">
+			<input type="checkbox" name="panel5" value="panel5" checked> Panel 5</input>
+			<input type="checkbox" name="alcohol" value="alcohol"> Alcohol Test</input>
+		</div>		
+		
+		<div class="gridrow">
+			<label> Non-DOT Test</label>
+			<select id="paneltesttype" data-dbcolname="paneltesttype"></select>
+		</div>
+		
+		<div class="cell">	
+			<label> Scheduled Date:</label>
+			<div class="field">
+				<input id="scheduledate" data-dbcolname="scheduledate" size="10" type="text" data-validation="mandatory" placeholder="mm/dd/yyyy"/>
+				<input id="scheduletime" data-dbcolname="scheduletime" size="5" type="text" data-validation="mandatory" placeholder="hh:mm" data-format="hhmm"/>
+			</div>
+		</div>
+		
+		<div class="cell">	
+			<label> Hard Exprtn Date:</label>
+			<div class="field">
+				<input id="hardexpirydate" data-dbcolname="hardexpirydate" size="10" type="text" placeholder="mm/dd/yyyy"/>
+				<input id="hardexpirytime" data-dbcolname="hardexpirytime" size="5" type="text" placeholder="hh:mm" data-format="hhmm"/>
+			</div>	
+		</div>
+		
+		<div class="cell">	
+			<label> Expiration Date:</label>
+			<div class="field">
+				<input id="expirydate" data-dbcolname="expirydate" size="10" type="text" data-validation="mandatory" placeholder="mm/dd/yyyy"/>
+				<input id="expirytime" data-dbcolname="expirytime" size="5" type="text" data-validation="mandatory" placeholder="hh:mm" data-format="hhmm"/>
+			</div>
+		</div>		
+			
+		<div class="gridrow">
+			<label> Notes to the Collector(Optional, not guarantee the collector would read)</label>
+			<textarea data-dbcolname="notestocollector" rows="5" cols="50%"></textarea>
+		</div>
+			
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-drugtest">Complete Request</button>
+		<button type="button" id="cancel">Cancel</button>
+		<button type="button" id="sendto-quest">Re-Try Sending to Quest*</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>	
+	
+</div>
+
+<script type="text/javascript">
+	
+	$(function(){    
+	
+	});
+	
+	// possible values are, alcoholtest, drugtest or regulartest
+	var thecaller = null; 
+
+	//TODO: isCDL not used anywhere now..need to think really required..?
+	var opendrugtest = function(calledfrom, scheduledatetime, callback){
+	
+		thecaller = calledfrom;
+
+		//format all phone element type
+		formutil.formatfields("#drugtest-form");	
+	    
+	    d3.selectAll(".drivername").text(Current.driver.firstname + " " + Current.driver.lastname);
+	    
+	    d3.selectAll("#licensetype").text(Current.driver.licensetype);    
+		
+		//calendar
+		$("#scheduledate").datepick({minDate: new Date()});
+		$("#expirydate").datepick({minDate: new Date()});
+		$("#hardexpirydate").datepick({minDate: new Date()});
+	
+		//populate master data - test type
+		d3.json('/data/drugtest/quest/drugtest-reason-type.json', function(error,data) {
+				var testreasonlist = dropdown().create("#testreason")
+										.populatedata(data);
+
+				//is from random pool
+				if( thecaller === "drugtest" || thecaller === "alcoholtest"){
+					testreasonlist
+						.setselected("3|Random");
+				}
+		});
+		
+		//schedule test param
+		if( thecaller === "drugtest" || thecaller === "alcoholtest"){
+		
+			//console.log("scheduledatetime at new-drugtest:"+scheduledatetime);
+		
+			d3.select("#scheduledate")
+					.attr("value", scheduledatetime.split(" ")[0] );	
+			d3.select("#scheduletime")
+					.attr("value", scheduledatetime.split(" ")[1] );	
+		}
+		
+		//check box selection
+		if(thecaller === "alcoholtest"){
+			d3.select('input[name="alcohol"]')
+					.property("checked","true");
+			
+			d3.select('input[name="panel5"]')
+					.property("checked", null); //default is checked
+		}
+		
+		d3.json('/data/drugtest/quest/paneltest-type.json', function(error,data) {
+			dropdown().create("#paneltesttype")
+					.populatedata(data);
+		});		
+		
+		//populate master data - lab
+		d3.json('/data/drugtest/lab-list.json', function(error,data) {
+			dropdown().create("#lab")
+					.populatedata(data);
+		});
+		
+		//populate master data - site
+		$.getJSON('/data/drugtest/quest/collection-site.json', function(data) {
+	
+				//default selection 
+				setselectedsite(data[0]);
+			
+				populatecollectionsite(data);
+				
+				d3.select("#zip").on("keyup", function(){
+					var zipentered = this.value;
+					var filtered = data
+					    			.filter(function(d,i) {
+					    				var zipcode = new String(d.CollectionSiteDetail.Address.Zip);
+										return zipcode.startsWith(zipentered);
+					    			});
+		    	    if(filtered.length > 0){	
+		    	    	populatecollectionsite(filtered);
+		    	    }
+		    	});
+			
+		});
+		
+		
+		//save
+		$('#save-drugtest').click(function() {
+    
+	        //1. validation first
+			var validation_error = formutil.validateInputFields("#drugtest-form");
+			
+	        //2. save product
+			if(!validation_error){
+	
+					var aftersave = workflow.create("#drugtest-form").aftersave();
+						aftersave.disableAll();
+
+					var drugtest_data = formutil.serializeObject("#drugtest-form");
+	
+	    			var formData = new FormData();
+						formData.append("driverid", Current.driver.id);
+						formData.append("drugtestdata", JSON.stringify(drugtest_data));
+													
+						// send via XHR - look ma, no headers being set!
+				    	$.ajax({
+				            url: '/api/driver/drugtest/req/save', //upload scanned docs
+				            type: 'post', 
+				            cache: false,
+				            data: formData,				        	
+				            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				            contentType: false,	
+				            success: function(resp) {
+										aftersave.changetext("#cancel","Done"); //changetext enables the el
+										aftersave.setStatusMessage(resp);
+										
+										//update random pool, if opened from Random drug testing
+										if(!resp.message.startsWith("ERROR-CODE")){
+											if( (thecaller === "drugtest") || (thecaller === "alcoholtest")){								
+												var drugtestid = resp.id;
+												if(callback)
+													callback(drugtestid);
+											}
+										}
+	        					
+				            }
+				            //return false;
+			       		 });
+				}
+    	});
+    	
+    	
+    	$('#cancel').click(function() {    
+	    	//current modal, only one modal can be open at any time
+	    	modal.close();
+	    	
+	    	//reload the mvr list
+	    	if (thecaller === "regulartest")
+	    		loadtab("/pages/driver/drugtest/drugtest_list.html");
+	    	else if(thecaller === "drugtest")
+	    		loadsidetab("/pages/company/randompool/random-pool-drug.html");
+	    	else if(thecaller === "alcoholtest")	
+	    		loadsidetab("/pages/company/randompool/random-pool-alcohol.html");
+		});
+
+	}
+
+		
+	//setselectedsite function
+	var setselectedsite = function(siteselect){
+		var displaytext = "Name: " + siteselect.CollectionSiteDetail.Address.Name +'\r\n'
+						 +"Phone# " + siteselect.CollectionSiteDetail.PrimaryPhoneNumber +'\r\n'
+						 +"Address: " + siteselect.CollectionSiteDetail.Address.Address1 +'\r\n'
+						 +"         " + siteselect.CollectionSiteDetail.Address.County +" " + siteselect.CollectionSiteDetail.Address.State +" " + siteselect.CollectionSiteDetail.Address.Zip + '\r\n'
+						 +"Hours: " + siteselect.CollectionSiteDetail.HoursOfOperation;		
+				//new line char works only in textarea
+				d3.select("#sitedetails")
+						.text(displaytext);		
+	}
+	
+	//populate collection sites
+	var populatecollectionsite = function(jsondata){
+	
+			var _site = d3.select("#site");
+
+				//clear previous entries		
+				_site.selectAll("option").remove();
+	
+				_site.selectAll("option")
+		        	.data(jsondata)
+		        	.enter()
+		        	.append("option")
+		        	 .text(function(dtm) {
+						return dtm.CollectionSiteDetail.Address.Name; 
+			         })
+			         .attr("value", function(dtm) {     		 	
+						return dtm.CollectionSiteDetail.SiteCode; 
+			         }); 	
+			         
+			    //default first lab
+				var siteselect = jsondata[0];
+				setselectedsite(siteselect);
+			         
+				_site.on("change", function(){
+					_site.selectAll("option")
+    					.each(function(d) { 
+		    				if(this.selected === true){
+    							siteselect = d;
+    						}    				
+    					});
+   					setselectedsite(siteselect);
+				});
+	}
+  
+
+
+</script>

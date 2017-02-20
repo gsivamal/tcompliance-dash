@@ -1,0 +1,95 @@
+
+
+<div class="gridinner">
+
+	<div class="tablepage">
+	
+		<table id="companyusers_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="username">User Name</th>
+	               	<th data-colname="roles">Roles</th>
+	               	<th data-colname="status">Status</th>
+	            </tr>
+	        </thead>
+	    </table>
+
+		<div class="tablepagerow">
+			<span id="totalCompanyUsers"></span>
+			<div>
+				<button type="button" id="new-user"><i class="fa fa-plus">&nbsp;</i>New User</button>
+				<button type="button" id="reset-password"><i class="fa fa-edit">&nbsp;</i>Reset Password</button>
+				<button type="button" id="inactivate-user"><i class="fa fa-minus">&nbsp;</i>InActivate User</button>
+			</div>
+			<span></span>
+		</div>		
+
+	</div>
+
+</div>
+	
+	
+
+<script type="text/javascript">
+
+! function(){
+
+		var doctable = null;
+    
+      	//1. populate users
+		$.getJSON('/api/company/user/getAll', function(data) {
+ 
+	  		// render the table
+			doctable = table().createtable("#companyusers_table")
+							.populatedata(data)
+								.done();
+							
+			d3.select("#totalCompanyUsers").text("Total Users:"+data.length);					
+	    
+		});
+		
+		//2. add new
+		d3.select("#new-user")
+	    	.on("click", function(){
+	    		$.get('pages/company/user/new_user.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"80%"});
+	    		});     	
+	    });		
+	    
+	    //3.reset password
+      	d3.select("#reset-password")
+	    	.on("click", function(){
+    			var selectedrow = doctable.getselectedids()[0];
+    			if(selectedrow != undefined){
+					if(!confirm("Are you sure you want to reset the password ?")){
+    					return;
+	   				}
+
+		    		$.getJSON('/api/company/user/resetpassword', { username : selectedrow.username }, function(r){
+				    	alert("Please check the email "+ selectedrow.username +" to activate the password!");
+		    		});     	
+		    	}	
+	    });	    
+	    
+	    //4.In-activate user
+       	d3.select("#inactivate-user")
+	    	.on("click", function(){
+    			var selectedrow = doctable.getselectedids()[0];
+    			if(selectedrow != undefined){
+					if(!confirm("Are you sure you want to InActivate the selected user ?")){
+    					return;
+	   				}
+
+		    		$.getJSON('/api/company/user/inactivate', { username : selectedrow.username }, function(r){
+				    	alert("The username "+ selectedrow.username +" has been Inactivated in the system, this would prevent them accessing the system immediatly!");
+				    	
+				    	//reload the user list
+    					loadtab("/pages/company/user/user_list.html");
+    	
+		    		});     	
+		    	}	
+	    });	    
+
+}();
+
+</script>

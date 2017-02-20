@@ -1,0 +1,107 @@
+
+<div class="tablepage">
+	
+	<div class="tablepagerow">
+		<label> <i class="fa fa-lg fa-list">&nbsp;Driver List </i></label>
+		
+		<div>
+		  	<i class="fa fa-search">&nbsp;</i> <input id="driver_filter" style="text-indent:5px;" type="text"></input>	  	
+		  	&nbsp;
+		  	<select id="filtercolumn">
+				 	<option data-colname="firstname">firstname</option>
+				 	<option data-colname="lasstname">lastname</option>	
+	               	<option data-colname="license">license</option>
+			</select>
+		</div>
+	
+		<ul id="driver_table_pager" class="tabs"></ul>
+	</div>
+	
+	<table id="driver_table">
+        <thead>
+            <tr>
+            	<!-- th data-colname="callback(fa-pencil-square,openchecklist)">Check list th  -->
+               	<th data-colname="append(firstname,lastname)">Driver Name</th>
+               	<th data-colname="licensetype">CDL/Non CDL</th>	
+               	<th data-colname="license">License#</th>
+				<th data-colname="status">Status</th>               												                	
+            </tr>
+        </thead>
+    </table>	
+
+	<div class="tablepagerow">
+		<span id="totalDrivers"></span>
+		<div>
+			<button type="button" id="new-driver"><i class="fa fa-plus">&nbsp;</i>New Driver</button>
+			<button type="button" id="edit-driver"><i class="fa fa-edit">&nbsp;</i>Edit Driver</button>
+			<button type="button" id="delete-driver"><i class="fa fa-minus">&nbsp;</i>Delete</button>
+		</div>
+		<select id="pagesizer">
+			<option>Page size: 5</option>
+			<option>Page size: 10</option>
+			<option>Page size: 15</option>
+			<option>Page size: 20</option>
+		</select>
+	</div>
+
+ </div>
+ 
+<script type="text/javascript">
+
+
+var drivertable = null
+
+! function(){
+
+		//current company pulled on login
+		$.getJSON('api/company/get', function(data) {
+			//set the company json
+			Current.company = data;
+		});
+
+	    
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/driver/getAll', function(data) {
+			
+			// render the table
+			drivertable = table().createtable("#driver_table")
+				.populatedata(data)
+					.setpagesizeselector("#pagesizer")
+					.setpager("#driver_table_pager")
+					.setinputfilter("#driver_filter")
+					.done()
+
+			d3.select("#totalDrivers").text("Total Drivers:"+data.length)	
+		});
+		
+		//1.new driver
+	    d3.select("#new-driver")
+	    	.on("click", function(){
+	    		loadpage("/pages/driver/driver_tabs.html");
+	    });
+	    
+	    //2.edit driver
+	    d3.select("#edit-driver")
+	    	.on("click", function(){
+	    		var selecteddriver = drivertable.getselectedids()[0];
+	    		if(selecteddriver !== undefined){
+	    			var selectedid = selecteddriver.id;
+	    			Current.driver = selecteddriver;
+	      			loadpage("/pages/driver/driver_tabs.html")
+      			}				
+	    });
+	    
+}();
+
+//callback metod called from d3table, onclick on icon
+var openchecklist = function(trdata){
+
+		var rowdata = drivertable.getselectedids()[0];
+	
+		$.get('pages/coming-soon.html', function(htmlcontent){
+	    	modal.open({content: htmlcontent, width:"60%"});
+		});
+	
+}
+	
+</script>

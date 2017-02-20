@@ -1,0 +1,80 @@
+
+<ul id="companytabs" class="tabs">
+	<li><input type="button" id="company_btn" value="myCompany" class="active"/></li>
+	<li><input type="button" id="compdocs_btn" value="Company Documents"/></li>
+	<li><input type="button" id="comptrns_btn" value="Trainings"/></li>
+	<li><input type="button" id="compusers_btn" value="Manage Users"/></li>
+</ul>
+
+<div>
+	<div id="tabcontent"></div>
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		//current company pulled on login
+		$.getJSON('api/company/get', function(data) {
+			//set the company json
+			Current.company = data;
+		});
+
+		var inputs = d3.select("#companytabs").selectAll("li").selectAll("input")
+
+		//the company id maintained in the server side, security reason, smart :)
+		loadtab("/pages/company/company_side_tabs.html");
+		
+ 		// tab1
+ 		d3.select("#company_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//default tab
+ 			loadtab("/pages/company/company_side_tabs.html");
+		});
+		
+		// tab2
+ 		d3.select("#compdocs_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);					
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+	 			loadtab("/pages/company/documents/documents_list.html");
+		});
+		
+		// tab3
+ 		d3.select("#comptrns_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);					
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+	 			loadtab("/pages/company/training/training_list.html");
+		});
+		
+		//tab4
+ 		d3.select("#compusers_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);					
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+	 			loadtab("/pages/company/user/user_list.html");
+		});
+	
+}();
+	
+	
+</script>
+

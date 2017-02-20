@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-us" id="extr-page">
+	<head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+		<meta content="utf-8" http-equiv="encoding"/>		
+		<meta name="description" content="DOT Compliance Application"/>
+		<meta name="author" content="Com.Pliance.com"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+		<title>SmartCompliance - Auo piloting the process</title>
+
+		<link rel="stylesheet" type="text/css" media="screen" href="../fonts/font-awesome.css"/>		
+
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/modal.css"/>
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/nustone-admin.css"/>
+		
+		<link rel="icon" href="../img/favicon.png" type="image/x-icon"/>
+		
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+				
+		<style>
+			 body {
+		        font-family: 'Open Sans', serif;
+		        font-size: 14px;
+		      }
+		</style>
+		
+  	</head>
+	
+	<body style="background-color:#F5F5F5;">
+
+		<br></br>
+		<br></br>
+		
+		<div class="apppage">
+			
+			<h1> Logged out Successfully ! </h1>
+		
+		</div>
+		
+		<br></br>
+			
+		<div class="apppage">	
+			<a style="font-size:150%;" href="http://tcompliance.com"> 
+				<img height="50" width="200" src="../loginassets/img/logo.png" title="Smart Compliance">
+				</img>
+			</a>
+		</div>
+			
+		<!-- Include jQuery. -->
+	   	<script src="../js/jquery.min.2.1.1.js"></script>
+	   	
+		<script src="../js/jquery.cookie.js"></script> <!-- Jquery Cookie -->
+		
+		<script type="text/javascript">
+		
+		! function(){
+		
+			$.get("/logout", function(content) {
+				
+			}).done(function(){
+				console.log("logout success!");
+			});	
+				
+		}();	
+		
+		</script>	
+	
+	</body>
+</html>

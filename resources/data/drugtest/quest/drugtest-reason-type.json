@@ -1,0 +1,26 @@
+[
+        {
+        	"id" : "1|Pre-employment",
+			"name" : "Pre-employment"
+        },	
+        {
+        	"id" : "2|Post Accident",
+			"name" : "Post Accident"
+        },
+        {
+        	"id" : "3|Random",
+			"name" : "Random"
+        },
+        {
+        	"id" : "5|Reasonable Susp/ Cause",
+			"name" : "Reasonable Susp/ Cause"
+        },	
+        {
+        	"id" : "6|Return to Duty",
+			"name" : "Return to Duty"
+        },        
+        {
+        	"id" : "23|Follow-Up Test",
+			"name" : "Follow-Up Test"
+        }
+]

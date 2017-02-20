@@ -1,0 +1,177 @@
+
+ <div id="tc-form" class="tablepage">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-hourglass-end">&nbsp;&nbsp;Equipment Hours</i>
+			<i style="color:gold;" class="fa fa-warning tooltip"><span class="tooltiptext">This is report for information purpose only, since the Equipments are combined in the timecard, hours may be not fully accurate.</span></i>
+		</label>
+		<div>	
+	  		Year : &nbsp;<select id="yearlist"/>&nbsp;&nbsp;&nbsp;&nbsp; |
+	  		<input type="radio" name="reporttype" value="SUMMARY" checked="checked">Summary Report</input>
+			<input type="radio" name="reporttype" value="DETAIL">Detail Report</input>	  		
+		</div>
+		<ul id="tcall_table_pager" class="tabs"></ul>
+	</div>
+	
+	<div class="spacer"/>
+
+	<table id="tcall_table">
+        <thead>
+            <tr>
+            	<th data-colname="equips">Equipment(s)</th>
+             	<th data-colname="month">Month</th>
+            	<th data-colname="totaldriving">Hours Driving</th>
+            </tr>
+        </thead>
+    </table>
+
+	<div class="tablepagerow">
+			<span id="totalRows"></span>
+			<div>
+				<button type="button" id="savepdf-tc"><i class="fa fa-file-pdf-o">&nbsp;&nbsp;</i>PDF Report</button>
+			</div>
+			<div></div>
+	</div>
+										
+</div>
+
+
+<script type="text/javascript">
+	
+
+! function(){
+
+	//1. yearlist
+	var yearlist = d3.select("#yearlist");
+	
+	// let you view last 3 years tc data
+	var years = [ { "year": Current.year }, { "year": Current.year-1 }, { "year": Current.year-2 } ];
+
+	yearlist.selectAll("option")
+    	.data(years)
+    	.enter()
+    	.append("option")
+        	 .text(function(dtm) {
+				return dtm.year; 
+		});
+		
+	yearlist.on("change", function(){
+				getTimecards();
+			});	
+	
+	
+	var getTimecards = function(){
+	
+			var selectedyear = d3.select("#yearlist").node().value;
+			
+			$.getJSON('/api/driver/timecard/getForWholeYear', { year:selectedyear}, function(data) {			
+					
+				var summarydata = [];
+				var entriesByMonth = d3.nest()
+				  .key(function(d) { return d.month; })
+				  .entries(data);	
+					
+					entriesByMonth.forEach(function(e, index) {						
+						var totaldriven = 0;
+						var equips = [];						
+						e.values.forEach(function(e, index){
+							totaldriven = totaldriven + parseFloat(e.totaldriving);
+							equips.push(e.equips.split(","));
+						});						
+						summarydata.push( { "equips" : equips.toString().split(",").unique(), "monthidx" : e.key, "month" : monthsarr[e.key], "totaldriving" : totaldriven } );
+					});
+					
+					table().createtable("#tcall_table")
+								.populatedata(summarydata)
+								.done();
+						
+					//add event listeners for radion buttons
+					d3.selectAll('input[name="reporttype"]')
+						.on("change", function(){
+							
+						var reporttype = d3.select(this).node().value;
+							if(reporttype == "DETAIL"){
+								d3.select("#tcall_table")
+									.selectAll("thead")
+									.selectAll("tr")
+									.selectAll("th")
+									.each(function(){						
+										if(this.dataset.colname == "month"){
+											d3.select(this).remove();
+										}					
+									});								
+								
+							var detailsdata = [];
+							var entriesByEquips = d3.nest()
+							  .key(function(d) { return d.equips; })
+							  .entries(data);		
+									
+								//console.log(JSON.stringify(entriesByEquips));
+								
+								entriesByEquips.forEach(function(e, index) {
+									
+									var totaldriven = 0;
+									e.values.forEach(function(e, index){
+										totaldriven = totaldriven + parseFloat(e.totaldriving);
+									});
+									
+									detailsdata.push( { "equips" : e.key, "totaldriving" : totaldriven } );
+								
+								});	
+								
+							table().createtable("#tcall_table")
+								.populatedata(detailsdata)
+								.done();	
+								
+						} else {						
+							//reload page
+							loadsidetab("/pages/timecard/timecard_equip_report.html");						
+						}			
+					});	
+			});
+		
+		} //getTimecards
+	
+
+		//default summary 
+		getTimecards();
+		
+		
+		//save as pdf
+		$('#savepdf-tc').click(function() {			
+			html2canvas($("#tc-form"), {
+						useCORS:true,
+				        onrendered: function(canvas) {				            
+				            var imgData = canvas.toDataURL("image/jpg");
+				            
+							/* Here are the numbers (paper width and height) that I found to work. 
+								It still creates a little overlap part between the pages, but good enough for me.
+								if you can find an official number from jsPDF, use them. */
+								
+							var imgWidth = 200; 
+							var pageHeight = 250;  
+							var imgHeight = canvas.height * imgWidth / canvas.width;
+							var heightLeft = imgHeight;
+							
+							var doc = new jsPDF('p', 'mm', 'a4');
+							var position = 0;
+							
+							doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+							heightLeft -= pageHeight;
+							
+							while (heightLeft >= 0) {
+								position = heightLeft - imgHeight;
+								doc.addPage();
+								doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+								heightLeft -= pageHeight;
+							}
+							doc.save('Equip-Hours-report.pdf'); 				
+						}//onrendered
+				});			
+		});
+		
+}();
+
+
+	
+</script>

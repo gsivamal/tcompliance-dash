@@ -1,0 +1,14 @@
+[
+        {
+        	"id" : "Annual Inspection",
+			"name" : "Annual Inspection"
+        },	
+        {
+        	"id" : "License Plate Registration",
+			"name" : "License Plate Registration"
+        },
+        {
+        	"id" : "OTHER",
+			"name" : "Other"
+        }
+]

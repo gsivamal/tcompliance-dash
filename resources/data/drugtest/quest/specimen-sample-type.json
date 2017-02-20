@@ -1,0 +1,20 @@
+[
+        {
+        	"id" : "UR",
+			"name" : "Urine Sample"
+        },	
+        {
+        	"id" : "BL",
+			"name" : "Blood Sample"
+        },
+        {
+        	"id" : "SL",
+			"name" : "Saliva Sample"
+        },
+        {
+        	"id" : "HR",
+			"name" : "Hair Sample"
+        }
+]
+
+

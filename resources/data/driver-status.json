@@ -1,0 +1,14 @@
+[
+        {
+        	"id" : "HIRE",
+        	"name" : "Hired"
+        },
+        {
+        	"id" : "RELE",
+        	"name" : "Released"
+        },
+        {
+        	"id" : "RETIRE",
+        	"name" : "Retired"
+        }        
+]

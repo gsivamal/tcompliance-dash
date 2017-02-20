@@ -1,0 +1,502 @@
+
+<div class="hrLine"/>
+
+<div id="dashboard-form" style="padding:20px;background-color:#F8F8F8;">
+		
+	<div class="row">
+		<div class="col-6">
+			<label><b>Time card &nbsp;</b></label>
+			<select id="datefilter"/>
+		</div>		
+	</div>
+
+	<div class="spacer"/>
+	
+	<div class="row">
+		<div id="timecardchart" class="col-6"></div>
+	</div>
+	
+	<div class="spacer"/>
+	
+  <div class="tablepage">
+	
+		<label style="color:olive;padding-bottom:2px;font-size:95%;"> <i class="fa fa-user">&nbsp;</i><b>Driver Documents</b></label>
+		<table id="driver_alert_table" style="font-size:95%;">
+	        <thead>
+	            <tr>
+	            	<th data-colname="callback(license,opendriver)" style="background-color:olive;border:none;border-right:1px solid white;border-top-left-radius: 6px;">License#</th>
+	            	<th data-colname="append(firstname,lastname)" style="background-color:olive;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Driver</th>
+	               	<th data-colname="alertdate(licenseexpdate)" style="background-color:olive;">Driver License Expires</th>	
+	               	<th data-colname="alertdate(medcertexpirydate)" style="background-color:olive;">Medical Certificate Expires</th>
+	               	<th data-colname="none" 	style="background-color:olive;" >Next Annual Review of MVR</th>
+					<th data-colname="none" 	style="background-color:olive;border:none;border-top-right-radius: 4px;">Next Annual Review of Cert of Violations</th>
+	            </tr>
+	        </thead>
+	    </table>	
+	    <div class="spacer"/>
+
+		<label style="color:peru;padding-bottom:2px;font-size:95%;"> <i class="fa fa-user">&nbsp;</i><b>Driver Training</b></label>
+		<table id="training_alert_table" style="font-size:95%;">
+	        <thead  style="border-top-left-radius: 12px;">
+	            <tr>
+	            	<th data-colname="callback(drivername,opendriver)" style="width:30%;background-color:peru;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Driver </th>
+	            	<th data-colname="companytraining.name" style="width:30%;background-color:peru;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Training </th>
+	               	<th data-colname="alertdate(nextduedate)" style="width:30%;background-color:peru;border:none;border-top-right-radius: 4px;">Due date</th>
+	            </tr>
+	        </thead>
+	    </table>
+	    <div class="spacer"/>
+
+	    <label style="color:slategrey;padding-bottom:2px;font-size:95%;"> <i class="fa fa-truck">&nbsp;</i><b>Equipment Documents</b></label>
+		<table id="equip_alert_table" style="font-size:95%;">
+	        <thead>
+	            <tr>
+	            	<th data-colname="callback(equipid,openequip)" style="background-color:slategrey;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Equipment</th>
+	            	<th data-colname="desc" style="background-color:slategrey;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Description</th>
+	               	<th data-colname="alertdate(annualinspectionexpiry)" style="background-color:slategrey;"><label>Annual Inspection Due Date &nbsp; <i class="fa fa-info-circle tooltip"><span class="tooltiptext">Create the Certificate name as 'Annual Inspection'</span></i></label></th>
+	               	<th data-colname="alertdate(licenseplateexpiry)" style="background-color:slategrey;border:none;border-top-right-radius: 4px;"><label>License Plate Registration &nbsp; <i class="fa fa-info-circle tooltip"><span class="tooltiptext">Create the Certificate name as 'License Plate Registration'</span></i> </label></th>
+	            </tr>
+	        </thead>
+	    </table>
+	    <div class="spacer"/>
+	    
+	    <label style="color:goldenrod;padding-bottom:2px;font-size:95%;"> <i class="fa fa-truck">&nbsp;</i><b>Equipment Maintenance</b></label>
+		<table id="maint_alert_table" style="font-size:95%;">
+	        <thead  style="border-top-left-radius: 12px;">
+	            <tr>
+	            	<th data-colname="equipid" style="width:30%;background-color:goldenrod;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Equipment </th>
+	            	<th data-colname="maintname" style="width:30%;background-color:goldenrod;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Maint/Inspection </th>
+	               	<th data-colname="alertdate(nextmaintdate)" style="width:30%;background-color:goldenrod;border:none;border-top-right-radius: 4px;">Due date</th>
+	            </tr>
+	        </thead>
+	    </table>
+	    <div class="spacer"/>
+	    
+	    <label style="color:#7bbbb2;padding-bottom:2px;font-size:95%;"> <i class="fa fa-building">&nbsp;</i><b>Company Documents</b></label>
+		<table id="company_alert_table" style="font-size:95%;">
+	        <thead  style="border-top-left-radius: 12px;">
+	            <tr>
+	            	<th data-colname="docname" style="width:50%;background-color:#7bbbb2;border:none;border-right:1px solid white;border-top-left-radius: 6px;">Name </th>
+	               	<th data-colname="alertdate(docexpiration)" style="width:50%;background-color:#7bbbb2;border:none;border-top-right-radius: 4px;">Due date</th>
+	            </tr>
+	        </thead>
+	    </table>
+	    
+	</div>
+	
+  	<div class="spacer"/>
+  
+  	<div>
+		<i class="fa fa-lg fa-stop tooltip" style="color:gold;"><span class="tooltiptext">Expiring in 15 days</span></i>
+		&nbsp;&nbsp;	    
+		<i class="fa fa-lg fa-stop tooltip" style="color:red;"><span class="tooltiptext">Expiring in 3 days </span></i>
+		&nbsp;&nbsp;
+  		<i class="fa fa-lg fa-stop fa-italic tooltip" style="color:red;"><span class="tooltiptext">Expired Already </span></i>
+  	</div>
+  	
+  	<div align="center">
+		<button type="button" id="savepdf-dashboard"><i class="fa fa-file-pdf-o">&nbsp;&nbsp;</i>PDF Report</button>
+	</div>
+  	
+
+	<div class="spacer"/>
+	<div class="spacer"/>
+	
+</div>
+	
+
+
+<script type="text/javascript">
+
+	var timeline = "thisweek";	
+	
+	! function(){		
+
+		//1.this week
+		var today = new Date();
+		var weekstartday = today.getDay(); //-1 to start from Sat
+		var weekstartdate = new Date().minusDate(weekstartday);  
+		var thisweek = "This week  "+ weekstartdate.getMonthText() + "/" + weekstartdate.getDate() + " - " + today.getMonthText() + "/" + today.getDate();
+		
+		//2.last week
+		var lastweekstart =  weekstartday + 7;		
+		var lastweekenddate = new Date().minusDate(weekstartday);
+		var lastweekstartdate = new Date().minusDate(lastweekstart);
+		var lastweek = "Last week  "+ lastweekstartdate.getMonthText() + "/" + lastweekstartdate.getDate() + " - " + lastweekenddate.getMonthText() + "/" + lastweekenddate.getDate();
+		
+		//3.this month
+		var thismonth = "This month - "+ today.getMonthText() + ", " + today.getFullYear();
+		
+		var datefilterdata = [ { "id" : "thisweek", "name": thisweek},  { "id" : "lastweek", "name": lastweek}, {"id" : "thismonth", "name": thismonth} ];
+	
+		var datefilter =  dropdown().create("#datefilter")
+							.populatedata(datefilterdata);
+				
+		datefilter.onchange(function(){
+			timeline = d3.select("#datefilter").node().value;
+			
+	      	// Set a callback to run when the Google Visualization API is loaded.
+	      	google.charts.setOnLoadCallback(onselect);
+		});	
+		
+		var onselect = function(){
+				
+			$.getJSON('/api/driver/timecard/getForAllDrivers', { year:today.getFullYear(), month:today.getMonthIdx()}, function(tcalldriverdata) {
+			
+			if(tcalldriverdata.length > 0){
+			
+				var timecardarray = [];
+				//Chart tooltip setup
+				timecardarray.push(["Element", "Hours", { role: "style" } ]);
+				
+				tcalldriverdata.forEach(function(drivertimecard, index) {
+				  	var drivername = drivertimecard.driver;
+				  	var tcmonthdata = drivertimecard.timecard;
+				  	
+				  	//console.log("drivertimecard:"+JSON.stringify(drivertimecard));
+				  	
+			  		//console.log("drivername:"+drivername);
+				  
+				  	var grandTotal = 0;
+				  	tcmonthdata.forEach(function(timecardentry) {
+					  	//var timecarddate = timecard.dutydate.substr( 0, timecard.dutydate.indexOf(",") );
+					  	var dutydate = new Date(timecardentry.dutydate);
+					  	var totalworked = parseFloat(timecardentry.totalworked);
+					  	
+					  	//console.log("dutydate:"+ dutydate.formatDate() + "weekstartdate:"+ weekstartdate.formatDate() );
+				  	
+						if( !isNaN(totalworked) ){ //this checks for undefined and "" and "Total Hrs->" entries
+						    if(timeline === "thisweek"){
+						    	if(dutydate >= weekstartdate && dutydate <= today ){
+									    grandTotal = grandTotal + totalworked;
+						    	}
+						    } else if(timeline === "lastweek") {
+						    	if(dutydate >= lastweekstartdate && dutydate <= lastweekenddate ){
+									    grandTotal = grandTotal + totalworked;
+						    	}
+						    } else if(timeline === "thismonth") {
+									 grandTotal = grandTotal + totalworked;
+						    }				    
+						}
+				  });
+				  
+	    		  //Example: ["Joe", 40, "#b87333"]
+				  var chartrow = [drivername, grandTotal, colorarr[index]];
+				  
+				  timecardarray.push(chartrow);
+	
+				});
+				
+			  	showchart(timecardarray);
+		  	
+		  	}
+			
+		});
+		
+		} //onselect
+		
+		var showchart = function(timecardarray) {	
+	
+			var data = google.visualization.arrayToDataTable(timecardarray);
+		       	
+	       	//var data = google.visualization.arrayToDataTable([
+			//						        ["Element", "Hours", { role: "style" } ],
+			//						        ["Joe", 40, "#b87333"],
+			//						        ["Darryl", 55, "silver"],
+			//						        ["Mike", 90, "gold"],
+			//						        ["John", 25, "color: steelblue"]
+			//						      ]);
+									      
+	      	var view = new google.visualization.DataView(data);
+	      	view.setColumns([0, 1,
+	                       { calc: "stringify",
+	                         sourceColumn: 0,
+	                         type: "string",
+	                         role: "annotation" },
+	                       2]);
+	
+			var options = {
+		        chartArea: {width: '90%', height: '90%'},
+		        //width: "400",
+	        	//height: "250",
+		        bar: {groupWidth: "50%"},
+		        legend: { position: "none" }
+	      	};
+			
+			var chart = new google.visualization.ColumnChart(document.getElementById("timecardchart"));
+	      	chart.draw(view, options);
+	      	
+		} //showchart
+		
+		//default display
+		if(google.visualization === undefined){
+				setTimeout(onselect, 1100);
+		}else{
+			onselect();
+		}
+		
+		
+	}();
+	
+	var tasktable = null;
+	
+	var loadtasktable = function(){
+	
+		//load the tasks, code is here, otherwise visible on Right click View Source html
+		$.getJSON('/api/company/tasks', function(tasks) {
+		
+			tasktable = table().createtable("#notifications-list-table")
+							.populatedata(tasks)
+							.done();
+							
+			setAlertBatch("#notifications-badge", tasks.length);					
+		});	
+				
+	}
+	
+	var completetask = function(){
+	
+		var selectedrow = tasktable.getselectedids()[0];
+	    	if(selectedrow != undefined){
+	    	
+	    		//alert(JSON.stringify(selectedrow));
+	    		
+	    		//alert(d3.select(this).node());
+	    		
+	    		tasktable.getselectedrow().node().style.textDecoration = "line-through";
+	    		
+	    	}
+	
+	
+	}
+		
+	var loadtasks = function() {
+	
+		//load the tasks, code is here, otherwise visible on Right click View Source html
+		$.getJSON('/api/company/tasks', function(tasks) {
+		
+			//empty the list first
+			d3.select("#notifications-list")
+				.selectAll("li").remove();
+		
+			var ti = d3.select("#notifications-list")
+				.selectAll("li")
+	        	.data(tasks)
+	        	.enter()
+	        	.append("li")
+	        	.append("div");
+	        	
+	        	ti.append("input")
+	        		.attr("type","checkbox")
+		         	.attr("id", function(dtm) {     		 	
+						return dtm.taskid; 
+			         })
+			         .on("click", function(){
+			         	var chkid = d3.select(this).attr("id");
+			         	var ischecked = d3.select(this).node().checked;
+			         	if(ischecked){
+			         		d3.select(this.parentNode).select("label").style("text-decoration","line-through");
+			         		closetask(chkid,"close");
+			         	} else {
+			         		d3.select(this.parentNode).select("label").style("text-decoration","none");
+			         		closetask(chkid,"open");
+			         	}
+			         });
+			         
+			    ti.append("label")	
+		        	.text(function(dtm) {
+						return dtm.task; 
+			         })
+			         .attr("for", function(dtm) {     		 	
+						return dtm.taskid; 
+			         })
+			         .on("click", function(){			         
+			         	var lbl = d3.select(this);
+			         	var chkid = lbl.attr("for");
+			         	var curstyle = lbl.style("text-decoration");
+			         	if(curstyle == "line-through"){
+			         		lbl.style("text-decoration","none");
+			         		d3.select(chkid).attr("checked", "false");
+			         		closetask(chkid,"open");
+			         	} else {
+			         		lbl.style("text-decoration","line-through");
+							d3.select(chkid).attr("checked", "true");
+							closetask(chkid,"close");
+			         	}
+			         });
+			 	setAlertBatch("#notifications-badge", tasks.length);	
+			});	
+	}
+
+	//loadtasks - default
+	loadtasks();
+	
+	//close the task
+	//TODO: known issue, getting called twice, because events from both checkbox and label, check later
+	function closetask(id, status){
+	
+		console.log("Task id:"+ id + ", status:"+ status);
+		
+		var formData = new FormData();
+			formData.append("taskid", id);
+			formData.append("status", status);
+										
+			// send via XHR - look ma, no headers being set!
+	    	$.ajax({
+	            url: '/api/company/task/update',
+	            type: 'post', 
+	            cache: false,
+	            data: formData,				        	
+	            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+	            contentType: false,	
+	            success: function(resp) {
+					console.log("task updated sucessfully!");
+	            }
+	            //return false; //
+       		 });
+	}
+	
+</script>
+
+
+
+<script type="text/javascript">
+
+! function(){
+
+	   	//1. driver alert
+		$.getJSON('/api/driver/alerts', function(drivers) {
+		
+				//populate table
+				table().createtable("#driver_alert_table")
+								.populatedata(drivers)
+									.done();
+				
+				//set menu batch count					
+				var count = 0;						
+				drivers.forEach(function(driver, index) {
+					if(driver.licenseexpdate.startsWith("*") || driver.medcertexpirydate.startsWith("*")){
+						count++;
+					}
+				});
+
+		 		//2. driver training alert
+				$.getJSON('/api/training/alerts', function(trainings) {		
+						
+											
+						var trainingalerts = [];						
+						trainings.forEach(function(training, index) {
+							if(training.nextduedate != undefined && training.nextduedate.startsWith("*")){
+								count++; //set menu batch count
+								trainingalerts.push(training);
+							}
+						});
+						
+						//populate table
+						table().createtable("#training_alert_table")
+										.populatedata(trainingalerts)
+											.done();
+						
+						setAlertBatch("#drivermenu", count);		
+				});		
+								
+		});
+		
+		
+		
+ 		//3. equipment alert
+		$.getJSON('/api/equipment/alerts', function(equips) {
+				
+				//populate table
+				table().createtable("#equip_alert_table")
+							.populatedata(equips)
+								.done();
+								
+				//set menu batch count
+				var count = 0;						
+				equips.forEach(function(equip, index) {
+					if ( (equip.annualinspectionexpiry != undefined && equip.annualinspectionexpiry.startsWith("*") )
+							|| (equip.licenseplateexpiry != undefined && equip.licenseplateexpiry.startsWith("*")) ){
+						count++;
+					}
+				});	
+				//setAlertBatch("#equipmenu", count);	
+				
+				//4. maintenance alert
+				$.getJSON('/api/maintenance/alerts', function(maints) {
+						
+						//populate table
+						table().createtable("#maint_alert_table")
+									.populatedata(maints)
+										.done();
+										
+						//set menu batch count
+						//var count = 0;						
+						maints.forEach(function(maint, index) {
+							if ( maint.nextmaintdatealert != undefined && maint.nextmaintdatealert.startsWith("*") ){
+								count++;
+							}
+						});	
+						setAlertBatch("#equipmenu", count);			
+				});
+				
+						
+		});
+		
+		
+		//5. company alert
+		$.getJSON('/api/company/alerts', function(comps) {
+		
+				//populate table
+				table().createtable("#company_alert_table")
+								.populatedata(comps)
+									.done();
+									
+				//set menu batch count
+				var count = 0;						
+				comps.forEach(function(comp, index) {
+					if( comp.docexpiration.startsWith("*") ){
+						count++;
+					}
+				});
+				setAlertBatch("#compmenu", count);	
+		
+								
+		});
+	    
+}();
+
+var setAlertBatch = function(id,count){
+		//set menu batch count
+		d3.select(id)
+			.datum(function(){
+				if(count === 0){
+					d3.select(this).attr("data-badge", function(){
+						return null;
+					});
+				} else {
+					this.dataset.badge = count;
+				}
+			});
+}
+
+//callback on equipid column link
+var openequip = function(){
+
+	loadpage('/pages/equip/equip_list.html');
+}
+
+var opendriver = function(){
+
+	loadpage('/pages/driver/driver_list.html');
+}
+
+
+	//save as pdf
+	$('#savepdf-dashboard').click(function() {	
+	
+		exportpdf("#dashboard-form", "Dashboard-Report.pdf");
+			
+	});
+	
+</script>

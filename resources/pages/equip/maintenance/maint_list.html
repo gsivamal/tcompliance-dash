@@ -1,0 +1,140 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<b><label> Maintenance List for Equipment <span id="equipid"></span></label></b>
+		<ul id="pager" class="tabs"></ul>		
+	</div>
+	
+	<table id="equipmaint_table">
+        <thead>
+            <tr>
+               	<th data-colname="mainttype">Type</th>	
+            	<th data-colname="maintname">Name</th>
+               	<th data-colname="append(maintdate,mainthour)">Maint Date</th>
+               	<th data-colname="alertdate(nextmaintdate)">Next Maint Due</th>
+               	<th data-colname="currentodo">ODO Reading</th>
+               	<th data-colname="nextodo">Next ODO Reading</th>
+				<th data-colname="file(maint_files)">Documents</th>               												                	
+            </tr>
+        </thead>
+    </table>
+	
+	<div class="tablepagerow">
+			<span id="totalMaints"></span>
+			<div>
+				<button type="button" id="add-maint"><i class="fa fa-plus">&nbsp;</i>New Maintenance</button>
+				|
+				<button type="button" id="view-maint"><i class="fa fa-file-o">&nbsp;</i>View Maintenance</button>
+				|
+				<button type="button" id="delete-maint"><i class="fa fa-minus">&nbsp;</i>Delete Maintenance</button>
+			</div>	
+			<select id="pagesizer">
+				<option>Page size: 5</option>
+				<option>Page size: 10</option>
+				<option>Page size: 15</option>
+				<option>Page size: 20</option>
+			</select>
+	</div>	
+	
+	<div class="spacer"/>
+	
+	<div class="middle">
+		<button type="button" id="print-status-report"><i class="fa fa-print">&nbsp;&nbsp;</i>Print Repair, Maintenance Record</button>
+		&nbsp;&nbsp;|&nbsp;&nbsp;
+		<button type="button" id="print-statusdue-report"><i class="fa fa-file-text-o">&nbsp;&nbsp;</i>Vehicle Service Due Status Report</button>
+	</div>	
+
+</div>
+
+<script type="text/javascript">
+
+! function(){
+		
+	    var mainttable = null
+	    
+	    if(Current.equip.id != 0){
+	    
+				d3.select("#equipid")
+					.text(Current.equip.equipid);
+					
+		  	//1. populate certs
+			$.getJSON('/api/equip/maintenance/getAll', { equipid : Current.equip.id }, function(data) {
+			
+				// render the table
+				mainttable = table().createtable("#equipmaint_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								.setpager("#pager")											
+									.done();
+									
+				d3.select("#totalMaints").text("Total Documents :"+data.length)
+									
+			});
+	    
+	    }
+	    
+	    //1. Add new
+ 		d3.select("#add-maint")
+	    	.on("click", function(){	    	
+	    		$.get('pages/equip/maintenance/new_maint.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"75%"}, function(){
+			    		newmaint();
+			    	});
+				});
+	    });
+	    
+	   	//2. View
+ 		d3.select("#view-maint")
+	    	.on("click", function(){	    	
+	    		$.get('pages/equip/maintenance/new_maint.html', function(htmlcontent){
+	    			var selectedrow = mainttable.getselectedids()[0];
+	    			if(selectedrow != undefined){
+				    	modal.open({content: htmlcontent, width:"75%"}, function(){
+				    		viewmaint(selectedrow);
+				    	});
+			    	}
+				});
+	    });   
+	    
+     	//3. Delete maint
+      	d3.select("#delete-maint")
+	    	.on("click", function(){
+    			var selectedrow = mainttable.getselectedids()[0];
+    			if(selectedrow != undefined){
+    			
+    				if(confirm("Are you sure want to delete?")){
+    			
+			    		$.getJSON('/api/equip/maintenance/delete', { equipid : Current.equip.id, maintid : selectedrow.maintid }, function(data) {
+							alert(data.message);
+	      					loadtab("/pages/equip/maintenance/maint_list.html");					
+						});
+						
+					}
+    			}
+	    });
+	    
+	    //4. Print Inspection Report
+ 		d3.select("#print-status-report")
+	    	.on("click", function(){	    	
+	    		$.get('pages/equip/maintenance/print-maint-report.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"75%"}, function(){
+			    		openreport(Current.equip.id);
+			    	});
+				});
+	    });  
+	    
+	    
+	    //5. Print Due Report
+ 		d3.select("#print-statusdue-report  ")
+	    	.on("click", function(){	    	
+	    		$.get('pages/equip/maintenance/print-servicedue-report.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"75%"}, function(){
+			    		openduereport(Current.equip.id);
+			    	});
+				});
+	    });  
+	    
+}();
+	
+</script>

@@ -1,0 +1,866 @@
+
+<div id="preinsp-form" style="background:greenyellow;padding:20px;border-radius: 3px;">
+	
+		<!-- header -->
+		<div class="gridrow" style="font-weight:bold;font-size:140%;">
+			<div class="row">
+				<div class="col-6">
+					<label>Pre-trip Inspection Report</label>
+				</div>
+				<div class="col-6 pullright">
+					<span id="companyname" style="font-style:italic;color:blue;"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="gridrow">		
+			<div class="row">
+				<div class="col-2"><label style="font-weight:bold;font-size:100%;"> Inspection Date :</label></div>	
+				<div class="col-2"><input id="inspdate" data-dbcolname="inspdate" type="text" data-validation="mandatory" size="10"/></div>
+				<div class="col-6"></div>	
+				<div class="col-2"><span id="inspstatus" style="font-weight:bold;font-size:180%;"></span></div>	
+			</div>	
+		</div>
+				
+		<div class="spacer"/>			
+		
+		<div id="truck-form" style="background:white;padding:10px;border-radius: 8px;font-size:95%;">
+			<div class="row">
+				<div class="col-2"><label> Truck/Tractor No.</label> </div>	
+				<div class="col-2"><select id="trucklist" data-dbcolname="equipid"></select></div>	
+				<div class="col-2"></div>
+				<div class="col-2"><label> Prev Driver : &nbsp; </label> </div>	
+				<div class="col-2"><span data-dbcolname="driver"/></div>	
+			</div> 
+			<div class="hrLine" style="margin:5px;"/> 			
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_aircompressor"/> Air Compressor</label> </div>  
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_driveline"/> Drive Line</label> </div>   
+			<div class="col-2"> <label style="color:darkmagenta;"> <input type="checkbox" data-dbcolname="chk_lights"/> Lights</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_rearend"/>Rear End</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_startter"/> Starter</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_airlines"/> Air Lines</label> </div>
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_engine"/>Engine</label> </div>   
+			<div class="col-2"> <label style="color:darkmagenta;"><input type="checkbox" data-dbcolname="chk_headstop"/> &nbsp;- Head - Stop</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_reflectors"/>Reflectors</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_steering"/> Steering</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_battery"/> Battery</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_fifthwheel"/>Fifth Wheel</label> </div>   
+			<div class="col-2"> <label style="color:darkmagenta;"><input type="checkbox" data-dbcolname="chk_taildash"/>&nbsp;- Tail - Dash</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_springs"/> Springs</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_tachograph"/>Tachograph</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_brakeaccessories"/>Brake Accessories</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_frontaxle"/>Front Axle</label> </div>   
+			<div class="col-2"> <label style="color:darkmagenta;"><input type="checkbox" data-dbcolname="chk_turnindicators"/>&nbsp;- Turn Indicators</label> </div>   
+			<div class="col-2"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_safetyequip"/> Safety Equipment</label> </div>
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_tires"/>Tires</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_brakes"/> Brakes</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_fueltanks"/>Fuel Tanks</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_muffler"/> Muffler</label> </div>   
+			<div class="col-2"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_fireentinguisher"/> &nbsp;- Fire Extinguisher</label> </div>
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_transmission"/>Transmission</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_carburetor"/> Carburetor</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_heater"/>Heater</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_oilpressure"/> Oil Pressure</label> </div>   
+			<div class="col-2"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_flagsflaresfuses"/>&nbsp;- Flags-Flares-Fuses</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_wheelsandrims"/>Wheels & Rims</label> </div> 
+			</div>	
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_clutch"/> Clutch</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_horn"/>Horn</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_onboardrecorder"/> On-board Recorder</label> </div>   
+			<div class="col-2"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_sparebulbsfuses"/> &nbsp;- Spare Bulbs & Fuses</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_windshieldwipers"/>Windshield Wipers</label> </div>
+			</div>
+
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_defroster"/> Defroster</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_mirrors"/> Mirrors</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_radiator"/>Radiator</label> </div>   
+			<div class="col-2"> <label style="color:darkblue;"><input type="checkbox" data-dbcolname="chk_sparesealbeam"/> &nbsp;- Spare Seal Beam</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_windows"/>Windows</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_other"/>Other</label> </div> 
+			</div>			
+			<div class="spacer"/>
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3">
+						<label> Driver status of this truck :</label>
+					</div>
+					<div class="col-7">
+					 	<input type="radio" name="driverstatus1" data-dbcolname="driverstatus" value="satisfactory"/> <label style="color:green;font-weight:bold;"> Satisfactory </label>
+					 	<input type="radio" name="driverstatus1" data-dbcolname="driverstatus" value="needrepairwork"/> <label style="color:red;font-weight:bold;"> Need Repair Work </label>
+					</div>
+				</div>	
+    		</div>
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3 top">
+						<label> Remarks:</label>
+					</div> 	
+					<div class="col-8">
+						<textarea style="width:100%;" data-dbcolname="remarks" rows="4"></textarea>
+					</div>
+				</div>	 	
+			</div>
+			<div class="hrLine" style="margin:3px 0px; 3px; 0px;"/>
+	      	<div id="truck-form-mechanic">
+				<div class="gridrow">
+				<div class="row">
+					<div class="col-3">
+						<label> Mechanic Status :</label>
+					</div>
+					<div class="col-7">
+						<label><input type="radio" name="mechstatus1" data-dbcolname="mechstatus" value="neworder" checked/>New</label>&nbsp;&nbsp;&nbsp;&nbsp;
+						<label><input type="radio" name="mechstatus1" data-dbcolname="mechstatus" value="corrected"/>Corrected</label>&nbsp;&nbsp;&nbsp;&nbsp;
+						<label><input type="radio" name="mechstatus1" data-dbcolname="mechstatus" value="futurecorrection"/>Need Not Be Corrected, Still safe</label>
+					</div>	
+				</div>	
+				</div>
+				<div class="row" style="margin:3px 0px; 3px; 0px;">
+					<div class="col-3"><label> Mechanic's Signature :</label></div>	
+					<div class="col-5"><div id="truckmechanicsign" style="display:flex;align-items:flex-end;"></div></div>
+					<div class="col-1"><label> Date :</label></div>
+					<div class="col-2"><input class="dbdatefield" data-dbcolname="mechsigndate" type="text" size="10"/></div>	
+				</div>	
+			</div>	<!-- truck form mechanic -->
+		</div>	<!-- truck form -->
+					
+		<div class="spacer"/>			
+	      	
+		<div id="trailer-form" style="background:white;padding:10px;border-radius: 8px;font-size:95%;">
+			<div class="row">
+				<div class="col-2"><label> 1. Select Trailer &nbsp; </label> </div>	
+				<div class="col-3"><select id="trailerlist" data-dbcolname="equipid"></select></div>	
+				<div class="col-1"></div>
+				<div class="col-2"><label> Prev Driver : &nbsp; </label> </div>	
+				<div class="col-2"><span data-dbcolname="driver"/></div>		
+			</div>
+			<div class="hrLine" style="margin:5px;"/> 				
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_brakeconnection"/> Brake Connections</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_couplingkingpin"/> Coupling (King) Pin </label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_landinggear"/> Landing Gear</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_springs"/> Springs</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_wheelsandrims"/> Wheels & Rims</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_trailerbrakes"/> Brakes</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_doors"/> Doors</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_lightsall"/> Lights - All</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_tarpaulin"/> Tarpaulin</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_other"/> Other</label> </div>   
+			</div>			
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_couplingchains"/> Coupling Chains</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_hitch"/> Hitch</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_roof"/> Roof</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_tires"/> Tires</label> </div> 
+			</div>			
+			<div class="spacer"/>
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3">
+						<label> Driver Status of this trailer :</label>
+					</div>
+					<div class="col-7">
+					 	<input type="radio" name="driverstatus2" data-dbcolname="driverstatus" value="satisfactory"/> <label style="color:green;font-weight:bold;"> Satisfactory </label>
+					 	<input type="radio" name="driverstatus2" data-dbcolname="driverstatus" value="needrepairwork"/> <label style="color:red;font-weight:bold;"> Need Repair Work </label>
+					</div>
+				</div>	
+    		</div>			
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3 top">
+						<label> Remarks:</label>
+					</div> 	
+					<div class="col-8">
+						<textarea style="width:100%;" data-dbcolname="remarks" rows="4"></textarea>
+					</div>
+				</div>	 	
+			</div>
+			<div class="hrLine" style="margin:3px 0px; 3px; 0px;"/>
+	      	<div id="trailer-form-mechanic">
+	      		<div class="gridrow">
+				<div class="row">					
+					<div class="col-3">
+						<label> Mechanic Status :</label>
+					</div>
+					<div class="col-7">
+						<label><input type="radio" name="mechstatus2" data-dbcolname="mechstatus" value="neworder" checked/>New</label>&nbsp;&nbsp;&nbsp;&nbsp;
+						<label><input type="radio" name="mechstatus2" data-dbcolname="mechstatus" value="corrected"/>Corrected</label>&nbsp;&nbsp;&nbsp;&nbsp;
+						<label><input type="radio" name="mechstatus2" data-dbcolname="mechstatus" value="futurecorrection"/>Need Not Be Corrected, Still safe</label>
+					</div>
+				</div>
+				</div>		
+				<div class="row" style="margin:3px 0px; 3px; 0px;">
+					<div class="col-3"><label> Mechanic's Signature :</label></div>	
+					<div class="col-5"><div id="trailermechanicsign" style="display:flex;align-items:flex-end;"></div></div>
+					<div class="col-1"><label> Date :</label></div>
+					<div class="col-2"><input class="dbdatefield" data-dbcolname="mechsigndate" type="text" size="10"/></div>	
+				</div>	
+			</div>	<!-- trailer form mechanic -->
+		</div>	<!-- trailer form -->
+				
+		<div class="spacer"/>			
+				
+		<div id="trailer1-form" style="background:white;padding:10px;border-radius: 8px;font-size:95%;">
+			<div class="row">
+				<div class="col-2"><label> 2. Select Trailer &nbsp; </label> </div>	
+				<div class="col-3"><select id="trailer1list" data-dbcolname="equipid"></select></div>	
+				<div class="col-1"></div>
+				<div class="col-2"><label> Prev Driver : &nbsp; </label> </div>	
+				<div class="col-2"><span data-dbcolname="driver"/></div>		
+			</div>
+			<div class="hrLine" style="margin:5px;"/>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_brakeconnection"/> Brake Connections</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_couplingkingpin"/> Coupling (King) Pin </label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_landinggear"/> Landing Gear</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_springs"/> Springs</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_wheelsandrims"/> Wheels & Rims</label> </div> 
+			</div>
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_trailerbrakes"/> Brakes</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_doors"/> Doors</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_lightsall"/> Lights - All</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_tarpaulin"/> Tarpaulin</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_other"/> Other</label> </div>   
+			</div>			
+			<div class="row">
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_couplingchains"/> Coupling Chains</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_hitch"/> Hitch</label> </div>   
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_roof"/> Roof</label> </div> 
+			<div class="col-2"> <label><input type="checkbox" data-dbcolname="chk_tires"/> Tires</label> </div> 
+			</div>				
+			<div class="spacer"/>
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3">
+						<label> Driver status of this trailer :</label>
+					</div>
+					<div class="col-7">
+					 	<input type="radio" name="driverstatus3" data-dbcolname="driverstatus" value="satisfactory"/> <label style="color:green;font-weight:bold;"> Satisfactory </label>
+					 	<input type="radio" name="driverstatus3" data-dbcolname="driverstatus" value="needrepairwork"/> <label style="color:red;font-weight:bold;"> Need Repair Work </label>
+					</div>
+				</div>	
+    		</div>			
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3 top">
+						<label> Remarks:</label>
+					</div> 	
+					<div class="col-8">
+						<textarea style="width:100%;" data-dbcolname="remarks" rows="4"></textarea>
+					</div>
+				</div>	 	
+			</div>
+			<div class="hrLine" style="margin:3px 0px; 3px; 0px;"/>
+	      	<div id="trailer1-form-mechanic">
+				<div class="gridrow">
+				<div class="row">					
+					<div class="col-3">
+						<label> Mechanic Status :</label>
+					</div>
+					<div class="col-7">
+						<label><input type="radio" name="mechstatus3" data-dbcolname="mechstatus" value="neworder" checked/>New</label>&nbsp;&nbsp;&nbsp;&nbsp;
+						<label><input type="radio" name="mechstatus3" data-dbcolname="mechstatus" value="corrected"/>Corrected</label>&nbsp;&nbsp;&nbsp;&nbsp;
+						<label><input type="radio" name="mechstatus3" data-dbcolname="mechstatus" value="futurecorrection"/>Need Not Be Corrected, Still safe</label>
+					</div>
+				</div>
+				</div>	
+				<div class="row" style="margin:3px 0px; 3px; 0px;">
+					<div class="col-3"><label> Mechanic's Signature :</label></div>	
+					<div class="col-5"><div id="trailer1mechanicsign" style="display:flex;align-items:flex-end;"></div></div>
+					<div class="col-1"><label> Date :</label></div>
+					<div class="col-2"><input class="dbdatefield" data-dbcolname="mechsigndate" type="text" size="10"/></div>	
+				</div>	
+			</div>	<!-- trailer1 form mechanic -->
+		</div>	<!-- trailer1 form -->
+			
+		<div class="spacer"/>
+					
+		<div style="padding:10px;border-radius: 8px;font-size:95%;">
+			<div class="gridrow">
+				<div class="row">
+					<div class="col-3"><label> Driver's Signature :</label></div>	
+					<div class="col-5"><div id="driversign" style="display:flex;align-items:flex-end;"></div></div>
+					<div class="col-1"><label> Date :</label></div>
+					<div class="col-2"><input id="driversigndate" data-dbcolname="driversigndate" type="text" data-validation="mandatory" size="10"/></div>
+				</div>	
+			</div>
+		</div>
+			
+		<div class="gridrow">
+			<div class="row">
+				<div class="col-10"><span id="message"></span></div>	
+			</div>
+		</div>
+		<div class="hrLine"/>			
+		<div class="spacer"/>
+		<div class="middle">
+				<button type="button" id="complete-pretrip" class="roundbutton"><i class="fa fa-check">&nbsp;</i>Complete Inspection</button>
+      			&nbsp;&nbsp;		
+				<button type="button" id="discard-pretrip"><i class="fa fa-minus">&nbsp;&nbsp;</i>Discard</button>
+				&nbsp;|&nbsp;
+	      		<button type="button" id="export-pretrip-pdf"><i class="fa fa-file-pdf-o">&nbsp;&nbsp;</i>PDF Export</button>
+		</div>
+		
+</div> 
+ 
+<div class="spacer"/>
+
+<script type="text/javascript">
+
+! function(){   // 1111111
+
+	//global aftersave :O)
+	var aftersave = workflow.create("#preinsp-form").aftersave();
+	
+	$("#inspdate").datepick();
+	//default - today
+	$("#inspdate").datepick('setDate', new Date());
+	$("#driversigndate").datepick({minDate: new Date()});
+
+	//create all the date fields
+	$(".dbdatefield").datepick();
+
+	var truckmechanicsign = signature1().create("truckmechanicsign", "Mechanic");	
+	var trailermechanicsign = signature1().create("trailermechanicsign", "Mechanic");
+	var trailer1mechanicsign = signature1().create("trailer1mechanicsign", "Mechanic");
+	
+	var driversign = signature1().create("driversign", (Current.driver.firstname + " " + Current.driver.lastname) );	
+	
+	//Note: the list gets rebuild later, first populate full 
+	var trucklist = dropdown().create("#trucklist");
+	var trailerlist = dropdown().create("#trailerlist");
+	var trailer1list = dropdown().create("#trailer1list");
+	
+	var trucks = [];
+	var trailers = [];
+	
+	$.getJSON('api/equip/getAll', function(edata) {
+		var equip0 = { "id": "0", "name" : "" };
+			trailers.push(equip0);
+			trailerlist.populatedata(trailers);
+			trailer1list.populatedata(trailers);
+		
+		edata.forEach(function(eq){
+			var equip = { "id": eq.id, "name" : (eq.equipid+" - "+eq.type) };
+			if(eq.type == "TANK" || eq.type == "STRAIGHT" || eq.type == "TRACTOR" ) {  
+				trucks.push(equip);
+				trucklist.populatedata(trucks); //sequential populate, calling many time to make it synchronous kind of, :O)
+			}else{
+				trailers.push(equip);
+				trailerlist.populatedata(trailers);
+				trailer1list.populatedata(trailers);
+			}
+		});	
+	});
+	
+	$.getJSON('api/driver/inspection/pretrip/getdraft', { driverid : Current.driver.id }, function(inspdraftdata) {
+	
+		//insp found, JSON is not empty
+		if( JSON.stringify(inspdraftdata) != JSON.stringify({}) ) {
+		
+			setInspStatus("INCOMPLETE");
+						
+			$("#inspdate").datepick('setDate', new Date(inspdraftdata.inspdate) );
+			$("#driversigndate").datepick('setDate', new Date(inspdraftdata.driversigndate) );					
+			$.getJSON('api/driver/equip/inspection/get', { id : inspdraftdata.truck }, function(eqinspdata) {
+					rebindtruckform(inspdraftdata.truck, eqinspdata);
+			});						
+			if(inspdraftdata.trailer != undefined){
+				$.getJSON('api/driver/equip/inspection/get', { id : inspdraftdata.trailer }, function(eqinspdata) {
+					rebindtrailerform(inspdraftdata.trailer, eqinspdata);
+				});
+			}						
+			if(inspdraftdata.trailer1 != undefined){
+				$.getJSON('api/driver/equip/inspection/get', { id : inspdraftdata.trailer1 }, function(eqinspdata) {
+					rebindtrailer1form(inspdraftdata.trailer1, eqinspdata);
+				});						
+			}
+			//draft could be saved, without signatures
+			$.getJSON( inspdraftdata.driversign, function(signdata) {		
+				driversign.putJsonImageData( signdata );		
+			})
+			.error(function() { console.log("^ friendly error message, as there is no signature json in the draft!, ignore") });
+								
+		} else { //new insp
+		
+			setInspStatus("NEW");
+
+			//load the equip insp from post trip/prev insp
+			d3.select("#trucklist")
+				.on("change", function(){
+					var truckequipid = trucklist.getselected().id; 
+					$.getJSON('api/driver/equip/inspection/get', { id : truckequipid }, function(eqinspdata) {
+						if(JSON.stringify(eqinspdata) != JSON.stringify({})){
+							rebindtruckform(truckequipid, eqinspdata);
+						}
+					});
+			});
+			
+			//load the equip insp from post trip/prev insp
+			d3.select("#trailerlist")
+				.on("change", function(){
+					var trailerequipid = trailerlist.getselected().id;
+					$.getJSON('api/driver/equip/inspection/get', { id : trailerequipid }, function(eqinspdata) {
+						if(JSON.stringify(eqinspdata) != JSON.stringify({})){
+							rebindtrailerform(trailerequipid, eqinspdata);
+						}	
+					});	
+			});
+			
+			//load the equip insp from post trip/prev insp
+			d3.select("#trailer1list")
+				.on("change", function(){
+					var trailer1equipid = trailer1list.getselected().id; 	
+						$.getJSON('api/driver/equip/inspection/get', { id : trailer1equipid }, function(eqinspdata) {
+							if(JSON.stringify(eqinspdata) != JSON.stringify({})){
+								rebindtrailer1form(trailer1equipid, eqinspdata);
+							}
+						});	
+			});
+		}					
+	});
+
+	
+	//truck - rebind
+	var rebindtruckform = function(equipid, truckinspdata){
+	
+		console.log("In Rebind Truckform:"+ equipid + ", truckinspdata:"+ JSON.stringify(truckinspdata));
+	
+		//$.getJSON('api/equip/get', { id : equipid }, function(eq) {
+		//				var equip = [{ "id": eq.id, "name" : (eq.equipid+" - "+eq.type) }];
+		//				dropdown().create("#trucklist").populatedata(equip); //1 item populate
+		//			});	
+		
+		trucklist.setselected(equipid);
+		
+		formutil.rebind("#truck-form", truckinspdata);	
+		
+		$.getJSON(truckinspdata.mechsign, function(signdata) {
+			truckmechanicsign.putJsonImageData( signdata );		
+		})
+		.error(function() { console.log("^ friendly error message, as there is no signature json in the draft!, ignore") });
+
+	}
+	
+	//trailer - rebind
+	var rebindtrailerform = function(equipid, trailerinspdata){	
+		console.log("In Rebind Trailerform:"+ equipid + ", trailerinspdata:"+ JSON.stringify(trailerinspdata));	
+		
+		trailerlist.setselected(equipid);
+
+		//$.getJSON('api/equip/get', { id : equipid }, function(eq) {
+		//	var equip = [{ "id": eq.id, "name" : (eq.equipid + " - " + eq.type) }];
+		//	dropdown().create("#trailerlist").populatedata(equip); //1 item populate
+		//});	
+
+		formutil.rebind("#trailer-form", trailerinspdata);	
+		
+		$.getJSON( trailerinspdata.mechsign, function(signdata) {
+			trailermechanicsign.putJsonImageData( signdata );		
+		})
+		.error(function() { console.log("^ friendly error message, as there is no signature json in the draft!, ignore") });
+		
+	}
+	
+	//trailer1 - rebind
+	var rebindtrailer1form = function(equipid, trailer1inspdata){	
+		console.log("In Rebind Trailer1form:"+ equipid + ", trailer1inspdata:"+ JSON.stringify(trailer1inspdata));	
+		
+		trailer1list.setselected(equipid);
+		
+		//$.getJSON('api/equip/get', { id : equipid }, function(eq) {
+		//		var equip = [{ "id": eq.id, "name" : (eq.equipid + " - " + eq.type) }];
+		//		dropdown().create("#trailer1list").populatedata(equip); //1 item populate
+		//	});	
+
+		formutil.rebind("#trailer1-form", trailer1inspdata);	
+		
+		$.getJSON( trailer1inspdata.mechsign, function(signdata) {
+			trailer1mechanicsign.putJsonImageData( signdata );		
+		})
+		.error(function() { console.log("^ friendly error message, as there is no signature json in the draft!, ignore") });
+		
+	}	
+	
+	
+	var validateform = function(eqformdata, formid, mechanicsign){
+	
+			//var eqformdata = formutil.serializeObject(formid); //just for validation
+			
+			var eq = "Truck/Tractor";
+			if(formid == "#trailer-form")
+			 	eq = "Trailer No.1";
+			 if(formid == "#trailer1-form")
+			 	eq = "Trailer No.2";	
+			
+			console.log("eqformdata["+formid+"]:"+ JSON.stringify(eqformdata));		
+			
+			if(eqformdata.driverstatus == undefined){
+				displayerrormessage("ERROR: The Condition of the vehicle need to be selected for " + eq);
+				return true;	
+			} else if(eqformdata.driverstatus == "needrepairwork"){
+				var eqcheckcount = formutil.checkboxcount(formid);
+				if(eqcheckcount == 0){
+					displayerrormessage("ERROR: Select the appropriate check box, about the problem on " + eq);
+					return true;	
+				}				
+				if(eqformdata.remarks.length == 0){
+					displayerrormessage("ERROR: Remarks required, for better understanding for " + eq);
+					return true;
+				}				
+				if(eqformdata.mechstatus == "futurecorrection") {
+					displayerrormessage("ERROR: Remarks required for Future repairs, please enter details for " + eq);
+					return true;						
+				}
+				
+				if(eqformdata.mechstatus != "neworder") {
+					if(mechanicsign.isBlank() == true){
+						displayerrormessage("ERROR: Mechanic Sign is required on " + eq);
+						return true;
+					}
+					//date
+					if(eqformdata.mechsigndate.length == 0){				
+						displayerrormessage("ERROR: Mechanic Sign Date is required on " + eq);
+						return true;
+					}						
+				}
+			}
+			
+			displayerrormessage(""); //clear the prev messages, otherwise comes in the snapshot
+				
+			return false;			
+	}
+
+    
+    d3.select("#complete-pretrip").on("click", function(){
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#preinsp-form");
+		
+        //2. save
+		if(!validation_error){
+		
+			var selectedtruckid = dropdown().create("#trucklist").getselected().id;
+			var selectedtrailerid = dropdown().create("#trailerlist").getselected().id;
+			var selectedtrailer1id = dropdown().create("#trailer1list").getselected().id;	
+			
+			var truckformdata = formutil.serializeObject("#truck-form"); //just for validation
+			
+			var iserror = validateform(truckformdata, "#truck-form", truckmechanicsign);
+			
+			if(iserror == false) {
+				var trailerformdata = formutil.serializeObject("#trailer-form"); //just for validation
+				if (selectedtrailerid != "0"){
+					iserror = validateform(trailerformdata, "#trailer-form", trailermechanicsign); 
+					if(iserror == true){ //validation error
+						return;
+					}
+				}else{
+					if(trailerformdata.driverstatus != undefined){ //hey select the trailer list
+						displayerrormessage("ERROR: Trailer No.1 selection is empty !");
+						return;
+					}
+				}
+				
+				var trailer1formdata = formutil.serializeObject("#trailer1-form"); //just for validation;
+				if (selectedtrailer1id != "0"){
+					iserror = validateform(trailer1formdata, "#trailer1-form", trailer1mechanicsign); 
+					if(iserror == true){ //validation error
+						return;
+					}
+				}else{
+					if(trailer1formdata.driverstatus != undefined){ //hey select the trailer list
+						displayerrormessage("ERROR: Trailer No.2 selection is empty !");
+						return;
+					}
+				}
+				
+				if (selectedtrailerid != "0" && selectedtrailer1id != "0"){
+					if(selectedtrailerid == selectedtrailer1id){
+						displayerrormessage("ERROR: Trailer 1 and 2 cannot be same!");
+						return;
+					}
+				}	
+				
+				// driver sign - validate
+				if( driversign.isBlank() ){
+					displayerrormessage("ERROR: Driver Sign is required to complete the inspection");
+					return;	
+				}
+				
+				//Drive are you not satisfied check? TODO: a light confirmation check					
+				if(truckformdata.mechstatus != "neworder" && truckformdata.driverstatus == "needrepairwork"){
+					if(!confirm("On Truck/Tractor, the Mechanic status says corrected, but still 'Need Repair Work' selected, Are sure to continue ?"))
+						return;	
+				}
+				if(selectedtrailerid != "0" &&  trailerformdata.mechstatus != "neworder" && trailerformdata.driverstatus == "needrepairwork") {
+					if(!confirm("On Trailer No.1, the Mechanic status says corrected, but still 'Need Repair Work' selected, Are sure to continue ?"))
+						return;	
+				}
+				if(selectedtrailer1id != "0" && trailer1formdata.mechstatus != "neworder" && trailer1formdata.driverstatus == "needrepairwork"){
+					if(!confirm("On Trailer No.2, the Mechanic status says corrected, but still 'Need Repair Work' selected, Are sure to continue ?"))
+						return;	
+				}					
+
+				//Decide need to be DRAFTED?
+				if((truckformdata.driverstatus == "needrepairwork" && truckformdata.mechstatus == "neworder") ||
+					((selectedtrailerid != "0" && trailerformdata.driverstatus == "needrepairwork" && trailerformdata.mechstatus == "neworder") ) ||
+					((selectedtrailer1id != "0" && trailer1formdata.driverstatus == "needrepairwork" && trailer1formdata.mechstatus == "neworder") )){
+
+					
+						//save as draft
+						var inspformdata = {}; //not all fields required, smart move
+							inspformdata.inspdate = ($("#inspdate").datepick('getDate')[0]).formatDate(); 
+							inspformdata.driver = Current.driver.id;
+							inspformdata.driversigndate = ($("#driversigndate").datepick('getDate')[0]).formatDate();
+							inspformdata.driversign = driversign.getImageData();
+							
+						//formdata is here, because of trailer selection is optional
+						var formData = new FormData();		
+				
+						//1. truck
+						truckformdata.equipid = selectedtruckid;  //equipid
+						truckformdata.driver = Current.driver.id; //need this for mech queue, prev driver
+			
+						//truck mechanic sign	
+						if(!truckmechanicsign.isBlank()){
+							truckformdata.mechsign = truckmechanicsign.getImageData();
+						}
+						
+						inspformdata.truck = selectedtruckid; //need this for re-bind
+						formData.append("truckformdata", JSON.stringify(truckformdata));	
+							
+						//2. trailer
+						if(selectedtrailerid != "0") {		
+							trailerformdata.equipid = selectedtrailerid; //equipid
+							trailerformdata.driver = Current.driver.id; //need this for mech queue, prev driver
+								
+							//trailer mechanic sign	
+							if(!trailermechanicsign.isBlank()){
+								trailerformdata.mechsign = trailermechanicsign.getImageData();
+							}
+							
+							inspformdata.trailer = selectedtrailerid; //need this for re-bind
+							formData.append("trailerformdata", JSON.stringify(trailerformdata));
+													
+						} //addtrailer
+				
+						//3. trailer-1
+						if(selectedtrailer1id != "0") {
+							trailer1formdata.equipid = selectedtrailer1id;
+							trailer1formdata.driver = Current.driver.id; //need this for mech queue, prev driver
+							
+							//trailer1 mechanic sign	
+							if(!trailer1mechanicsign.isBlank()){
+								trailer1formdata.mechsign = trailer1mechanicsign.getImageData();
+							}
+							
+							inspformdata.trailer1 = selectedtrailer1id; //need this for re-bind
+							formData.append("trailer1formdata", JSON.stringify(trailer1formdata));	
+												
+						}//addtrailer1
+						
+						formData.append("inspformdata", JSON.stringify(inspformdata));
+						formData.append("driverid", Current.driver.id);
+						
+						//disable to avoid double click
+						aftersave.disableAll();
+						
+						// send via XHR - look ma, no headers being set!
+				    	$.ajax({
+				            url: '/api/driver/inspection/pretrip/savedraft',
+				            type: 'post', 
+				            cache: false,
+				            data: formData,				        	
+				            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				            contentType: false,	
+				            success: function(resp) {
+									aftersave.setStatusMessage(resp);
+									setInspStatus("INCOMPLETE");
+				            },
+						  	error: function(XMLHttpRequest, textStatus, errorThrown) {
+						  			var msg = {"id" : Current.driver.id, "message" : "ERROR: Error while saving pre trip inspection !" };
+						     		aftersave.setStatusMessage(msg);
+						  	}		            
+				            //return false; //
+			       		 });	
+							
+				} else {
+					//hurray! complete it
+					
+					var inspformdata = {}; //not all fields required, smart move
+						inspformdata.inspdate = ($("#inspdate").datepick('getDate')[0]).formatDate(); 
+						inspformdata.driver = Current.driver.id;
+						inspformdata.driversigndate = ($("#driversigndate").datepick('getDate')[0]).formatDate();
+						inspformdata.truck = selectedtruckid; //for equip insp cleanup/mech queue 
+						if(selectedtrailerid != "0") 		
+							inspformdata.trailer = selectedtrailerid;
+						if(selectedtrailer1id != "0")
+							inspformdata.trailer1 = selectedtrailer1id;		
+					
+					//alert("complete:truckformdata1:"+ JSON.stringify(truckformdata));
+					//alert("complete:trailerformdata1:"+ JSON.stringify(trailerformdata));
+					//alert("complete:trailer1formdata1:"+ JSON.stringify(trailer1formdata));
+
+					//disable to avoid double click
+					aftersave.disableAll();
+					
+					//proactive saying, not other go, it should come in the snapshot correct
+					setInspStatus("COMPLETE");
+							
+					html2canvas($("#preinsp-form"), {
+				        onrendered: function(canvas) {    
+				            var imgData = canvas.toDataURL("image/jpg");
+							// Construct a file object
+							var blob = dataURLtoBlob(imgData);
+							var parts = [blob];
+							//Ex: company_1_trip_1_insp_snapshot_file
+							var file = new File(parts, 'pretrip_snapshot_file.jpg');
+							var formData = new FormData();
+								formData.append("driverid", Current.driver.id);
+								formData.append("inspdata", JSON.stringify(inspformdata));
+								formData.append("pretrip_snapshot_file", file, file.name); //look instead of index using name
+
+							// send via XHR - look ma, no headers being set!
+					    	$.ajax({
+					            url: '/api/driver/inspection/pretrip/complete', //upload scanned docs
+					            type: 'post', 
+					            cache: false,
+					            data: formData,				        	
+					            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+					            contentType: false,	
+					            success: function(resp) {
+									aftersave.setStatusMessage(resp);	
+					            	//return false;
+					            },
+							  	error: function(XMLHttpRequest, textStatus, errorThrown) {
+						  			var msg = {"id" : Current.driver.id, "message" : "ERROR: Error while completing post trip inspection !" };
+						     		aftersave.setStatusMessage(msg);
+							  	}	
+				       		 });					
+							
+						}//onrendered
+					});					
+					
+				}	//else-complete				
+				
+			} else { //truck validation failed
+				console.log("Something wrong with the selections, please check!");
+			}
+				
+			       		 		                
+			} //!validation_error
+			
+    });  // complete-pretrip 
+    
+
+	//discard the inspection in the middle     
+	d3.select("#discard-pretrip").on("click", function(){	
+	
+        //2. save
+		if(confirm("Are you sure you want to discard ?") == true){		
+		
+			//disable to avoid double click
+			aftersave.disableAll();
+			
+			var truckequipid = trucklist.getselected().id; 
+			var trailerequipid = trailerlist.getselected().id;
+			var trailer1equipid = trailer1list.getselected().id; 	
+	
+			//formdata
+			var formData = new FormData();	
+			
+			formData.append("driverid", Current.driver.id);		
+	
+			//1. truck
+			formData.append("truckequipid", truckequipid); //equipid	
+			//2. trailer
+			formData.append("trailerequipid", trailerequipid);
+			//3. trailer-1
+			formData.append("trailer1equipid", trailer1equipid);
+			
+			// send via XHR - look ma, no headers being set!
+	    	$.ajax({
+	            url: '/api/driver/inspection/pretrip/discard',
+	            type: 'post', 
+	            cache: false,
+	            data: formData,				        	
+	            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+	            contentType: false,	
+	            success: function(resp) {
+						aftersave.setStatusMessage(resp);
+	            },
+			  	error: function(XMLHttpRequest, textStatus, errorThrown) {
+			  			var msg = {"id" : Current.driver.id, "message" : "ERROR: Error while discarding the inspection !" };
+			     		aftersave.setStatusMessage(msg);
+			  	}		            
+	            //return false; //
+       		 });		
+									
+		} //confirm
+	});	
+    
+    var setInspStatus = function(status){
+    	
+		if(status == "COMPLETE"){
+			d3.select("#complete-pretrip").style("color","green");
+			d3.select("#inspstatus")
+					.style("color","green")
+					.text("COMPLETED");
+		}else if(status == "INCOMPLETE"){
+			d3.select("#complete-pretrip").style("color","red");
+			d3.select("#inspstatus")
+					.style("color","red")
+					.text("IN-COMPLETE");
+		}else if(status == "NEW"){
+			d3.select("#inspstatus")
+					.style("color","green")
+					.text("NEW");
+			
+		}
+	}
+    
+    var displayerrormessage = function(errormessage){
+		var msg = {"id" : 0, "message" : errormessage };
+	    	aftersave.setStatusMessage(msg);						
+	}
+	
+	//save as pdf
+	d3.select("#export-pretrip-pdf").on("click", function() {	
+	
+		var truck = trucklist.getselected().name;
+		var trailer = trailerlist.getselected().name;
+		var trailer1 = trailer1list.getselected().name; 
+	
+		//set the company name on the pdf :)
+		d3.selectAll("#companyname").text(Current.company.name);
+		
+	  	$( "#trucklist" ).replaceWith( "<b><label style='font-size:110%;' type='text'>"+truck+"</label></b>" );
+	  	$( "#trailerlist" ).replaceWith( "<b><label style='font-size:110%;' type='text'>"+trailer+"</label></b>" );
+	  	$( "#trailer1list" ).replaceWith( "<b><label style='font-size:110%;' type='text'>"+trailer1+"</label></b>" );		
+		
+		exportpdf("#preinsp-form", "PreTrip-Inspection.pdf");
+	
+	});
+	    
+}(); //!()  22222
+
+
+	
+
+</script>

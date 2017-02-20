@@ -1,0 +1,31 @@
+[
+        {
+        	"id" : "p8",
+			"name" : "5 Panel + Expanded Opiates Urine Drug Test"
+        },
+        {
+        	"id" : "p9",
+			"name" : "10 Panel Urine Drug Test"
+        },
+        {
+        	"id" : "p10",
+			"name" : "10 Panel + Alcohol Urine Drug Test"
+        },
+        {
+        	"id" : "p11",
+			"name" : "10 Panel + Expanded Opiates Urine Drug Test"
+        },
+        {
+        	"id" : "p12",
+			"name" : "9 Panel Urine Drug Test"
+        },
+        {
+        	"id" : "p13",
+			"name" : "9 Panel + Expanded Opiates Urine Drug Test"
+        },
+        {
+        	"id" : "p14",
+			"name" : "9 Panel + Expanded Opiates Urine Drug Test"
+        }
+]
+

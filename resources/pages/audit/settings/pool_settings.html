@@ -1,0 +1,95 @@
+
+	<div class="tablepage">
+	
+		<div class="tablepagerow">
+			<label><b> <i class="fa fa-lg fa-list"></i>&nbsp;&nbsp;Pool Settings</b></label>
+		</div>	
+	
+		<div class="tablepagerow">
+			<div class="row">
+				<div class="col-3">			
+					<label>Client </label>
+				</div>
+				<div class="col-3">
+					<select id="clientlist"/>
+				</div>
+			</div>
+		</div>  
+		
+		<div class="spacer"></div>
+
+		<table id="settings_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="name">Name</th>
+	               	<th data-colname="value">Value</th>
+	            </tr>
+	        </thead>
+	    </table>
+
+		<div class="footer">
+			<span id="totalEntries"></span>
+			<span></span>
+		</div>		
+
+</div>
+	
+
+<script type="text/javascript">
+
+! function(){
+
+		//1. populate client list
+		$.getJSON('/api/audit/client/getAll', function(data) {
+			
+			if(data.length > 0){
+			
+				//default first client
+				var selectedclient = data[0].id;
+
+				var clientlist = d3.select("#clientlist");
+				
+					clientlist.selectAll("option")
+								.data(data)
+								.enter()
+								.append("option")
+									.text(function(dtm){
+										return dtm.name;
+									})
+									.attr("value",function(dtm){
+										return dtm.id;
+									});	
+			
+				//default cdl pool
+				populatesettings(selectedclient); 
+			}		
+		});
+
+		var populatesettings = function(companyid){
+    
+	      	//1. populate users
+			$.getJSON('/api/company/settings', {companyid : companyid}, function(data) {
+
+				//settings are single json, need to convert to json array to use in table			
+				var settings = [];
+				for (var p in data) {
+					if( data.hasOwnProperty(p) ) {
+						var entry = { "name":p, "value": data[p]};
+						settings.push(entry);
+			    	}	 
+			  	}     
+	 
+			  	// render the table
+				table().createtable("#settings_table")
+								.populatedata(settings)
+									.done();
+								
+				d3.select("#totalEntries").text("Total Entries:"+settings.length);					
+	    
+			});
+		
+		}
+
+}();
+
+</script>

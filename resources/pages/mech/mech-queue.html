@@ -1,0 +1,122 @@
+
+<div class="tablepage" style="padding-left:30px;">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-tasks">&nbsp;&nbsp;My Work orders</i></label>	
+		<div>
+		  	<input type="radio" name="mechanicstatus" value="neworder" checked="checked">New</input>
+			<input type="radio" name="mechanicstatus" value="corrected">Corrected</input>
+			<input type="radio" name="mechanicstatus" value="futurecorrection">Future correction, Safe for now</input>
+		</div>	
+		<ul id="mech_table_pager" class="tabs"></ul>
+	</div>
+
+	<table id="mech_table">
+        <thead>
+            <tr>
+               	<th data-colname="equipid">Equipment</th>
+               	<th data-colname="type">Type</th>	
+            	<th data-colname="pmake">Make</th>
+				<th data-colname="odometer">Current ODO</th>
+            	<th data-colname="drivername">Driver</th>
+            	<th data-colname="">Insp#</th>
+				<th data-colname="createdate">Create Date</th>               												                	
+               	<th data-colname="file(truckphoto_file)">Photos</th>
+               	<th data-colname="file(trailerphoto_file)">Photos</th>
+               	<th data-colname="file(trailer1photo_file)">Photos</th>
+            </tr>
+        </thead>
+    </table>
+
+	<div class="tablepagerow">	
+		<span id="totalRows"></span>		
+		<div style="display:flex;">
+			<button type="button" id="startwork-btn"><i class="fa fa-wrench">&nbsp;</i>Start Work</button>
+		</div>
+		<select id="pagesizer">
+			<option>Page size: 25</option>
+			<option>Page size: 35</option>
+			<option>Page size: 50</option>
+			<option>Page size: 100</option>
+		</select>										
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		//set the Current driver, the logged in user is driver
+		$.getJSON("api/user/get",function(data){
+			$.getJSON('/api/driver/get', { email : data.email }, function(driver) {			
+				// get the logged in Driver
+				Current.driver = driver;				
+			})
+			.error(function() {
+				alert("You donot have Driver File created yet, please create one with this email/login id"); 
+			});
+		});
+		
+		 d3.selectAll('input[name="mechanicstatus"]')
+			.on("change", function(){
+			var mechanicstatus = d3.select(this).node().value;	    
+		  	populatetable(mechanicstatus);
+	    });
+
+	   	var mechtable = null;	    
+	  	
+	  	var populatetable = function(mechanicstatus){	  	
+			$.getJSON('/api/driver/equip/inspection/getAll', { mechanicstatus: mechanicstatus }, function(data) {			
+				// render the table
+				mechtable = table().createtable("#mech_table")
+					.populatedata(data)
+						.setpagesizeselector("#pagesizer")
+						.setpager("#mech_table_pager")
+						.setinputfilter("#trip_filter")
+						.done();
+				d3.select("#totalRows").text("Total Rows :"+data.length);	
+			});		
+		}
+		
+		//default
+		populatetable("neworder");
+		
+		//2. pre trip insp
+	    d3.select("#startwork-btn")
+	    	.on("click", function(){	    	
+	    		var selectedrow = mechtable.getselectedids()[0];				
+				if(selectedrow != undefined){
+				
+					//alert(selectedrow.id);
+				
+					if(selectedrow.usedas == "truck"){
+						$.get('pages/mech/view_insp_truck.html', function(htmlcontent){
+				    		modal.open({content: htmlcontent, width:"65%"},function(){
+								viewinsp(selectedrow.id);
+							});
+						});
+						
+						//loadpage("pages/mech/view_insp_truck.html", function(){
+						//	viewinsp(selectedrow.id);
+						//});
+						
+					} else if(selectedrow.usedas.startsWith("trailer")){
+						$.get('pages/mech/view_insp_trailer.html', function(htmlcontent){
+				    		modal.open({content: htmlcontent, width:"65%"},function(){
+								viewinsp(selectedrow.id);
+							});
+						});
+					} else if(selectedrow.usedas == "trailer1"){
+						$.get('pages/mech/view_insp_trailer1.html', function(htmlcontent){
+				    		modal.open({content: htmlcontent, width:"65%"},function(){
+								viewinsp(selectedrow.id);
+							});
+						});
+					}
+				}
+	    }); 
+	    
+}();
+	
+</script>

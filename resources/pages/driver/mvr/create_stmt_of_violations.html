@@ -1,0 +1,174 @@
+
+<div id="sov-dialog"> 
+
+	<div class="grid">
+
+		<label class="title">Statement of Violations</label>
+		
+		<h2>ANNUAL DRIVER'S CERTIFICATION OF VIOLATIONS</h2>
+		
+		<p>
+		In accordance with 49 CFR 391.27, I D1 D1 certify that the following is a true 
+		and complete list of traffic violations
+		(other than parking violations) for which I have been 
+		convicted or forfeited bond or collateral during the past 12 months.
+		</p>
+		
+		<table id="violations_table">
+	        <thead><tr>
+	            	<th>Date</th>
+	               	<th>Offense</th>
+	               	<th>Place(Enter City/State)</th>
+					<th>Vehicle Type</th>               												                	
+	            </tr>
+	       	</thead>
+	        <tbody>
+	        	<tr>
+	        		<td><input type="text" placeholder="mm/dd/yyyy"/></td>
+	        		<td><input type="text"/></td>
+	        		<td><input type="text"/></td>
+	        		<td><input type="text"/></td>
+	        	</tr>        	
+	       </tbody>
+	    </table>
+	    
+	    <button id="addviolations"><i class="fa fa-plus">&nbsp;</i>Add Violations</button>
+			
+		<div class="gridrow">
+			<span>
+				If no violations are listed above, I certify that I have not been convicted or forfeited bond or 
+				collateral on account of any violation required to be listed during the past 12 months.
+			</span>
+		</div>	
+		
+		<div class="gridrow">	
+			<div id="driversign"></div>
+		</div>	
+		
+		<div class="gridrow">
+			<span id="drivername"/></span>
+		</div>
+		
+		<div class="gridrow">
+			<label> Sign date</label>	
+			<input id="signdate" type="text" data-validation="mandatory"/>
+		</div>
+	
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-sov"><i class="fa fa-save">&nbsp;</i>Done</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row" align="center">
+		<span id="message"></span>
+		<img id="test"/>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+
+var createsov = function(mvrreqid){		
+
+	d3.selectAll("#drivername").text("Driver Name : "+Current.driver.firstname + " " + Current.driver.lastname);
+		
+	$("#signdate").datepick({minDate: new Date()});
+	signature1().create("driversign", (Current.driver.firstname + " " + Current.driver.lastname) );
+
+	//1. populate master data - state
+	d3.json('/data/state.json', function(error,data) {
+		  dropdown().create("#state")
+				.populatedata(data);
+	});
+    
+    $('#save-sov').click(function() {
+	    
+	        //1. validation first
+			var validation_error = formutil.validateInputFields("#sov-dialog");
+			
+			
+	        //2. save product
+			if(!validation_error){
+	
+				var aftersave = workflow.create("#sov-dialog").aftersave();
+					aftersave.disableAll();			
+
+	   			html2canvas($("#sov-dialog"), {
+			        onrendered: function(canvas) {         
+			            var imgData = canvas.toDataURL("image/jpg");              
+		        		
+						// Construct a file object
+						var blob = dataURLtoBlob(imgData);
+						var parts = [blob];
+						
+						//Ex: company_1_driver_1_stmtofviolations.jpg
+						var file = new File(parts, 'stmtofviolations.jpg');
+						
+						var formData = new FormData();
+							formData.append("driverid", Current.driver.id);
+							formData.append("mvrreqid", mvrreqid);
+							formData.append("sov_snapshot_file", file, file.name);									
+														
+							// send via XHR - look ma, no headers being set!
+					    	$.ajax({
+					            url: '/api/driver/mvr/sov/save', //upload scanned docs
+					            type: 'post', 
+					            cache: false,
+					            data: formData,				        	
+					            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+					            contentType: false,	
+					            success: function(resp) {
+					               	//console.log('ok');
+										aftersave.changetext("#cancel","Done"); //changetext enables the el
+										aftersave.setStatusMessage(resp);	        					
+					            }
+					            //return false; //
+				       		 });
+			                
+			            }//onrendered
+			            
+			        });
+					
+			}
+	        
+	    });
+	    
+	}    
+ 	
+    $('#addviolations').click(function() {
+    
+    	var newtr = d3.select("#violations_table")
+    							.select("tbody")
+    								.append("tr")
+    		newtr.append("td")
+    				.append("input")
+    					.attr("type","text")
+    						.attr("placeholder","mm/dd/yyyy")
+    						
+    		newtr.append("td")
+    				.append("input")
+    					.attr("type","text")
+
+    		newtr.append("td")
+    				.append("input")
+    					.attr("type","text")
+
+    		newtr.append("td")
+    				.append("input")
+    					.attr("type","text")
+    });
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the mvr list
+    	loadtab("/pages/driver/mvr/mvr_list.html");
+    	
+	});    
+	    
+
+</script>

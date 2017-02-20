@@ -1,0 +1,84 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-list-ol">&nbsp;Road Side Inspection List </i></label>	
+		<div></div>	
+		<ul id="insp_table_pager" class="tabs"></ul>
+	</div>
+
+	<table id="insp_table">
+        <thead>
+            <tr>
+            	<th data-colname="inspid">ID#</th>
+               	<th data-colname="drivername">Driver</th>	
+            	<th data-colname="append(roadinspdate)">Insp Date</th>
+               	<th data-colname="status">Status</th>
+				<th data-colname="file(inspector_file)">Inspector Docs</th>
+				<th data-colname="file(inspresponse_file)">Response Docs</th>
+            </tr>
+        </thead>
+    </table>
+
+	<div class="tablepagerow">
+			<span id="totalRows"></span>
+			<div>
+				<button type="button" id="new-roadsideinsp"><i class="fa fa-plus">&nbsp;</i>Add Inspection Record</button>&nbsp;
+				<button type="button" id="edit-roadsideinsp"><i class="fa fa-edit">&nbsp;</i>Edit Inspection</button>&nbsp;
+			</div>
+			<select id="pagesizer">
+				<option>Page size: 25</option>
+				<option>Page size: 35</option>
+				<option>Page size: 50</option>
+				<option>Page size: 100</option>
+			</select>
+	</div>
+										
+</div>
+
+
+<script type="text/javascript">
+
+! function(){
+		
+	    var insptable = null;
+	    
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/driver/trip/inspection/roadside/getAll', function(data) {
+			
+			// render the table
+			insptable = table().createtable("#insp_table")
+				.populatedata(data)
+					.setpagesizeselector("#pagesizer")
+					.setpager("#insp_table_pager")
+					.setinputfilter("#table_filter")
+					.done();
+
+			d3.select("#totalRows").text("Total Rows :"+data.length);	
+		});
+		
+		//2. new
+	    d3.select("#new-roadsideinsp")
+	    	.on("click", function(){	    	
+				$.get('pages/company/inspection/roadsideinsp/new_roadside_insp.html', function(htmlcontent){
+		    		modal.open({content: htmlcontent, width:"65%"});
+				});
+	    });
+	
+	    
+	    //3.edit 
+	    d3.select("#edit-roadsideinsp")
+	    	.on("click", function(){	    	
+				var selectedrow = insptable.getselectedids()[0];				
+				if(selectedrow != undefined){
+					$.get('pages/company/inspection/roadsideinsp/edit_roadside_insp.html', function(htmlcontent){
+			    		modal.open({content: htmlcontent, width:"65%"}, function(){
+			    			edit(selectedrow);
+			    		});
+					});
+				}					
+	    });
+	    
+}();
+	
+</script>

@@ -1,0 +1,103 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<b><label> Drug/Alcohol Test List for <span id="drivername"></span></label></b>		
+		<ul id="pager" class="tabs"></ul>	
+	</div>	
+
+	<table id="drugtest_table">
+        <thead>
+            <tr>
+            	<th data-colname="drugtestid">ID</th>
+               	<th data-colname="requestdate">Request Date</th>
+            	<th data-colname="testreason">Test Reason</th>
+           		<th data-colname="append(scheduledate,scheduletime)">Schedule Date</th>
+           		<th data-colname="questresponsecode">Quest ResCode</th>
+               	<th data-colname="completedate">Complete Date</th>
+               	<th data-colname="status">Status</th>
+               	<th data-colname="file(eccf_file)">eCCF Form</th>
+               	<th data-colname="file(result_file)">Results</th>	
+            </tr>
+        </thead>
+    </table>
+    
+	<div class="tablepagerow">
+		<span id="totalDrugTests"></span>
+		<div>
+			<button type="button" id="create-drugtest"><i class="fa fa-calendar">&nbsp;</i>Schedule Drug Test</button>
+			<button type="button" id="print-drugauth"><i class="fa fa-print">&nbsp;</i>Print Authorization Form</button>
+			<button type="button" id="review-drugtest"><i class="fa fa-pencil">&nbsp;</i>Review DrugTest</button>
+		</div>
+		<select id="pagesizer">
+			<option>Page size: 20</option>
+			<option>Page size: 25</option>
+			<option>Page size: 30</option>
+			<option>Page size: 40</option>
+		</select>
+	</div>      
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		// driver name display
+		d3.selectAll("#drivername").text(Current.driver.firstname + " " + Current.driver.lastname);
+
+		//reset the selected mvr on screen load 
+		Current.drugtestid = 0;		
+		
+		var drugtesttable = null;
+	    
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/driver/drugtest/getAll', { id : Current.driver.id }, function(data) {
+		
+		//alert(JSON.stringify(data));
+			
+			// render the table
+			drugtesttable = table().createtable("#drugtest_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								.setpager("#pager")										
+								.done();
+								
+			d3.select("#totalDrugTests").text("Total Tests:"+data.length);
+								
+		});
+
+   		//1.create drug test
+	    d3.select("#create-drugtest")
+	    	.on("click", function(){	    	
+	    		
+	    		//$.get('pages/driver/drugtest/new_drugtest.html', function(htmlcontent){
+			    //	modal.open({content: htmlcontent, width:"80%"});
+				//});
+				
+				$.get('pages/driver/drugtest/new-drugtest.html', function(htmlcontent){
+			    		modal.open({content: htmlcontent, width:"80%"}, function(){
+			    			opendrugtest("regulartest");
+			    		});
+				});
+				
+	    });     	
+		
+	  	//2. review mvr
+		d3.select("#print-drugauth")
+	    	.on("click", function(){
+	    	
+	    		var selecteddgid = drugtesttable.getselectedids()[0].drugtestid;
+	    		    	
+	    		$.get('pages/driver/drugtest/print_drugtest_authform.html', function(htmlcontent){
+			    	
+			    	modal.open({content: htmlcontent, width:"65%"}, function(){
+			    			editDrugTest(selecteddgid);
+		    		});
+		    		
+	    		});     	
+	    });
+	      
+	}();
+	
+</script>

@@ -1,0 +1,80 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-bars">&nbsp;&nbsp;All Inspections </i></label>	
+		<div>	
+	  		<input type="radio" name="insptype" value="pretrip" checked="checked">Pre-trip Completed</input>
+			<input type="radio" name="insptype" value="posttrip">Post-trip Completed</input>	  		
+		</div>
+	
+		<ul id="trip_table_pager" class="tabs"></ul>
+	</div>
+
+	<table id="trip_table">
+        <thead>
+            <tr>
+               	<th data-colname="drivername">Driver</th>
+               	<th data-colname="inspid">Insp#</th>	
+            	<th data-colname="inspdate">Insp Date</th>
+            	<th data-colname="file(pretrip_snapshot_file)">Pre-Trip Insp</th>
+				<th data-colname="file(posttrip_snapshot_file)">Post-Trip Insp</th>               												                	
+               	<th data-colname="status">Insp Status</th>
+            </tr>
+        </thead>
+    </table>
+    
+	<div class="tablepagerow">	
+		<span id="totalRows"></span>		
+		<div></div>
+		<select id="pagesizer">
+			<option>Page size: 25</option>
+			<option>Page size: 35</option>
+			<option>Page size: 50</option>
+			<option>Page size: 100</option>
+		</select>										
+	</div>    
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+	    //var triptable = null;
+	    
+	    d3.selectAll('input[name="insptype"]')
+			.on("change", function(){
+			
+			var insptype = d3.select(this).node().value;
+	    
+		  	populatetable(insptype);
+
+	    });
+	    
+	    
+	    var populatetable = function(insptype){
+	    
+	    	//1. populate master data - warehouse
+			$.getJSON('/api/driver/insp/getAll', { insptype : insptype }, function(data) {
+				// render the table
+				var triptable = table().createtable("#trip_table")
+					.populatedata(data)
+						.setpagesizeselector("#pagesizer")
+						.setpager("#trip_table_pager")
+						//.setinputfilter("#trip_filter")
+						.sortable()
+						.done();
+	
+				d3.select("#totalRows").text("Total Rows :"+data.length);	
+			});
+	    
+	    }
+	    
+
+	    //default
+	    populatetable("pretrip");
+	    
+}();
+	
+</script>

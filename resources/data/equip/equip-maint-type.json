@@ -1,0 +1,37 @@
+[
+        {
+        	"id" : "DOT",
+			"name" : "DOT Annual Inspection"
+        },	
+        {
+        	"id" : "BRK",
+			"name" : "Brake Inspection"
+        },
+        {
+        	"id" : "PERIODIC",
+			"name" : "Periodic Inspection"
+        },        
+        {
+        	"id" : "HM",
+			"name" : "HazMat Inspection"
+        },    
+        {
+        	"id" : "EMER",
+			"name" : "Bus/Motorcoach Emergency Exit"
+        },    
+        
+        {
+        	"id" : "PREVENTIVE",
+			"name" : "Preventive Maintenance"
+        },
+        {
+        	"id" : "GEN",
+			"name" : "General Maintenance"
+        },
+        {
+        	"id" : "OTHR",
+			"name" : "Other"
+        }
+]
+
+

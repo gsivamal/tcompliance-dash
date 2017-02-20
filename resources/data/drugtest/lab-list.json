@@ -1,0 +1,15 @@
+[
+        {
+        	"id" : "QSDG",
+			"name" : "Quest Diagnostics"
+        },
+		{
+        	"id" : "LBCP",
+			"name" : "LabCorp (coming soon)"
+        },
+		{
+        	"id" : "CONC",
+			"name" : "Concentra (coming soon)"
+        }       
+]
+

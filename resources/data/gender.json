@@ -1,0 +1,12 @@
+[
+        {
+        	"id" : "M",
+			"name" : "Male"
+        },	
+        {
+        	"id" : "F",
+			"name" : "Female"
+        }
+]
+
+

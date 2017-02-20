@@ -1,0 +1,48 @@
+
+<ul id="timecardtabs" class="tabs">
+	<li><input type="button" id="tclist_btn" value="Timecard List" class="active"/></li>
+	<li><input type="button" id="tcreport_btn" value="Timecard Reports"/></li>
+</ul>
+
+<div>
+	<div id="tabcontent"></div>
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		var inputs = d3.select("#timecardtabs").selectAll("li").selectAll("input")
+
+		//the company id maintained in the server side, security reason, smart :)
+		loadtab("/pages/company/timecard/timecard_list.html");
+		
+ 		// tab1
+ 		d3.select("#tclist_btn")
+			.on("click", function(){
+			
+			// remove all previous styles
+			inputs.attr("class", null);
+			d3.select(this).attr("class", "active");
+		
+			//default tab
+ 			loadtab("/pages/company/timecard/timecard_list.html");
+		});
+		
+		// tab2
+ 		d3.select("#tcreport_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);					
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+				loadtab("/pages/company/timecard/timecard_side_tabs.html");
+		});
+	
+}();
+	
+	
+</script>
+

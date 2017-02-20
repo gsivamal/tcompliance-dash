@@ -1,0 +1,472 @@
+
+<div align="center"> 
+
+			<h2><b> <span id="title"></span> </b></h2>
+
+			<div id="timecard-entry-form">
+			
+				<div class="spacer"/>
+				
+				<div class="row">
+					<div class="col-4"></div>
+					<div class="col-2">
+						<label> Start Time "All Duty" </label>
+					</div>	
+					<div class="col-2 pullleft">
+						<input id="starttime" size="5" data-dbcolname="starttime" type="text" placeholder="hh:mm" data-validation="mandatory"/>
+					</div>	
+					<div class="col-3"></div>
+				</div>
+				
+				<div class="spacer"/>
+				
+				<div class="row">
+					<div class="col-4"></div>
+					<div class="col-2">
+						<label> End Time "All Duty" </label>
+					</div>	
+					<div class="col-2 pullleft">
+						<input id="endtime" size="5" data-dbcolname="endtime" type="text" placeholder="hh:mm"/>
+					</div>	
+					<div class="col-3"></div>
+				</div>
+				
+				<div class="spacer"/>
+				
+				<div class="row">
+					<div class="col-4"></div>
+					<div class="col-2">
+						<label> Total Hours Worked </label>
+					</div>	
+					<div class="col-2 pullleft">
+						<label id="totalworked" class="dblabelfield" data-dbcolname="totalworked" type="text"></label>
+					</div>	
+					<div class="col-3"></div>
+				</div>
+				
+				<div class="spacer"/>
+				
+				<div class="row">
+					<div class="col-4"></div>
+					<div class="col-2">
+						<label> Total Hours Driving </label>
+					</div>
+					<div class="col-2 pullleft">
+						<input id="totaldriving" size="5" data-dbcolname="totaldriving" data-format="floatfield" type="text" placeholder="hh.mm"/>		
+					</div>	
+					<div class="col-3"></div>
+				</div>
+				
+				<div class="spacer"/>
+		
+				<div class="row">
+					<div class="col-4"></div>
+					<div class="col-2">
+						<label> Truck/Unit Number </label>
+					</div>	
+					<div class="col-2 pullleft">
+					 	<div class="multiselect" style="z-index:2;">
+							<label data-dbcolname="equips" id="equip">(+)  0 selected</label>		
+							<div id="equip_container" class="multiselect-container"></div>		
+						</div>
+					</div>	
+					<div class="col-3"></div>
+				</div>
+
+				<div class="spacer"/>
+		
+				<div class="row">
+					<div class="col-3"></div>
+					<div class="col-3">
+						<label> Headquarters Location</label>
+						<i class="fa fa-info-circle tooltip"><span class="tooltiptext">Select an existing Location or type new and Submit.</span></i>
+					</div>	
+					<div class="col-2 pullleft">
+						<div class="multiselect">
+							<input data-dbcolname="headquarters" id="headquarters" type="text" placeholder="Select Location"/>
+							<div id="headquarters_container" class="multiselect-container"></div>
+						</div>
+					</div>	
+					<div class="col-3"></div>
+				</div>	
+				
+				<div class="spacer"/>
+
+				<div class="row addmargin" align="center">
+					<button type="button" id="new-timecardentry"><i class="fa fa-check">&nbsp;</i>Submit</button>
+					<button type="button" id="cancel">Cancel</button>
+				</div>
+				
+				<div class="row" align="center">
+					<div class="col-12">
+						<span id="message"></span>
+					</div>	
+				</div>			
+
+			</div>
+</div>
+
+<div class="spacer"/>
+
+<div class="apppage">
+			<label style="color:darkorange;padding-bottom:4px;"><b>TOTAL</b></label>
+</div>
+
+<div class="apppage">
+		<div class="col-2" style="display: flex;flex-flow: row wrap; justify-content: center;margin:4px;border-top:1px solid gray;border-bottom:1px solid gray;">
+			<label id="todayhours" style="padding-top:10px;font-weight:bold;">0.0</label>
+			<label style="padding-bottom:20px;font-size:80%;color:goldenrod;">Today</label>		
+		</div>
+		<div>
+			<hr style=" width: 0px;  height: 25px;"/>
+		</div>
+		<div class="col-2" style="display: flex;flex-flow: row wrap; justify-content: center;margin:4px;border-top:1px solid gray;border-bottom:1px solid gray;">
+			<label id="weekhours" style="padding-top:10px;font-weight:bold;">0.0</label>
+			<label style="padding-bottom:20px;font-size:80%;color:goldenrod;">Week</label>
+		</div>
+		<div>
+			<hr style=" width: 0px;  height: 25px;"/>
+		</div>		
+		<div class="col-2" style="display: flex;flex-flow: row wrap; justify-content: center;margin:4px;border-top:1px solid gray;border-bottom:1px solid gray;">
+			<label id="monthhours" style="padding-top:10px;font-weight:bold;">0.0</label>			
+			<label style="padding-bottom:20px;font-size:80%;color:goldenrod;">Month</label>
+		</div>
+</div>
+
+<div class="spacer"/>
+<div class="spacer"/>
+
+<script type="text/javascript">
+
+//TODO: Not used, deleted later
+//Ex: 2.75 to "2:45"
+var decimaltohours = function(hourmin){
+
+	var h = parseInt(hourmin);
+  	var m = hourmin - Math.floor(hourmin);
+		if(m == 0)
+			m = "00";
+		else if(m == 0.25)
+			m = "15";
+		else if(m == 0.50)
+			m = "30";
+		else if(m == 0.75)
+			m = "45";
+
+      return (h + ":" + m);
+}
+
+//TODO: Not used, deleted later
+//Ex: "2:45" to 2.75
+var hourstodecimal = function(hourmin){
+	var h = hourmin.split(":")[0];
+	  
+	var m = hourmin.split(":")[1];
+		if(m != undefined){
+			m = m.replace("00","0");
+			m = m.replace("15","25");
+			m = m.replace("30","50");
+			m = m.replace("45","75");
+      	}
+  	return Number(h+"."+m);
+  	
+}
+
+//TODO: Not used, deleted later
+//Ex: "2:45" to "2h 45m"
+var toHourMinDisplay = function(hourmin){
+	
+	var h = hourmin.split(":")[0];
+  	var m = hourmin.split(":")[1];
+
+    return (h + "h " + m + "m");
+}
+
+
+var sethourreadings = function(date, rebind){
+
+		//set the today, week and month data
+		$.getJSON('/api/driver/timecard/get', { driverid:Current.driver.id, year: date.getFullYear(), month: date.getMonthIdx() }, function(tcarrdata) {
+		
+				var weektotal = 0;
+				var monthtotal = 0;
+				
+				tcarrdata.forEach(function(timecardentry, index) {
+					
+				  	var dutydate = new Date(timecardentry.dutydate);				  	
+				  	var totalworked = parseFloat(timecardentry.totalworked);
+				  	
+					if( !isNaN(totalworked) ){ //this checks for undefined and "" and "Total Hrs->" entries
+					
+					  	//var totalworked = parseFloat(timecardentry.totalworked);
+					  	
+						//1. today hours	
+						var today = new Date();						
+						if(dutydate.formatDate() == today.formatDate()){
+							d3.select("#todayhours")
+										.text(timecardentry.totalworked);
+						}
+						
+						//2. week hours
+						var today = new Date();
+						var weekstartday = today.getDay(); //-1 to start from Sat
+						var weekstartdate = new Date().minusDate(weekstartday);  
+						
+			    		//if(dutydate.greaterEqual(weekstartdate) && dutydate.smallerEqual(today)){
+						//    weektotal = weektotal + totalworked;
+						//}					
+						if(dutydate >= weekstartdate && dutydate <= today ){
+						    weektotal = weektotal + totalworked;
+						}
+						
+						//3. month hours
+						monthtotal = monthtotal + totalworked;
+					}
+					
+					d3.select("#weekhours").text(weektotal);
+					d3.select("#monthhours").text(monthtotal);	
+					
+					//-> rebind independent section
+					if(rebind == true) {
+						if(timecardentry.starttime.length > 0){
+						
+							if(dutydate.formatDate() == date.formatDate()){					
+								var h = timecardentry.starttime.split(":")[0];
+								var m = timecardentry.starttime.split(":")[1];
+								var ampm = timecardentry.starttime.split(" ")[1];
+								//console.log("h:"+h + ", m:"+ m + ", ampm:"+ ampm );
+								if(ampm === "PM"){
+									dutydate.setHours( parseInt(h) + 24 );
+								}else{
+									dutydate.setHours(parseInt(h));
+								}							
+								dutydate.setMinutes(parseInt(m));	
+	
+								//need to rebind the start time				
+								$('#starttime').timepicker('setTime', dutydate);
+								
+					      		//rebuild the endtime list with duration selected from starttime      		
+								$("#endtime").timepicker({
+						                        'showDuration': true,
+						                        'minTime' : $('#starttime').timepicker('getTime'),
+						                        'disableTextInput' : true, //disable user typing
+						                        //'durationTime' : $('#starttime').timepicker('getTime'),
+						                        'timeFormat': 'h:i A',
+						                        'step': 15
+						                    });	 
+						                          
+							}
+						}
+					}			
+					//<-
+			});
+		});
+}
+
+var settitle = function(dutydate){
+
+	var today = new Date();
+	
+	if(today.formatDate() == dutydate.formatDate())
+		d3.select("#title")
+			.text( "A New Day - " + dutydate.getMonthText() + ", " + dutydate.getDate() + "th " + dutydate.getFullYear());
+	else
+		d3.select("#title")
+			.text( "Duty Date - " + dutydate.getMonthText() + ", " + dutydate.getDate() + "th " + dutydate.getFullYear());	
+}
+
+var opentimecardentry = function(selecteddate){
+
+	var dutydate = new Date(selecteddate);	
+	settitle(dutydate);
+	 
+	//format totalhoursdriver hhmm
+	formutil.formatfields("#timecard-entry-form");
+
+	//Current driver will be null for trip application, set logged in user is driver
+	if(Current.driver == null){
+		$.getJSON("api/user/get",function(data){
+			$.getJSON('/api/driver/get', { email : data.email }, function(driver) {
+			
+				// get the logged in Driver
+				Current.driver = driver;
+				
+				d3.select(".drivername").text(Current.driver.firstname  + " " + Current.driver.lastname);
+				
+				sethourreadings(dutydate,true);
+				
+			});
+		});
+	} else {
+		sethourreadings(dutydate,true);
+	}
+	
+	//set the Current company, used in the trip screens
+	$.getJSON('api/company/get', function(data) {
+		//set the company json
+		Current.company = data;
+	});
+
+	$("#starttime").timepicker({'timeFormat': 'h:i A',
+                        		'step': 15,
+                        		'disableTextInput' : true, //disable user typing
+                    			});
+
+ 	$('#starttime')
+ 			.on('selectTime', function() {
+ 			
+				//start time select, make the endtime null (otherwise you cannot re-build)
+	 			$('#endtime').timepicker('setTime', null);
+	      		$('#endtime').timepicker('remove');
+	      		
+	      		//rebuild the endtime list with duration selected from starttime      		
+				$("#endtime").timepicker({
+		                        'showDuration': true,
+		                        'minTime' : $('#starttime').timepicker('getTime'),
+		                        'disableTextInput' : true, //disable user typing
+		                        //'durationTime' : $('#starttime').timepicker('getTime'),
+		                        'timeFormat': 'h:i A',
+		                        'step': 15
+		                    });	                    
+    });                  
+    
+    
+	$('#endtime')
+			.on('selectTime', function() {
+				
+				var starttime = $('#starttime').timepicker('getTime');
+				var endtime = $('#endtime').timepicker('getTime');
+				
+				if(endtime != null){
+				
+					var duration = $('#endtime').timepicker('getDuration');
+				
+					//console.log("duration:"+ duration);
+					
+					d3.select("#totalworked").text(duration);
+				
+				}
+			
+	});      
+                    
+	
+	//populate master data - equips
+	$.getJSON('/api/equip/getAll', function(data) {
+	
+		var edata = [];		
+		data.forEach(function(equip, index) {
+			var eq = { "id" : equip.equipid, "name" : equip.equipid };
+			edata.push(eq);
+		});	
+		
+		multiselectd3()
+				.create("#equip", "#equip_container")
+				.populatedata(edata);
+	});
+	
+	
+	//load the locations
+	$.getJSON('/api/company/locations', function(data) {
+	
+		var ldata = [];		
+		data.forEach(function(loc, index) {
+			var location = { "id" : loc.locid, "name" : loc.location };
+			ldata.push(location);
+		});	
+		
+		combobox3()
+				.createcombo("#headquarters","#headquarters_container")
+				.populatecombodata(ldata);
+	});
+	
+	//allow only typing float numbers
+	d3.select('#totaldriving')
+		.on('blur', function(){
+			var totalworked = d3.select("#totalworked").text();
+			if(totalworked !== ""){			
+			
+				this.value = (Math.round(this.value * 4) / 4).toFixed(2);	
+
+				//console.log("this.value:"+this.value + ", totalworked: "+ totalworked);
+
+				if(parseFloat(this.value) > parseFloat(totalworked)){
+					alert("Total Hours Driving cannot be greater than Total Hours Worked!");
+					this.focus();
+				}		
+			}
+		});
+	
+	
+	//clicking outside multi-select close the element, need to work this later..
+	//d3.select("#timecard-entry-form").on("click", function(){
+	//     		d3.selectAll(".multiselect-container")
+	//     							.style("display","none");
+	//});
+
+	//save entry    
+    $('#new-timecardentry').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#timecard-entry-form");
+		
+        //2. save maintenance
+		if(!validation_error){
+		
+			var timecard_data = formutil.serializeObject("#timecard-entry-form");
+			
+				//TODO: typed combo value not getting binded in d3, so manually set now.
+				timecard_data.headquarters = document.getElementById("headquarters").value;
+			
+				//alert(JSON.stringify(timecard_data));
+
+ 			var aftersave = workflow.create("#timecard-entry-form").aftersave();
+				aftersave.disableAll();
+
+			var formData = new FormData();
+				formData.append("driverid", Current.driver.id);
+				formData.append("yearmonth", dutydate.getYearMonth());
+				formData.append("dutydate", dutydate.formatDate());
+				formData.append("timecardentrydata", JSON.stringify(timecard_data));
+				
+				// send via XHR - look ma, no headers being set!
+				$.ajax({
+				    url: '/api/driver/timecardentry/save',
+				    type: 'post', 
+				    cache: false,
+				    data: formData,				        	
+				    processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				    contentType: false,	
+				    success: function(resp) {
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+							
+							sethourreadings(dutydate,false);
+				    }
+				    //return false; //
+				 });
+		}
+	});
+	
+ 	d3.select("#cancel")
+		.on("click", function() {
+		
+	    	if( modal.isopen() == true){
+		    	//current modal, only one modal can be open at any time
+			    modal.close();
+	    	}else{
+	    	
+	    	  	//load tab
+	    	  	var today = new Date();
+				loadsidetab("/pages/trip/timecard/timecard-month-table.html", function(){
+					opentimecard(today.getMonthIdx(), today.getFullYear());		
+				});
+				
+				settabselection("#thismonth_btn");
+			}
+        
+	}); 
+
+} //opentimecardentry
+
+
+</script>

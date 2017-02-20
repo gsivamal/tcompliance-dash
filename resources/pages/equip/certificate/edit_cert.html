@@ -1,0 +1,118 @@
+
+<div id="equipcert-form">
+
+	<div class="grid">
+
+		<label class="title">Edit Certificate</label>
+		
+		<div class="gridrow">	
+			<label>Cert Name:</label>
+			<input id="certname" data-dbcolname="certname" type="text" placeholder="Annual Inspection" data-validation="mandatory"/>
+		</div>
+		
+		<div class="gridrow">	
+			<label>Date of Expiration:</label>
+			<input id="certexpiry" data-dbcolname="certexpiry" type="text" placeholder="mm/dd/yyyy"/>
+		</div>
+		
+		<div class="gridrow">	
+			<label> Scan copy:(one or multiple)</label>
+			<input id="cert_files" data-dbcolname="cert_files" type="file" multiple />
+		</div>	
+
+		<div class="gridrow">	
+			<label>Status:</label>
+			<span id="certstatus" disabled="true"/>
+		</div>
+
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="update-cert"><i class="fa fa-cloud-upload">&nbsp;</i>Upload</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+
+var editCert = function(selectedrow){    
+
+	//console.log(JSON.stringify(selectedrow));
+    
+	$("#certexpiry").datepick({minDate: new Date()});
+	
+	//rebind
+	formutil.rebind("#equipcert-form", selectedrow);
+	
+	//status is display only
+	d3.select("#certstatus").text(selectedrow.certstatus);
+	
+    $('#update-cert').click(function() {  
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#equipcert-form");
+		
+        //2. save product
+		if(!validation_error){
+
+			var equipcert_data = formutil.serializeObject("#equipcert-form");
+			
+			var formData = new FormData();
+				formData.append("equipid", Current.equip.id);
+				formData.append("certid", selectedrow.certid);
+				formData.append("certdata", JSON.stringify(equipcert_data));
+				
+				//set the multiple file
+				var files = d3.select("#cert_files").node().files;
+				
+				if(files.length == 0){
+					alert("Please select the scan copy and continue!");
+					return;
+				}
+				
+				var aftersave = workflow.create("#equipcert-form").aftersave();
+					aftersave.disableAll();		
+				
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}
+											
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/equip/cert/update', //upload scanned cert
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {		            
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);    					
+		            }
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the cert list
+    	loadtab("/pages/equip/certificate/cert_list.html");
+    	
+	});    
+	    
+}
+
+
+
+
+</script>

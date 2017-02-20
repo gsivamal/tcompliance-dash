@@ -1,0 +1,318 @@
+
+<div id="trip-form"> 
+
+	<div class="gridinner">
+
+	  <div class="grid">
+	  
+	  <label class="title"> Trip Details</label>
+		
+		<div class="cell">
+			<label> Trip Name</label>
+			<input data-dbcolname="name" type="text" data-validation="mandatory" placeholder="(or) Customer Name"/>
+		</div>
+		
+		<div class="cell"></div>
+		
+		<div class="cell">
+			<label> Trip Date</label>
+	        <input data-dbcolname="tripdate" id="tripdate" type="text" placeholder="mm/dd/yyyy" data-validation="mandatory"/>	
+		</div>
+		
+		<div class="cell">
+			<label> Date Returned </label>
+	        <input data-dbcolname="returndate" id="returndate" type="text" placeholder="mm/dd/yyyy"/>	
+		</div>
+		
+		<div class="cell">
+			<label> Shipper </label>
+			<input data-dbcolname="shipper" type="text" data-validation="mandatory"/>
+		</div>
+
+		<div class="cell">
+			<label>Phone</label>
+			<input data-dbcolname="shipperphone" type="text" data-format="usphone" placeholder="   -   -    "/>
+		</div>
+
+		<label class="sub-title">Delivery Address</label>
+	
+		<div class="cell">
+			<label> Address1</label>
+			<input data-dbcolname="address1" type="text" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> Address2</label>
+			<input data-dbcolname="address2" type="text"/>
+		</div>
+	
+		<div class="cell">
+			<label> City</label>
+			<input data-dbcolname="city" type="text"/>
+		</div>
+	
+		<div class="cell">
+			<label> State</label>
+			<select name="state" id="state" data-dbcolname="state"></select>
+		</div>	
+		
+		<div class="cell">
+			<label> Zip</label>
+			<input data-dbcolname="zip" type="text" data-format="uszip" placeholder="     -   " data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> Country</label>
+			<select id="country" data-dbcolname="country"></select>
+		</div>
+		
+		<div class="gridrow">
+			<label> Shipping Docs </label>
+			<input id="shipdoc_file" data-dbcolname="shipdoc_file" type="file" multiple/> multiple docs
+		</div>
+		
+		<div class="cell">
+			<label> Cargo Details </label>
+			<input data-dbcolname="cargo" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<input type="checkbox" data-dbcolname="ishazmat" name="ishazmat" value="ishazmat"> is HazMat?<br>
+		</div>
+		
+		<div class="cell">
+		</div>
+		
+		<label class="sub-title"> Driver/Equipment </label>
+		
+		<div class="cell">	
+			<label>Who is Driving </label>
+			<select id="driverlist" data-dbcolname="driverid"></select>
+		</div>
+		
+		<div class="cell"></div>
+		
+		<div class="cell">
+			<label> Equipments </label>
+			<div class="row">
+				<div id="equips"></div>
+			</div>
+		</div>		
+		
+		<div class="gridrow">
+			<label> Trip Notes:</label>
+			<textarea id="notes" data-dbcolname="notes" rows="5" cols="60%"></textarea>
+		</div>	
+		
+		<div class="gridrow">
+			<label> Trip picked Docs </label>
+			<input id="tripdoc_file" data-dbcolname="tripdoc_file" type="file" multiple/><label>&nbsp; multiple docs &nbsp;<i class="fa fa-info-circle tooltip"><span class="tooltiptext">Documents you pick from Trip can be uploaded here.</span> </i></label>	
+					
+		</div>		
+		
+		<div class="cell">
+			<label> Status</label>
+			<select id="status" data-dbcolname="status"></select>
+		</div>
+		
+	  </div>
+	
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="update-trip"><i class="fa fa-floppy-o">&nbsp;</i>Update Trip</button>&nbsp;&nbsp;
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row" align="center">
+		<span id="message"></span>
+	</div>
+		
+		
+ </div>
+
+<script type="text/javascript">
+
+! function(){
+
+	//vin formating, use phone format time being :(
+	formutil.formatfields("#trip-form");
+
+}();
+
+
+var edit = function(tripid){
+
+	//console.log( "tripdata:" + JSON.stringify(tripdata) );
+	
+	//get the tripdata
+	$.getJSON('/api/company/trip/get', { tripid : tripid }, function(tripdata) {
+	
+		formutil.rebind("#trip-form", tripdata);
+		
+		// select sidetab
+		//settabselection("#trip_btn");
+	
+		$("#tripdate").datepick({minDate: new Date(), 'setDate' : new Date(tripdata.tripdate) });
+		$("#returndate").datepick({minDate: new Date(), 'setDate' : new Date(tripdata.returndate) });
+		
+		//2. populate master data - state
+		$.get('/data/state.json', function(data) {
+			  dropdown().create("#state")
+					.populatedata(data)
+					.setselected(tripdata.state);
+		});
+		
+		//3. populate master data - country
+		$.get('/data/country.json', function(data) {
+			  dropdown().create("#country")
+					.populatedata(data)
+					.setselected(tripdata.country);
+		});		
+	
+		//4. equipment status
+		d3.json('/data/company/trip-status.json', function(error,data) {
+			  dropdown().create("#status")
+					.populatedata(data)
+					.setselected(tripdata.status);
+		});
+	
+	
+		// 5. driver list
+		var driverlist = d3.select("#driverlist");
+		
+			$.getJSON('/api/driver/getAll', function(data) {
+			
+				driverlist.selectAll("option")
+			        	.data(data)
+			        	.enter()
+			        	.append("option")
+			        	 .text(function(dtm) {
+							return dtm.firstname + ", " + dtm.lastname; 
+				        })
+				        .attr("value", function(dtm) {     		 	
+							return dtm.id; 
+				        });
+				        
+				 //rebind       
+				 dropdown().create("#driverlist").setselected(tripdata.driverid);
+				        
+			});	
+		
+		var equips = [];
+		tripdata.equips.csvToArray().forEach(function(eid){
+				$.getJSON('api/equip/get', { id : eid }, function(equipdata) {
+					
+					//alert(JSON.stringify(equipdata));	
+					equips.push(equipdata);
+
+					d3.select("#equips")
+						.selectAll("button")
+						.data(equips)
+						.enter()
+						.append("button")
+						.style("border","none")
+						.style("margin","2px")
+						.style("color","blue")
+						.style("background","white")
+						.style("cursor","pointer")
+						.style("text-decoration","underline")
+						.text(function(d){
+							return d.equipid;
+						})
+						.attr("value",function(d){
+							return d.id;
+						})
+						.on("click", function(d){
+							//alert(d3.select(this).attr("value"));
+							
+							//alert(JSON.stringify(d));
+							
+							Current.equip = d;      			
+      						$.get('/pages/equip/equip_tabs.html', function(htmlcontent){
+      							modal.open({content: htmlcontent});
+      						});
+						
+						
+						});
+					
+				});
+		});	
+		
+	
+	 	var aftersave = workflow.create("#trip-form").aftersave();
+			aftersave.disableAll();		
+			
+			aftersave.enable("#update-trip");
+			aftersave.enable("#status");
+			aftersave.enable("#returndate");
+			aftersave.enable("#equips");
+			aftersave.enable("#tripdoc_file");
+			aftersave.enable("#notes");
+			
+			d3.select("#status").style("border","1px solid green");
+			d3.select("#returndate").style("border","1px solid green");
+	
+		// save / update
+		d3.select('#update-trip').on("click", function() {	
+		
+			//1. validation first
+			var validation_error = formutil.validateInputFields("#trip-form");
+			
+	        //2. save product
+			if(!validation_error){
+			
+		 		var tripdata = formutil.serializeObject("#trip-form");
+		 		
+				var formData = new FormData();
+					formData.append("tripid", tripid);
+					formData.append("tripdata", JSON.stringify(tripdata));
+					
+					//set the file
+					var idx = 0;
+					var shipfiles = d3.select("#shipdoc_file").node().files;
+					for(; idx < shipfiles.length; idx++){				
+						formData.append(idx, shipfiles[idx], shipfiles[idx].name);	
+					}
+					
+					//edit enabled	
+					var tripfiles = d3.select("#tripdoc_file").node().files;
+					for(; idx < tripfiles.length; idx++){				
+						formData.append(idx, tripfiles[idx], tripfiles[idx].name);	
+					}
+											    	
+		    	// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/company/trip/update', //upload scanned docs
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(data) {
+		               	//console.log('ok');
+		               	
+						aftersave.disableAll();	
+						aftersave.changetext("#cancel","Done"); //changetext enables the el
+						aftersave.setStatusMessage(data);	     
+		            }
+		            //return false; //
+	       		 });
+			}
+	        
+	    }); //save button click
+	    
+	    $('#cancel').click(function() {
+	    
+	    	//goto dashboard
+	    	loadsidetab("/pages/company/trip/all_trips.html");
+	        
+		}); 
+		
+	}); //getJSON
+	
+}
+
+	
+</script>
+

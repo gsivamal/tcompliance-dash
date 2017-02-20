@@ -1,0 +1,112 @@
+
+<ul id="drivertabs" class="tabs">
+	<li><input type="button" id="driverrecord_btn" value="Driver Record" class="active"/></li>
+	<li><input type="button" id="driverdocuments_btn" value="Driver Qualification Files" /></li>
+	<li><input type="button" id="drivermvr_btn" value="MVR"/></li>
+	<li><input type="button" id="driverdrugtest_btn" value="Drug/Alcohol Tests"/></li>
+	<li><input type="button" id="drivertrn_btn" value="Trainings"/></li>
+	<li><input type="button" id="driveracci_btn" value="Accident/Incidents"/></li>
+</ul>
+
+<div>
+	<div id="tabcontent"></div>
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		var inputs = d3.select("#drivertabs").selectAll("li").selectAll("input");
+
+		//default tab
+		if(Current.driver === null){
+ 			loadtab("/pages/driver/new_driver.html", function(){
+ 				initData();
+ 			});
+ 		}else{
+ 			loadtab("/pages/driver/new_driver.html", function(){
+	 			editDriver();
+	 		});
+ 		}
+		
+ 		// tab1
+ 		d3.select("#driverrecord_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null)
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+				if(Current.driver === null){
+		 			loadtab("/pages/driver/new_driver.html", function(){
+		 				initData();
+		 			});
+		 		}else{
+		 			loadtab("/pages/driver/new_driver.html", function(){
+			 			editDriver();
+			 		});
+			 	}
+		});
+ 		
+ 		// tab2
+ 		d3.select("#driverdocuments_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null)
+				d3.select(this).attr("class", "active");
+			
+				loadtab("/pages/driver/documents/document_list.html");
+		});
+		
+		//tab3		
+ 		d3.select("#drivermvr_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null)
+				d3.select(this).attr("class", "active");
+			
+				loadtab("/pages/driver/mvr/mvr_list.html");
+		});
+		
+		//tab4		
+ 		d3.select("#driverdrugtest_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null)
+				d3.select(this).attr("class", "active");
+			
+				loadtab("/pages/driver/drugtest/drugtest_list.html");
+		});
+		
+		//tab5	
+ 		d3.select("#drivertrn_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null)
+				d3.select(this).attr("class", "active");
+			
+				loadtab("/pages/driver/training/driver_training_list.html");
+		});		
+		
+		//tab6
+		d3.select("#driveracci_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null)
+				d3.select(this).attr("class", "active");
+			
+	 			loadtab("/pages/accident/accident_list.html", function(){
+			 		openAccidentList("driver");
+			 	});
+		});
+}();
+	
+	
+</script>
+

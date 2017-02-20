@@ -1,0 +1,146 @@
+
+ <div class="hrLine"></div>
+ <div class="spacer"></div>
+ 
+ <div>
+	<div class="row">
+	  	<div class="col-5"></div>
+		<div class="col-1 pullright"><select id="yearlist"/></div> 
+	  	<div class="col-1"><select id="driverlist"/></div>
+	  	<div class="col-5"></div>
+	</div>		
+	<div class="spacer"></div>
+	<div class="apppage" id="tclist"></div>
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		//driver list
+		$.getJSON('/api/driver/getAll', function(data) {
+		
+			if(data.length == 0){
+				alert("No Drivers Found!");
+				return;
+			}	
+		
+			//default first driver
+			Current.driver = data[0];
+			getTimecard();
+			
+			// render the driver list
+			var driverlist = d3.select("#driverlist");
+			
+				driverlist.selectAll("option")
+		        	.data(data)
+		        	.enter()
+		        	.append("option")
+		        	 .text(function(dtm) {
+						return dtm.firstname + " " + dtm.lastname; 
+			        })
+			        .attr("value", function(dtm) {     		 	
+						return dtm.id; 
+			        });
+			        
+		        driverlist.on("change", function(){
+		        
+					driverlist.selectAll("option")
+    					.each(function(d) { 
+		    				if(this.selected === true){
+    							//console.log( "data:"+JSON.stringify(d) );
+    							Current.driver = d;
+    							getTimecard();
+    						}    				
+    					});
+				});
+				
+		});	
+		
+		//2. yearlist
+		var yearlist = d3.select("#yearlist");
+		
+		// let you view last 3 years tc data
+		var years = [ { "year": Current.year }, { "year": Current.year-1 }, { "year": Current.year-2 } ];
+	
+		yearlist.selectAll("option")
+        	.data(years)
+        	.enter()
+        	.append("option")
+	        	 .text(function(dtm) {
+					return dtm.year; 
+		        });
+		
+		//get timecard        
+		var getTimecard = function(){		
+		
+			var selectedyear = d3.select("#yearlist").node().value;
+				
+			//1. populate master data - company
+			$.getJSON('/api/driver/timecard/getAll', { driverid : Current.driver.id, year : selectedyear }, function(data) {				
+				var tabledata = [];
+				
+				for(var i=0; i < data.length; i++){
+					
+					console.log("i:"+i +",monthidx:"+data[i].month);
+				
+					data[i].monthidx = data[i].month;
+					data[i].month = monthsarr[data[i].month];
+					tabledata.push(data[i]);
+				}
+
+				//sort by monthidx, not sure about the logic though				
+				tabledata.sort(function(a,b) { 
+       						return a.monthidx - b.monthidx; });
+				
+				//create new button
+				tabledata.push({"monthidx":"-1","month":"+"});
+				
+				d3.select("#tclist")
+					.selectAll("button")
+					.remove();
+				
+				d3.select("#tclist")
+					.selectAll("button")
+					.data(tabledata)
+					.enter()
+					.append("button")
+					.text(function(d){
+						return d.month;
+					})
+					.attr("class","appbutton")
+						.on("click", function(d){
+					
+								if(d.month == "+"){ //create new
+									var selectedyear = yearlist.node().value;
+						    		var selecteddriver = Current.driver;	
+							
+									$.get('pages/company/timecard/new_timecard.html', function(htmlcontent){									    	
+									    	modal.open({content: htmlcontent, width:"40%"}, function(){
+									    		opentimecard(selecteddriver,selectedyear);
+								    		});								    		
+							    		});   
+								
+								}else{	//view tc
+						   			var selectedmonth = d.monthidx;
+						    		var selectedyear = yearlist.node().value;
+						    		    	
+						    		$.get('pages/trip/timecard/timecard-month-table.html', function(htmlcontent){
+								    	modal.open({content: htmlcontent, width:"70%"}, function(){
+								    		opentimecard(selectedmonth,selectedyear);
+							    		});
+							    		
+						    		});   
+					    		} 	
+						    		
+				    });
+	
+				d3.select("#totalRows").text("Total entries :"+tabledata.length);	
+			});	
+		}
+		
+}();
+
+
+	
+</script>

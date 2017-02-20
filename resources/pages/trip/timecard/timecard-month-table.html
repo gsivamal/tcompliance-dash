@@ -1,0 +1,250 @@
+<div align="center"> 
+
+<div id="tcmonth-form" class="tablepage" style="font-size:85%;width:80%">
+
+	<div align="center"> 
+		<h2> DRIVER'S TIME RECORD </h2>
+	</div>
+	
+	<div class="row">
+		<div class="col-4 pullleft">
+			<label> <b>Driver's Name </b> <span class="drivername"></span></label>
+		</div>		
+		<div class="col-4">
+			<label> <b>Employee No. </b> <span id="driverid"></span></label>
+		</div>		
+		<div class="col-4 pullright">
+			<label> <b>Month / Year :</b> <span id="tcmonthyear"></span></label>
+		</div>		
+	</div>		
+		
+	<div class="hrLine"></div>
+
+	<div class="spacer"></div>
+
+	<table id="tc_table" style="font-size:95%;">
+	        <thead><tr>
+	            	<th data-colname="callback(dutydate,entertime)" width="10%">Date</th>
+	            	<th data-colname="dutyday" 		width="8%">Day</th>
+	               	<th data-colname="starttime"	width="10%">Start Time "All Duty"</th>
+	               	<th data-colname="endtime"		width="10%">End Time "All Duty"</th>
+					<th data-colname="totalworked"	width="10%">Total Hours Worked</th>    
+					<th data-colname="weektotal"	width="10%">Weekly Total</th>  
+					<th data-colname="totaldriving"	width="10%">Total Hours Driving</th>  
+					<th data-colname="equips"		width="15%">Truck/Unit Number</th>  
+					<th data-colname="headquarters"	width="15%"	>Headquarters Location</th>  
+	            </tr>
+	       	</thead>
+	        <tbody>
+	        		
+	       </tbody>
+	  </table>
+	  
+	<div class="spacer"></div>  
+	    
+	<div class="row addmargin" align="center">
+		<input id="isnodrivingduties" data-dbcolname="isnodrivingduties" type="checkbox">Check this box if the driver performed no driving duties during this month (or) the first seven days of the following month.</input>
+	</div>    
+	
+	<div class="row addmargin" align="center">
+		<label>This form must be prepared by each DOT certified driver unless hours of service records are required on a grid graph log book or electronic logging device.  Indicate "days off".</label>
+	 </div>   
+	 
+	<div class="row" align="center">
+		<span id="message"></span>
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="update-tc"><i class="fa fa-check">&nbsp;</i>Save Changes</button>
+		<button type="button" id="cancel-monthtc">Cancel</button>
+		&nbsp;|&nbsp;
+		<button type="button" id="savepdf-monthtc"><i class="fa fa-file-pdf-o">&nbsp;</i>Save as PDF</button>
+	</div>
+	
+
+  </div>	 
+ 
+ </div>
+
+<script type="text/javascript">
+
+	! function(){
+		;
+   	}();
+
+   	var tctable = null;
+   	
+	//var aftersave = workflow.create("#tcmonth-form").aftersave();
+   
+   	//method called from timecard list
+	var opentimecard = function (selectedmonth, selectedyear){
+	
+		//default this month
+		//var today = new Date();	
+		
+		//if(fragmentId == "lastmonth"){
+		//	today.setMonth(selectedmonth+1);
+		//	today.setFullYear(selectedyear);
+		//}		
+		
+		d3.select("#tcmonthyear").text( monthsarr[selectedmonth] + " / " + selectedyear );
+
+		d3.selectAll(".drivername").text(Current.driver.firstname  + " " + Current.driver.lastname);
+		d3.select("#driverid").text(Current.driver.id);
+		
+		//get time card array
+		$.getJSON('/api/driver/timecard/get', { driverid:Current.driver.id, year:selectedyear, month:selectedmonth }, function(data) {
+		
+			//console.log("data:"+data.length);
+			
+			if(data.length == 0){
+				d3.select("#message").text("ERROR:Timecard has not been created yet, Please contact your supervisor!").style("color","red");
+				return;
+			}
+		
+			// render the table
+			tctable = table().createtable("#tc_table")
+					.populatedata(data)
+					.done();
+					
+			var w = 0;		
+			d3.select("#tc_table")
+					.selectAll("tbody")
+					.selectAll("tr")					
+					.each(function(d,i){
+
+						//Highlight Weekly
+						if(d.dutyday === "Sat"){
+							++w;
+						}
+						d3.select(this).style("color", colorarr[w] ).style("font-weight","bold");
+
+						//Highlight Today 
+						var today = new Date();			
+						var dutydate = new Date(d.dutydate);			
+						if(d.dutydate === today.formatDate()){
+							d3.select(this)
+								.style("font-style", "italic")
+								.style("background-color", "lightgray");
+						} else if( dutydate > today) {
+							d3.select(this).select("td").select("a")
+											.attr("href", "#");
+						}
+					})
+					.selectAll("td")
+					.each(function(d,i){
+						
+						//Total hours
+						if( d.column === "totalworked" && d.value.startsWith("Total") ){
+							d3.select(this.parentNode).style("color","black");
+							return d3.select(this).html(d.value + "&nbsp;&nbsp;<i class='fa fa-hand-o-right'></i>");
+						}
+						
+					});
+					
+					
+					//get the checkbox data
+					$.getJSON('/api/driver/timecard/additionalinfo/get', { driverid:Current.driver.id, year:selectedyear, month:selectedmonth }, function(data) {
+						d3.select("#isnodrivingduties").property("checked", (data.isnodrivingduties === "true"));
+					});
+		
+
+		});
+		
+		//update entry    
+    	$('#update-tc').click(function() {
+			var ischecked = d3.select("#isnodrivingduties").property("checked");		
+    			//alert(ischecked);    		
+			var addinfo_data = { isnodrivingduties : ischecked };			
+			var formData = new FormData();
+				formData.append("driverid", Current.driver.id);
+				formData.append("yearmonth", (selectedyear + "-" + selectedmonth) );
+				formData.append("addinfodata", JSON.stringify(addinfo_data));
+				// send via XHR - look ma, no headers being set!
+				$.ajax({
+				    url: '/api/driver/timecard/additionalinfo/save',
+				    type: 'post', 
+				    cache: false,
+				    data: formData,				        	
+				    processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				    contentType: false,	
+				    success: function(resp) {
+							d3.select("#update-tc").attr("disabled","true");	
+							d3.select("#cancel-monthtc").text("Done");						
+							d3.select("#message").text(JSON.stringify(resp));
+				    }
+				 });
+		});	
+			
+	} //opentimecard
+	
+	
+	//save as pdf
+	$('#savepdf-monthtc').click(function() {
+	
+			html2canvas($("#tcmonth-form"), {
+   						useCORS:true,
+				        onrendered: function(canvas) {         
+				            
+				            var imgData = canvas.toDataURL("image/jpg");      
+
+							/*
+								Here are the numbers (paper width and height) that I found to work. 
+								It still creates a little overlap part between the pages, but good enough for me.
+								if you can find an official number from jsPDF, use them.
+							*/
+							var imgWidth = 200; 
+							var pageHeight = 295;  
+							var imgHeight = canvas.height * imgWidth / canvas.width;
+							var heightLeft = imgHeight;
+							
+							var doc = new jsPDF('p', 'mm', 'a4');
+							var position = 0;
+							
+							doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+							heightLeft -= pageHeight;
+							
+							while (heightLeft >= 0) {
+								position = heightLeft - imgHeight;
+								doc.addPage();
+								doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+								heightLeft -= pageHeight;
+							}
+							doc.save('Timecard.pdf');
+ 				
+ 						}//onrendered
+				});			
+	});		
+	
+	
+	
+	
+	var entertime = function(){
+	
+		var selectedrow = tctable.getselectedids()[0];
+
+		if(selectedrow !== undefined){
+			var selecteddutydate = selectedrow.dutydate;
+			
+			//alert(selecteddutydate);
+
+			$.get("/pages/trip/timecard/new_timecard-entry.html", function(htmlcontent){
+    			modal.open({content: htmlcontent, width:"70%"}, function(){
+    			
+    				opentimecardentry(selecteddutydate);
+    			
+    			});
+			});
+		}	
+	}
+	
+ 	d3.select("#cancel-monthtc")
+		.on("click", function() {
+		
+			modal.close();
+
+	}); 
+	
+	
+
+</script>

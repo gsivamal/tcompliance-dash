@@ -1,0 +1,164 @@
+
+<div id="company-form"> 
+
+	<div class="gridinner">
+
+	  <div class="grid">
+		
+		<div class="cell">
+			<label> Name</label>
+			<input data-dbcolname="name" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> DOT # </label>
+			<input data-dbcolname="dot" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> Contact</label>
+			<input  type="text" data-dbcolname="contact1"></input>
+		</div>
+		
+		<div class="cell">
+			<label> Type</label>
+			<select id="type" data-dbcolname="type"></select>
+		</div>
+		
+		<div class="cell">
+			<label> MRO Assigned</label>
+			<input  type="text" data-dbcolname="mro"></input>
+		</div>	
+			
+		<div class="cell">
+			<label> DOT Ageny Assigned</label>
+			<input type="text" data-dbcolname="dotagent"></input >
+		</div>	
+		
+		<label class="sub-title">Address</label>
+	
+		<div class="cell">
+			<label> Address1</label>
+			<input data-dbcolname="address1" type="text" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> Address2</label>
+			<input data-dbcolname="address2" type="text"/>
+		</div>
+	
+		<div class="cell">
+			<label> City</label>
+			<input data-dbcolname="city" type="text" data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> Zip</label>
+			<input data-dbcolname="zip" type="text" data-format="uszip" placeholder="     -   " data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label> State</label>
+			<select id="state" data-dbcolname="state" data-validation="mandatory"></select>
+		</div>
+	
+		<div class="cell">
+			<label> Country</label>
+			<select id="country" data-dbcolname="country"></select>
+		</div>
+	
+		<label class="sub-title">Contact Details</label>
+	
+		<!-- salai: type=phone not supported all browsers yet -->
+		<div class="cell">
+			<label>Phone</label>
+			<input data-dbcolname="phone" type="text" data-format="usphone" placeholder="   -   -    " data-validation="mandatory"/>
+		</div>
+	
+		<div class="cell">
+			<label>Fax</label>
+			<input data-dbcolname="fax" type="text" data-format="usphone" placeholder="   -   -    "/>
+		</div>
+	
+		<div class="cell">
+			<label> Email</label>
+			<input data-dbcolname="email" type="text" data-format="email" placeholder="id@mail.com" data-validation="mandatory"/>
+		</div>
+	
+		<div class="gridrow">
+			<label> Company Notes</label>
+			<textarea data-dbcolname="notes" rows="3" cols="50%" data-validation="mandatory"></textarea>
+		</div>	
+		
+		<div class="cell">
+			<label> Status</label>
+			<select id="status" data-dbcolname="status"></select>
+		</div>
+		
+		 </div>
+	
+	  </div>
+
+		<div class="row addmargin" align="center">
+			<button type="button" id="save-company"><i class="fa fa-floppy-o">&nbsp;</i>Save Company</button>
+			<button type="button" id="cancel">Cancel</button>
+		</div>
+		
+		<div class="row" align="center">
+			<span id="message"></span>
+		</div>
+		
+		
+ </div>
+
+<script type="text/javascript">
+
+! function(){
+
+	//Note: this screen opens in Edit mode default
+	
+	//load company
+	$.getJSON('api/company/get', function(data) {
+		formutil.rebind("#company-form", data);
+		
+		//set the company json
+		Current.company = data;
+	});
+
+	//vin formating, use phone format time being :(
+	formutil.formatfields("#company-form");
+	
+	//1. populate master data - state
+	d3.json('/data/state.json', function(error,data) {
+		  dropdown().create("#state")
+				.populatedata(data);
+	});
+	
+	//2. populate master data - country
+	d3.json('/data/country.json', function(error,data) {
+		  dropdown().create("#country")
+				.populatedata(data);
+	});			
+	
+	//3. populate master data - state
+	d3.json('/data/company/company-type.json', function(error,data) {
+		  dropdown().create("#type")
+				.populatedata(data);
+	});
+	
+	//4. equipment status
+	d3.json('/data/company/company-status.json', function(error,data) {
+		  dropdown().create("#status")
+				.populatedata(data);
+	});
+	
+	//disable all, time being, companies created in command line, smart move :O)  				
+	d3.select("#company-form").selectAll("input, textarea, select").attr("disabled",true);
+	d3.select("#save-company").attr("disabled",true);
+	//d3.select("#message").text(JSON.stringify(resp));
+
+}();
+
+	
+</script>
+

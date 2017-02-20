@@ -1,0 +1,73 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wss="http://wssim.labone.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <wss:CreateOrder>
+         <wss:username>cli_Peoplemat</wss:username>
+         <wss:password>s524F10ZMP8o</wss:password>
+         <wss:OrderXml>         
+			<![CDATA[<CreateOrderTest>
+			  <SendingFacility>PEOPLEMAT</SendingFacility>
+			  <SendingFacilityTimeZone>${sendingfacilitytz}</SendingFacilityTimeZone>			  
+			  <ProcessType>T</ProcessType>
+   			  <ClientReferenceID>${drugtestid}</ClientReferenceID>
+				   <PersonalData>    
+				      <PrimaryID>${driverlicense}</PrimaryID>
+				      <PrimaryIDType>DL</PrimaryIDType>				     
+				      <PersonName>
+				         <FamilyName>${driverfirstname}</FamilyName>
+				         <GivenName>${driverlastname}</GivenName>
+				         <MiddleName>${drivermiddlename}</MiddleName>
+				      </PersonName>
+				      <Gender>
+				         <IdValue>${drivergender}</IdValue>
+				      </Gender>
+			       	  <DateofBirth>1970/03/02</DateofBirth> 
+				      <ContactMethod>
+				         <Telephone type="HOME">
+				            <FormattedNumber>${driverhome}</FormattedNumber>
+				         </Telephone>
+				         <Telephone type="WORK">
+				            <FormattedNumber>${drivercell}</FormattedNumber>
+				         </Telephone>
+				      </ContactMethod>
+				      <PostalAddress>
+				         <CountryCode>${drivercountry}</CountryCode>
+				         <PostalCode>${driverzip}</PostalCode>
+				         <Region />
+				         <Manicipality>${drivercity}</Manicipality>
+				         <DeliveryAddress>
+				            <AddressLine>${driveraddress1}</AddressLine>
+				         </DeliveryAddress>
+				      </PostalAddress>
+				   </PersonalData>				   
+				   <ProcessType>T</ProcessType>				   
+				   <Screenings>
+				      <CollectionSiteID>${site}</CollectionSiteID>
+				      <DateOrdered>${requestdate}</DateOrdered>
+				      <ExpirationDate>${expirydate}</ExpirationDate>
+				      <HardExpire>${hardexpirydate}</HardExpire>
+				      <ReasonForTest>
+				         <IdName>${testreasoncode}</IdName>
+				         <IdValue>${testreasonvalue}</IdValue>
+				      </ReasonForTest>
+				      <ScheduledDate>${scheduledate}</ScheduledDate>
+				      <Screening type="Drug">
+				         <DOTTest>${isDot}</DOTTest>
+				         <TestingAuthority></TestingAuthority>
+				         <LaboratoryAccount>${account}</LaboratoryAccount>
+				         <LaboratoryID>${labid}</LaboratoryID> 
+				         <OrderCommentsToCollector>${notestocollector}</OrderCommentsToCollector>
+				         <TestProcedure>
+				            <IdSampleType>${specimensampletype}</IdSampleType>
+				            <IdTestMethod>${onsiteorlab}</IdTestMethod> 
+				         </TestProcedure>
+				         <UnitCodes>
+				            <IdValue>${paneltesttype}</IdValue>
+				         </UnitCodes>
+				      </Screening>
+				      <WhoOrderedTest>${useremail}</WhoOrderedTest>
+				   </Screenings>
+  </CreateOrderTest>]]></wss:OrderXml>
+      </wss:CreateOrder>
+   </soapenv:Body>
+</soapenv:Envelope>

@@ -1,0 +1,132 @@
+
+<div id="mvr-consent-form"> 
+
+	<div class="grid">
+
+		<label class="title">MVR RELEASE CONSENT FORM</label>
+		
+		<h2>MVR RELEASE CONSENT FORM</h2>
+		<p>
+		In conjunction with my potential employment at <b><u><span id="companyname"></span></u></b> ("the company"), I
+		<b><u><span id="drivername"></span></u></b> (applicant)  consent to the release of my Motor Vehicle Records (MVR) 
+		to the company. I understand the company will use these records to evaluate my suitability to fulfill 
+		driving duties that may be related to the position for which I am applying.  I also consent to the 
+		review, evaluation, and other use of any MVR I may have provided to the company.
+		</p>
+		<p>
+		This consent is given in satisfaction of Public Law 18 USC 2721 et. Seq., "Federal Drivers 
+		Privacy Protection Act", and is intended to constitute "written consent" as required by this 
+		Act..
+		</p>
+		
+		<div class="gridrow">	
+			<div id="driversign"></div>
+		</div>	
+		
+		<div class="gridrow">
+			<label> Date Signed</label>	
+			<input id="signdate" type="text" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">
+			<label> License #</label>
+			<span id="license"></span>
+		</div>
+		
+		<div class="cell">
+			<label> Issued State</label>
+			<span id="issuedstate"></span>
+		</div>
+		
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-consent"><i class="fa fa-save">&nbsp;</i>Done</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row" align="center">
+		<span id="message"></span>
+		<img id="test"/>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+
+$(function(){
+	
+	d3.selectAll("#companyname").text(Current.company.name);
+	d3.selectAll("#drivername").text(Current.driver.firstname + " " + Current.driver.lastname);
+	d3.selectAll("#license").text(Current.driver.license);
+	d3.selectAll("#issuedstate").text(Current.driver.issuedstate);
+		
+	//1. populate master data - state
+	//d3.json('/data/state.json', function(error,data) {
+	//	  dropdown().create("#state")
+	//			.populatedata(data);
+	//});
+	
+	signature1().create("driversign", (Current.driver.firstname + " " + Current.driver.lastname) );
+	
+	$("#signdate").datepick({minDate: new Date()});
+    
+    $('#save-consent').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#mvr-consent-form");
+		
+        //2. save product
+		if(!validation_error){
+		
+			var aftersave = workflow.create("#mvr-consent-form").aftersave();
+				aftersave.disableAll();
+
+   			html2canvas($("#mvr-consent-form"), {
+		        onrendered: function(canvas) {         
+		            var imgData = canvas.toDataURL("image/jpg");              
+
+					// Construct a file object
+					var blob = dataURLtoBlob(imgData);
+					var parts = [blob];
+					//Ex: company_1_driver_1_mvr_consent
+					var file = new File(parts, 'mvr-consent.jpg');
+					
+					var formData = new FormData();
+						formData.append("driverid", Current.driver.id);
+						formData.append("consent_snapshot_file", file, file.name);									
+													
+						// send via XHR - look ma, no headers being set!
+				    	$.ajax({
+				            url: '/api/driver/mvr/consent/save', //upload scanned docs
+				            type: 'post', 
+				            cache: false,
+				            data: formData,				        	
+				            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				            contentType: false,	
+				            success: function(resp) {
+								aftersave.changetext("#cancel","Done"); //changetext enables the el
+								aftersave.setStatusMessage(resp);	
+				            	//return false;
+				            }
+			       		 });		                
+		            }//onrendered		            
+		        });				
+			}
+    });
+  
+    
+    $('#cancel').click(function() {  
+    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the mvr list
+    	loadtab("/pages/driver/mvr/mvr_list.html");
+    	
+	});    
+	    
+});
+
+</script>

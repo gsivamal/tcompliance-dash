@@ -1,0 +1,129 @@
+
+<div id="equipcert-form">
+
+	<div class="grid">
+
+		<label class="title">New Certificate</label>
+		
+		<div class="gridrow">
+		    <label> Select Name:</label>
+			<select id="certnameselect"></select>
+		</div>		
+	
+		<div class="cell">	
+			<label>Certificate Name:</label>
+			<input id="certname" data-dbcolname="certname" type="text" placeholder="Annual Inspection" data-validation="mandatory"/>
+		</div>
+		
+		<div class="cell">	
+			<label>Date of Expiration:</label>
+			<input id="certexpiry" data-dbcolname="certexpiry" type="text" placeholder="mm/dd/yyyy"/>
+		</div>
+		
+		<div class="gridrow">	
+			<label> Scan copy:</label>
+			<input id="cert_files" data-dbcolname="cert_files" type="file" multiple />
+			<label>one or multiple</label>
+		</div>	
+
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-cert"><i class="fa fa-cloud-upload">&nbsp;</i>Upload</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+
+$(function(){    
+    
+	$("#certexpiry").datepick({minDate: new Date()});
+	
+	//populate master data - lab
+	d3.json('/data/equip/equip-cert-name.json', function(error,data) {
+		dropdown().create("#certnameselect")
+				.populatedata(data)
+				.onchange(function(){
+					d3.select("#certname").attr("value", function(){
+					
+						var selectedcert = d3.select("#certnameselect").node().value;
+						
+						if(selectedcert == "OTHER")
+							d3.select(this).attr("placeholder", "Please type");
+						else
+							return selectedcert;
+						});
+				});
+	});
+	
+	//populate master data - lab
+	d3.json('/data/equip/equip-cert-status.json', function(error,data) {
+		dropdown().create("#certstatus")
+				.populatedata(data);
+	});
+	
+    $('#save-cert').click(function() {  
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#equipcert-form");
+		
+        //2. save product
+		if(!validation_error){
+		
+			var aftersave = workflow.create("#equipcert-form").aftersave();
+				aftersave.disableAll();		
+		
+			var equipcert_data = formutil.serializeObject("#equipcert-form");
+			
+			var formData = new FormData();
+				formData.append("equipid", Current.equip.id);
+				formData.append("certdata", JSON.stringify(equipcert_data));
+				
+				//set the multiple file
+				var files = d3.select("#cert_files").node().files;
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}
+											
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/equip/cert/save', //upload scanned cert
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+		            
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+    					
+		            }
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the cert list
+    	loadtab("/pages/equip/certificate/cert_list.html");
+    	
+	});    
+	    
+});
+
+
+
+
+</script>

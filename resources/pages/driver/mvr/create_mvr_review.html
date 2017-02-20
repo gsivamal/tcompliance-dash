@@ -1,0 +1,139 @@
+
+ <div id="mvrreview-dialog">
+
+	<div class="grid">
+
+
+		<label class="title">ANNUAL REVIEW OF DRIVING RECORD</label>
+		
+		<h2>ANNUAL REVIEW OF DRIVING RECORD</h2>
+		<p>
+		In accordance with 49 CFR 391.25, I certify that I have carefully reviewed the driving record of to determine
+		whether or not he/she meets the minimum requirements for safe driving specified in 49 CFR 391.11 or is
+		disqualified to drive a motor vehicle pursuant to 49 CFR 391.15. In reviewing this driver's record, I certify that
+		I have considered any evidence that the driver has violated any applicable Federal Motor Carrier Safety
+		Regulations or Hazardous Materials Regulations; and considered the driver's accident record and any
+		evidence that the driver has violated laws governing the operations of motor vehicles, and I have given great
+		weight to violations, such as speeding, reckless driving, and operating while under the influence or alcohol or
+		drugs, that indicate that the driver has exhibited a disregard of the safety of the public.
+		</p>
+		<p> 
+		A copy of the response from each State agency to the inquiry required by 49 CFR 391.25(b) is attached. This form shall be
+		maintained in the driver's qualification file, as required by 49 CFR 391.51.
+		</p>
+
+
+		<div class="cell">	
+			<label>Motor Carrier:</label>
+			<span id="companyname"></span>
+		</div>
+		
+		<div class="cell">	
+			<label>Address:</label>
+			<span id="companyaddress"></span>
+		</div>
+
+		<div class="gridrow">	
+			<label> Reviewed By Name/ Title</label>
+			<input type="text" data-validation="mandatory" placeholder="Name"/>
+			<input type="text" data-validation="mandatory" placeholder="Title"/>
+		</div>	
+	
+		<div class="gridrow">	
+			<div id="reviewersign"></div>
+		</div>	
+	
+		<div class="gridrow">
+			<label> Sign date</label>	
+			<input id="signdate" type="text" data-validation="mandatory"/>
+		</div>
+
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-mvr-review">Review Complete</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+
+
+var reviewmvr = function(mvrreqid){
+
+	
+	d3.selectAll("#companyname").text(Current.company.name);
+	d3.selectAll("#companyaddress").text(Current.company.address1 + ", " + Current.company.city + ", " + Current.company.state + ", "+ Current.company.zip);
+	
+	//1. signature date
+	signature.create("#reviewersign")	
+	
+	$("#signdate").datepick({minDate: new Date()});
+    
+    $('#save-mvr-review').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#mvrreview-dialog");
+		
+        //2. save product
+		if(!validation_error){
+
+   			html2canvas($("#mvrreview-dialog"), {
+		        onrendered: function(canvas) {         
+		            var imgData = canvas.toDataURL("image/jpg");              
+	        		
+					// Construct a file object
+					var blob = dataURLtoBlob(imgData);
+					var parts = [blob];
+					
+					var file = new File(parts, "mvr-review");
+					
+					var formData = new FormData();
+						formData.append("mvrreqid", mvrreqid);
+						formData.append("mvrreview_file", file, file.name);									
+													
+						// send via XHR - look ma, no headers being set!
+				    	$.ajax({
+				            url: '/api/driver/mvr/review/save', //upload scanned docs
+				            type: 'post', 
+				            cache: false,
+				            data: formData,				        	
+				            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+				            contentType: false,	
+				            success: function(resp) {
+				               	//console.log('ok');
+
+								var aftersave = workflow.create("#mvrreview-dialog").aftersave();
+											aftersave.disableAll();
+											aftersave.changetext("#cancel","Done"); //changetext enables the el
+											aftersave.setStatusMessage(resp);	 	        					
+	        					
+				            }
+				            //return false; //
+			       		 });
+		                
+		            }//onrendered
+		        });
+			}
+    }); 	
+}
+    
+$('#cancel').click(function() {    
+	//current modal, only one modal can be open at any time
+	modal.close();
+	
+	//reload the mvr list
+	loadtab("/pages/driver/mvr/mvr_list.html");
+	
+});
+	    
+
+</script>
+
+

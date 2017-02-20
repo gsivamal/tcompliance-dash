@@ -1,0 +1,310 @@
+
+
+<div class="tablepage">
+
+		<div class="tablepagerow">
+			<label><b> <i class="fa fa-ellipsis-h fa-lg fa-spin"></i>&nbsp;&nbsp;Random Drug Test Pool - <span id="currentyear"><span></b></label>
+		</div>
+		
+		<div class="spacer"/>
+
+		<div class="row">
+			<div class="col-2">			
+				<label>Client </label>
+			</div>
+			<div class="col-2">
+				<select id="clientlist"/>
+			</div>
+			<div class="col-1">
+				<label>Pool type</label>
+			</div>
+			<div class="col-2">
+				<div>
+					<input type="radio" name="pooltype" data-dbcolname="pooltype" value="cdl" checked> CDL </input>
+			 		<input type="radio" name="pooltype" data-dbcolname="pooltype" value="noncdl"> Non-CDL </input>
+				</div>				
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-2">			
+				<label>Select Year</label>
+			</div>
+			<div class="col-2">
+				<select id="yearlist"/>
+			</div>
+			<div class="col-2">			
+		 		<button type="button" id="loadpool-btn"><i class="fa fa-history">&nbsp;</i>Load Pool</button>
+			</div>
+			<div class="col-2">
+		 		<button type="button" id="createpool-btn"><i class="fa fa-flask">&nbsp;</i>Create Pool</button>
+			</div>
+		</div>
+		
+		<div class="tablepagerow">	
+			<div class="row" align="center">
+				<span id="message"></span>
+			</div>
+			<ul id="pager" class="tabs"></ul>	
+		</div>
+		
+		<table id="randompool_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="poolentryid">ID #</th>
+	               	<th data-colname="drivername">Driver Name</th>
+	               	<th data-colname="drugtestid"><label>Drug Test ID &nbsp; <i class="fa fa-info-circle tooltip"><span class="tooltiptext">Use this id to track the Drug Test, Goto Driver->Edit Driver->Drug Test tab</span></i></label></th>
+	               	<th data-colname="notificationdate"><label>Notification Date/Time &nbsp; <i class="fa fa-info-circle tooltip"><span class="tooltiptext">Notification One day before need to be send.</span></i></label></th>
+	               	<th data-colname="pickedday">Schedule Date</th>
+	               	<th data-colname="status">Status</th>
+					<th data-colname="comments">Comments</th>
+	            </tr>
+	        </thead>
+	    </table>
+	
+		<div class="tablepagerow">
+				<span></span>	
+				<div>
+					<button type="button" id="send-to-quest-btn"><i class="fa fa-check">&nbsp;</i>Send to Quest</button>
+					<button type="button" id="mis-report"><i class="fa fa-file-text-o">&nbsp;</i>MIS Report</button>
+				</div>
+				<select id="pagesizer">
+					<option>Page size: 25</option>
+					<option>Page size: 35</option>
+					<option>Page size: 50</option>
+					<option>Page size: 100</option>
+				</select>
+		</div>
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		var testtype = "drugtest";
+		var selectedyear = Current.year;
+		var selectedclient = "";
+
+		//default current year
+		d3.select("#currentyear").text(selectedyear);
+
+		//2. yearlist
+		var yearlist = d3.select("#yearlist");
+		
+		// let you view last 3 years tc data
+		var years = [ { "year": Current.year } ];
+	
+		yearlist.selectAll("option")
+        	.data(years)
+        	.enter()
+        	.append("option")
+	        	 .text(function(dtm) {
+					return dtm.year; 
+		        });
+		
+		yearlist.on("change",function(){
+			selectedyear = d3.select(this).node().value;
+		});
+		
+ 		//1. populate client list
+		$.getJSON('/api/audit/client/getAll', function(data) {
+			
+			if(data.length > 0){
+			
+				//default first client
+				selectedclient = data[0].id;
+
+				var clientlist = d3.select("#clientlist");
+				
+					clientlist.selectAll("option")
+								.data(data)
+								.enter()
+								.append("option")
+									.text(function(dtm){
+										return dtm.name;
+									})
+									.attr("value",function(dtm){
+										return dtm.id;
+									});	
+			
+				//default cdl pool
+				loadrandompool("cdl"); 
+			}		
+		});
+		
+
+		d3.select("#createpool-btn")
+			.on("click", function(){
+			
+				console.log("pooltype:"+d3.selectAll('input[name="pooltype"]:checked').node().value);
+						
+				createrandompool(d3.selectAll('input[name="pooltype"]:checked').node().value);
+
+				d3.select("#currentyear").text(selectedyear);				
+		});	
+		
+		d3.select("#loadpool-btn")
+			.on("click", function(){
+			
+				console.log("pooltype:"+d3.selectAll('input[name="pooltype"]:checked').node().value);
+						
+				loadrandompool(d3.selectAll('input[name="pooltype"]:checked').node().value);
+
+				d3.select("#currentyear").text(selectedyear);				
+		});	
+			
+		d3.selectAll('input[name="pooltype"]')
+			.on("change", function(){
+			
+				//console.log("pooltype:"+d3.select(this).node().value);
+						
+				//loadrandompool(d3.select(this).node().value);
+				pooltype = d3.select(this).node().value;
+				
+		});				
+			
+		var cdlpooltable = null;
+		
+		var createrandompool = function (pooltype){
+
+			//set wait cursor 
+			d3.select(".tablepage")
+				.style("cursor","progress");
+				
+		  	//1. populate partners
+			$.getJSON('/api/company/randomtest/create', { clientid : selectedclient, year : selectedyear, testtype : testtype, pooltype : pooltype }, function(data) {			
+			
+				// render the table
+				d3.select("#message").text(data.message).attr("style","color:green;");
+								
+				//normal cursor			
+				d3.select(".tablepage")
+					.style("cursor","default");
+									
+			});
+			
+		} //createrandompool	
+
+	    var loadrandompool = function (pooltype){
+	    
+	    	d3.select("#message").text("");
+
+			//set wait cursor 
+			d3.select(".tablepage")
+				.style("cursor","progress");
+				
+		  	//1. populate partners
+			$.getJSON('/api/company/randomtest/load', { clientid : selectedclient, year : selectedyear, testtype : testtype, pooltype : pooltype }, function(data) {
+			
+			
+				// render the table
+				cdlpooltable = table().createtable("#randompool_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								.setpager("#pager")	
+									.done();
+									
+				//highlight the PENDING SCHEDULE row
+				d3.select("#randompool_table")
+					.selectAll("tbody")
+						.selectAll("tr")
+							.each(function(dtm){
+								if(dtm.status == "PENDING SCHEDULE"){
+									d3.select(this).style("color","red")
+								    				.style("font-weight","bold");
+										
+								}
+							});
+				
+				//normal cursor			
+				d3.select(".tablepage")
+					.style("cursor","default");
+									
+			});
+			
+		} //loadrandompool
+			
+			
+			//1. Send to quest
+	 		d3.select("#send-to-quest-btn")
+		    	.on("click", function(){	    
+		    	
+		    		var selectedrow = cdlpooltable.getselectedids()[0];
+		    		
+		    		if(selectedrow != undefined){
+		    		
+		    			if(selectedrow.status === "PLANNED"){
+							//alert("Date is not current yet, You cannot schedule test now, please wait for the status change to 'PENDING SCHEDULE'");
+							d3.select("#message").text("Date is not current yet, You cannot schedule test now, please wait for the status change to 'PENDING SCHEDULE'").attr("style","color:green;");
+						} else if(selectedrow.status === "PENDING SCHEDULE"){
+		    		
+			    			//set Current.driver
+			    			$.getJSON('api/driver/get', { id : selectedrow.driverid }, function(driver) {
+			    			
+			    				Current.driver = driver;
+			    		
+					    		$.get('pages/driver/drugtest/new-drugtest.html', function(htmlcontent){
+						    		modal.open({content: htmlcontent, width:"80%"}, function(){
+			
+						    			opendrugtest(testtype, selectedrow.pickedday, function(drugtestid){
+						    			
+						    				//by this time the drug test got created and control comes here with drugtestid, if no error
+						    				//alert("drugtestid:"+drugtestid);
+						    				
+						    				var formData = new FormData();
+												formData.append("year", Current.year);
+												formData.append("pooltype", pooltype);
+												formData.append("testtype", testtype);
+												formData.append("poolentryid", selectedrow.poolentryid);
+												formData.append("drugtestid", drugtestid); //newly created drugtestid
+																			
+												// pool would look like, company-1-cdl-drugtest-2016
+										    	$.ajax({
+										            url: '/api/company/randomtest/poolentry/update', 
+										            type: 'post', 
+										            cache: false,
+										            data: formData,				        	
+										            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+										            contentType: false,	
+										            success: function(resp) {
+														console.log("resp after random alcohol test update:"+ resp);
+										            }
+										            //return false;
+									       		 });
+						    				
+						    			}); //opendrugtest
+						    		}); //modal open
+								});
+						
+			    			});
+						} 
+						
+					}
+				});	
+	    
+	    
+	    //2. MIS Report 
+ 		d3.select("#mis-report")
+	    	.on("click", function(){	    
+	    		$.get('pages/audit/randompool/mis_report.html', function(htmlcontent){
+			    	modal.open({content: htmlcontent, width:"80%"});
+		    	});
+		});
+
+	    
+	   	// ** NOT USED, can be removed later ** //
+	    var pickdriver = function(){
+	    	var selectedrowdata = cdlpooltable.getselectedids()[0];
+	    	var selectedrow = cdlpooltable.getselectedrow();
+	    	//alert(selectedrow);
+	    	selectedrow.select("td")
+						.text("Joe");	
+	    }
+
+	
+
+}();
+	
+	
+</script>

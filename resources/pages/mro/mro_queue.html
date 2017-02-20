@@ -1,0 +1,96 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<div>
+		  	<i class="fa fa-search">&nbsp;</i> <input id="tablefilter" style="text-indent:5px;" type="text"></input>	  	
+		  	&nbsp;
+		  	<select id="filtercolumn">
+				 	<option data-colname="questresponsecode">questresponsecode</option>
+			</select>
+		</div>	
+		<div>
+		  	<input type="radio" name="reporttype" value="Mro Process" checked="checked">In Process</input>
+			<input type="radio" name="reporttype" value="Pending">Completed</input>
+			<input type="radio" name="reporttype" value="All">All (this month)</input>
+		</div>		
+		<ul id="pager" class="tabs"></ul>	
+	</div>	
+	
+
+	<table id="drugtest_table">
+        <thead>
+            <tr>
+            	<th data-colname="drugtestid">ID</th>
+               	<th data-colname="requestdate">Request Date</th>
+            	<th data-colname="testreason">Test Reason</th>
+           		<th data-colname="append(scheduledate,scheduletime)">Schedule Date</th>
+           		<th data-colname="questresponsecode">Quest ResCode</th>
+               	<th data-colname="completedate">Complete Date</th>
+               	<th data-colname="status">Status</th>
+               	<th data-colname="file(eccf_file)">eCCF Form</th>
+               	<th data-colname="file(result_file)">Results</th>	
+            </tr>
+        </thead>
+    </table>
+    
+	<div class="tablepagerow">
+		<span id="totalDrugTests"></span>
+		<div>
+			<button type="button" id="enter-dgresult"><i class="fa fa-keyboard-o">&nbsp;</i>Enter Results</button>
+		</div>
+		<select id="pagesizer">
+			<option>Page size: 20</option>
+			<option>Page size: 25</option>
+			<option>Page size: 30</option>
+			<option>Page size: 40</option>
+		</select>
+	</div>      
+	
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		var drugtesttable = null;
+	    
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/mro/drugtest/getAll', { status : 'SCHEDULED' }, function(data) {
+		
+			//console.log("Drug Tests: "+JSON.stringify(data));
+			
+			// render the table
+			drugtesttable = table().createtable("#drugtest_table")
+								.populatedata(data)
+								.setpagesizeselector("#pagesizer")
+								.setpager("#pager")
+								.setinputfilter("#tablefilter")										
+								.done();
+								
+			d3.select("#totalDrugTests").text("Total Tests:"+data.length);
+								
+		});
+
+	  	//1. dg result
+		d3.select("#enter-dgresult")
+	    	.on("click", function(){
+	    	
+	    		var selecteddrugtest = drugtesttable.getselectedids()[0];
+	    		
+	    		if(selecteddrugtest!= undefined){
+	    		
+		    		$.get('pages/mro/new_mroresult.html', function(htmlcontent){
+		    		
+				    	modal.open({content: htmlcontent, width:"65%"}, function(){
+				    			editDrugTest(selecteddrugtest.drugtestid);
+			    		});
+			    		
+		    		});     	
+	    		}
+	    });
+	      
+	}();
+	
+</script>

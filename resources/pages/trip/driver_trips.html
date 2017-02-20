@@ -1,0 +1,114 @@
+
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-calendar">&nbsp;&nbsp;Your Scheduled Trip </i></label>	
+		<div>
+		  	<i class="fa fa-search">&nbsp;</i>  <input id="trip_filter" style="text-indent:5px;" type="text"></input>
+		  	&nbsp;	  	
+		  	<select id="filtercolumn">
+				 	<option data-colname="name">Trip/Cust Name</option>	
+			</select>
+		</div>
+	
+		<ul id="trip_table_pager" class="tabs"></ul>
+	</div>
+
+	<table id="trip_table">
+        <thead>
+            <tr>
+               	<th data-colname="name">Trip/Cust Name</th>
+               	<th data-colname="drivername">Driver</th>	
+               	<th data-colname="tripid">Trip Id</th>
+            	<th data-colname="tripdate">Trip Date</th>
+				<th data-colname="returndate">Return Date</th>
+				<th data-colname="file(shipdoc_file)">Shipping Docs</th>
+				<th data-colname="file(tripdoc_file)">Trip picked Docs</th>
+            	<th data-colname="file(pretrip_snapshot_file)">Pre-Trip Insp</th>
+				<th data-colname="file(posttrip_snapshot_file)">Post-Trip Insp</th>               												                	
+               	<th data-colname="status">Trip Status</th>
+            </tr>
+        </thead>
+    </table>
+
+	<div class="tablepagerow">	
+		<span id="totalRows"></span>		
+		<div style="display:flex;">
+			<button type="button" id="pretrip-btn"><i class="fa fa-wrench">&nbsp;</i>Pre-Trip Inspection</button> &nbsp;|&nbsp;
+			<button type="button" id="view-trip"><i class="fa fa-road">&nbsp;</i>View Trip</button> &nbsp;|&nbsp;			
+			<button type="button" id="posttrip-btn">Post-Trip Insp&nbsp;<i class="fa fa-wrench">&nbsp;</i></button>&nbsp;
+		</div>
+		<select id="pagesizer">
+			<option>Page size: 25</option>
+			<option>Page size: 35</option>
+			<option>Page size: 50</option>
+			<option>Page size: 100</option>
+		</select>										
+	</div>
+	
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+	    var triptable = null;
+	    
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/driver/trip/getAll', { driverid : Current.driver.id }, function(data) {
+			
+			// render the table
+			triptable = table().createtable("#trip_table")
+				.populatedata(data)
+					.setpagesizeselector("#pagesizer")
+					.setpager("#trip_table_pager")
+					.setinputfilter("#trip_filter")
+					.sortable()
+					.done();
+
+			d3.select("#totalRows").text("Total Rows :"+data.length);	
+		});
+		
+		//2. pre trip insp
+	    d3.select("#pretrip-btn")
+	    	.on("click", function(){	    	
+	    		var selectedrow = triptable.getselectedids()[0];				
+				if(selectedrow != undefined){
+					//TODO: uncomment this later...
+					if(selectedrow.status == "New"){	    		    	
+			    		loadpage("/pages/trip/new_pretrip_inspection.html", function(){
+							open(selectedrow);
+						});				
+					}
+				}
+	    });   
+	    
+	    //3.edit 
+	    d3.select("#view-trip")
+	    	.on("click", function(){	    	
+				var selectedrow = triptable.getselectedids()[0];				
+				if(selectedrow != undefined){
+					loadpage("/pages/trip/view_trip.html", function(){
+						edit(selectedrow.tripid);
+					});
+				}					
+	    });
+	    
+	    //4. post trip insp
+	    d3.select("#posttrip-btn")
+	    	.on("click", function(){	    	
+	    		var selectedrow = triptable.getselectedids()[0];				
+				if(selectedrow != undefined){
+					//TODO: uncomment this later...
+					if(selectedrow.status == "OnRoad" || selectedrow.status == "PostTrip Inspection"){	
+						loadpage("/pages/trip/new_posttrip_inspection.html", function(){
+							open(selectedrow);
+						});						
+					}				
+				}
+	    });
+	    
+	    
+}();
+	
+</script>

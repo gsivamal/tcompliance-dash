@@ -1,0 +1,104 @@
+
+<div id="newtc-form">
+
+	<div class="grid">
+
+		<div class="gridrow">
+			<div class="row">
+				<div class="col-4"> <label> Driver </label> </div>
+				<div class="col-4"> <span id="selecteddriver"> </span> </div>
+			</div>
+			<div class="row">
+				<div class="col-4"> <label> Year </label> </div>
+				<div class="col-4"> <span id="selectedyear"> </span> </div>
+			</div>
+			<div class="row">
+				<div class="col-4"> <label> Select Month </label> </div>
+				<div class="col-4"> <select id="months" data-dbcolname="months"> </select> </div>
+			</div>
+		</div>
+	
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="create-newtc"><i class="fa fa-check">&nbsp;</i>Create</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+
+<script type="text/javascript">
+
+var opentimecard = function (selecteddriver,selectedyear){
+
+	d3.select("#selecteddriver").text(selecteddriver.firstname + " " +selecteddriver.lastname);
+	d3.select("#selectedyear").text(selectedyear);
+
+	d3.select("#months")
+		.selectAll("option")
+		.data(monthsfullarr)
+		.enter()
+		.append("option")
+		.text(function(d){
+			return d;
+		})
+		.attr("value", function(d,i){
+			return i;
+		});
+    
+    d3.select("#create-newtc")
+    	.on("click", function() {  
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#newtc-form");
+		
+        //2. save product
+		if(!validation_error){
+		
+			var aftersave = workflow.create("#newtc-form").aftersave();
+				aftersave.disableAll();		
+		
+			var selectedmonth = d3.select("#months").node().value;
+						
+			var formData = new FormData();
+				formData.append("driverid", selecteddriver.id);
+				formData.append("year", selectedyear);
+				formData.append("month", selectedmonth);
+				
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/driver/timecard/create',
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+		            
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+    					
+		            }
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload the tc list
+		loadtab("/pages/company/timecard/timecard_list.html");
+    	
+	});    
+	    
+};
+
+</script>

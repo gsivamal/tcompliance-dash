@@ -1,0 +1,30 @@
+[
+        {
+        	"id" : "One Time",
+        	"name" : "One Time"
+        },
+        {
+        	"id" : "Semi Annual",
+        	"name" : "Semi Annual"
+        },
+        {
+        	"id" : "Annual",
+        	"name" : "Annual"
+        },
+        {
+        	"id" : "Quarterly",
+        	"name" : "Quarterly"
+        },
+        {
+        	"id" : "Every 3 Yrs",
+        	"name" : "Every 3 Yrs"
+        },
+        {
+        	"id" : "Every 5 Yrs",
+        	"name" : "Every 5 Yrs"
+        },
+        {
+        	"id" : "Every 10 Yrs",
+        	"name" : "Every 10 Yrs"
+        }
+]

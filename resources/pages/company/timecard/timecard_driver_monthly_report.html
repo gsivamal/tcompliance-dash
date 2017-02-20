@@ -1,0 +1,204 @@
+
+ <div id="tc-form" class="tablepage">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-hourglass">&nbsp;&nbsp; Monthly Report </i></label>	
+		<div>	
+	  		<select id="yearlist"/> &nbsp;  <select id="driverlist"/>
+		</div>
+		<ul id="tcall_table_pager" class="tabs"></ul>
+	</div>	
+	
+	<div class="spacer"/>
+
+	<table id="tcall_table">
+        <thead>
+            <tr>
+            	<th data-colname="drivername">Driver</th>
+             	<th data-colname="month">Month</th>
+            	<th data-colname="monthtotalworked">Hours Worked</th>
+            	<th data-colname="equips">Equipment Used</th>
+            </tr>
+        </thead>
+    </table>
+
+	<div class="tablepagerow">
+			<span id="totalRows"></span>
+			<div>
+				<button type="button" id="view-tc"><i class="fa fa-list-alt">&nbsp;</i>View Timecard</button>
+				<button type="button" id="savepdf-tc"><i class="fa fa-file-pdf-o">&nbsp;&nbsp;</i>PDF Report</button>
+			</div>
+			<div></div>
+	</div>
+										
+</div>
+
+
+<script type="text/javascript">
+
+	
+
+! function(){
+
+		var tctable;
+
+		//driver list
+		$.getJSON('/api/driver/getAll', function(data) {
+		
+			//default first driver
+			Current.driver = data[0];
+			getTimecard();
+			
+			// render the driver list
+			var driverlist = d3.select("#driverlist");
+			
+				driverlist.selectAll("option")
+		        	.data(data)
+		        	.enter()
+		        	.append("option")
+		        	 .text(function(dtm) {
+						return dtm.firstname + " " + dtm.lastname; 
+			        })
+			        .attr("value", function(dtm) {     		 	
+						return dtm.id; 
+			        });
+			        
+		        driverlist.on("change", function(){
+		        
+					driverlist.selectAll("option")
+    					.each(function(d) { 
+		    				if(this.selected === true){
+    							//console.log( "data:"+JSON.stringify(d) );
+    							Current.driver = d;
+    							getTimecard();
+    						}    				
+    					});
+				});
+				
+		});	
+		
+		//2. yearlist
+		var yearlist = d3.select("#yearlist");
+		
+		// let you view last 3 years tc data
+		var years = [ { "year": Current.year }, { "year": Current.year-1 }, { "year": Current.year-2 } ];
+	
+		yearlist.selectAll("option")
+        	.data(years)
+        	.enter()
+        	.append("option")
+	        	 .text(function(dtm) {
+					return dtm.year; 
+		        });
+			
+	    //1. view tc
+	    d3.select("#view-tc")
+	    	.on("click", function(){
+				
+				var selectedtc = tctable.getselectedids()[0];
+    			//Current.equip = selectedequip;      			
+      			
+      			//loadpage("/pages/equip/equip_tabs.html");	
+      			
+      			if(selectedtc !== undefined){				
+
+	      			//console.log("selectedtc:"+ JSON.stringify(selectedtc.monthidx) );
+	   
+		   			var selectedmonth = selectedtc.monthidx;
+		    		var selectedyear = yearlist.node().value;
+		    		
+		    		//console.log("selectedyear"+selectedyear);
+		    		//console.log("selectedmonth:"+selectedmonth);
+		    		    	
+		    		$.get('pages/trip/timecard/timecard-month-table.html', function(htmlcontent){
+				    	
+				    	modal.open({content: htmlcontent, width:"70%"}, function(){
+				    		opentimecard(selectedmonth,selectedyear);
+			    		});
+			    		
+		    		});     	
+	    		
+	    		}	   
+	   
+	    });
+	    
+	    
+		var getTimecard = function(){		
+			var selectedyear = d3.select("#yearlist").node().value;
+				
+			//1. populate master data - company
+			$.getJSON('/api/driver/timecard/getAll', { driverid : Current.driver.id, year : selectedyear }, function(data) {				
+				var tabledata = [];
+				for(var i=0; i < data.length; i++){
+					data[i].drivername = Current.driver.firstname + " " + Current.driver.lastname;
+					data[i].monthidx = data[i].month; 
+					data[i].month = monthsarr[data[i].month];
+					data[i].monthhours = data[i].monthtotalworked;
+					
+					//console.log("data[i].equips:"+ data[i].equips );
+					//var e = data[i].equips;
+					
+					data[i].equips = data[i].equips.split(",").unique();
+					tabledata.push(data[i]);
+				}
+				
+				// render the table
+				tctable = table().createtable("#tcall_table")
+					.populatedata(tabledata)
+						.done();
+	
+				d3.select("#totalRows").text("Total entries :"+tabledata.length);	
+			});	
+		}
+		
+		//save as pdf
+		$('#savepdf-tc').click(function() {			
+			html2canvas($("#tc-form"), {
+   						useCORS:true,
+				        onrendered: function(canvas) {				            
+				            var imgData = canvas.toDataURL("image/jpg");
+				            
+							/* Here are the numbers (paper width and height) that I found to work. 
+								It still creates a little overlap part between the pages, but good enough for me.
+								if you can find an official number from jsPDF, use them. */
+								
+							var imgWidth = 200; 
+							var pageHeight = 250;  
+							var imgHeight = canvas.height * imgWidth / canvas.width;
+							var heightLeft = imgHeight;
+							
+							var doc = new jsPDF('p', 'mm', 'a4');
+							var position = 0;
+							
+							doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+							heightLeft -= pageHeight;
+							
+							while (heightLeft >= 0) {
+								position = heightLeft - imgHeight;
+								doc.addPage();
+								doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+								heightLeft -= pageHeight;
+							}
+							doc.save('Timecard-monthly-report.pdf'); 				
+ 						}//onrendered
+				});			
+		});
+		
+		
+		//TODO: not used delete later,
+		var calcMonthHours = function(tc){					
+			var h = 0;
+			 eval(tc).forEach(function(d) {
+				var totalworked = parseFloat(d.totalworked);
+			 	if( !isNaN(totalworked) ){ //this checks for undefined and "" and "Total Hrs->" entries
+			    	h = h + totalworked;
+			    }
+			  });		
+			return h;
+		}
+	    
+}();
+
+
+	
+</script>

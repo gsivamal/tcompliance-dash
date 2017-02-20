@@ -1,0 +1,81 @@
+
+<div id="uploadagreement-form">
+
+	<div class="grid">
+
+		<label class="title">Upload Agreement</label>
+	
+		<div class="gridrow">	
+			<label> Agreement documents:</label>
+			<input id="agreement_files" data-dbcolname="acci_files" type="file" multiple data-validation="mandatory">(one or multiple)</input>
+		</div>	
+
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<button type="button" id="upload-btn"><i class="fa upload">&nbsp;</i>Upload</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+
+
+var openAgreementDialog = function(selectedpartnerid){
+
+    
+    $('#upload-btn').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#uploadagreement-form");
+		
+        //2. save product
+		if(!validation_error){
+		
+			var agreement_data = formutil.serializeObject("#uploadagreement-form");
+			
+			var formData = formutil.serializeFileObject("#uploadagreement-form");
+				formData.append("partnerid", selectedpartnerid);
+											
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/partner/agreement/upload',
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+					
+						var aftersave = workflow.create("#uploadagreement-form").aftersave();
+							aftersave.disableAll();
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+		            }
+		            
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+}
+
+    
+$('#cancel').click(function() {    
+	//current modal, only one modal can be open at any time
+	modal.close();
+	
+	//reload the accident list
+	loadtab("/pages/company/partner/partner_list.html");    	
+});    
+	    
+
+
+
+</script>

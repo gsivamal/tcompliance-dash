@@ -1,0 +1,205 @@
+
+<div>
+
+	<div id="trn-form" class="grid"> 
+	
+		<label class="title">Training for <span id="drivername"/></label>
+	
+		<div class="cell">
+			<label> Training List</label>
+			<select id="comptrns" data-dbcolname="training" data-validation="mandatory"></select>
+		</div>
+		
+		<div class="cell">
+			<label> Schedule</label>
+			<span id="schedule"></span>
+		</div>
+	
+		<div class="cell">
+			<label> Date Taken</label>
+			<input id="datetaken" data-dbcolname="datetaken" size="10" type="text" data-validation="mandatory" placeholder="mm/dd/yyyy"/>
+		</div>
+	
+		<div class="cell">
+			<label> Next Due Date
+				<i class="fa fa-info-circle tooltip"><span class="tooltiptext">Alert field, Notified through Email before it expires</span></i>
+			</label>
+			<input id="nextduedate" data-dbcolname="nextduedate" size="10" type="text" placeholder="mm/dd/yyyy"/>
+		</div>
+	
+		<div class="cell">	
+			<label> Trainer </label>
+			<input id="trainer" data-dbcolname="trainer" type="text"/>
+		</div>
+		
+		<div class="cell"></div>
+		<div class="cell"></div>
+		<div class="cell"></div>
+		<div class="cell"></div>
+		
+		<div class="gridrow">
+			<label> Remarks</label>
+			<textarea data-dbcolname="remarks" rows="6" cols="60%"></textarea>
+		</div>
+		
+		<div class="gridrow">	
+			<label> Certificate scan copy</label>
+			<input id= "certs_file" data-dbcolname="certs_file" type="file" multiple/>			
+			<label>one or multiple</label>
+		</div>
+		
+	</div>
+
+	<div class="row addmargin" align="center">
+		<button type="button" id="save-trn"><i class="fa fa-floppy-o">&nbsp;</i>Update Status</button>
+		<button type="button" id="cancel">Cancel</button>
+	</div>
+	
+	<div class="row addmargin" align="center">
+		<span id="message"></span>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+function editTraining(selectedrow){
+
+	//rebind
+	formutil.rebind("#trn-form", selectedrow);
+	
+    var aftersave = workflow.create("#trn-form").aftersave();
+		aftersave.disableAll();
+		aftersave.enable("#status");
+
+	// driver name display
+	d3.selectAll("#drivername").text(Current.driver.firstname + " " + Current.driver.lastname);
+    
+	//calendar	
+	$("#datetaken").datepick({minDate: new Date()});
+		
+	
+	//populate master data - drivers
+	$.getJSON('/api/driver/getAll', function(data) {
+	
+		var ddata = [];		
+		data.forEach(function(drv, index) {
+			var eq = { "id" : drv.id, "name" : drv.firstname + " " + drv.lastname };
+			ddata.push(eq);
+		});	
+		
+		multiselectd3()
+				.create("#whoelsetook", "#whoelsetook_container")
+				.populatedata(ddata);
+	});
+	
+	//training list
+	$.getJSON('/api/company/training/getAll', function(data) {
+
+				var _site = d3.select("#comptrns");
+
+				_site.selectAll("option")
+		        	.data(data)
+		        	.enter()
+		        	.append("option")
+		        	 .text(function(dtm) {
+						return dtm.name; 
+			         })
+			         .attr("value", function(dtm) {     		 	
+						return dtm.trnid; 
+			         });
+			         
+			         _site.selectAll("option")
+    					.each(function(d) { 
+ 		    				if(d.trnid === selectedrow.companytraining.comptrnid){
+    							d3.select(this).node().selected = true;
+    							var siteselect = d;
+								setnextduedate(siteselect);			
+    						}    				
+    					});	
+	    					
+	});	
+	
+	var setnextduedate = function(siteselect){
+	
+		d3.select("#schedule").text(siteselect.schedule);
+	
+		var nextduedate = new Date();
+		
+		if(siteselect.schedule == "Quarterly"){
+			nextduedate.setMonth(nextduedate.getMonth()+3);
+		} else if(siteselect.schedule == "Semi Annual"){
+			nextduedate.setMonth(nextduedate.getMonth()+6);
+		} else if(siteselect.schedule == "Annual"){
+			nextduedate.setFullYear(nextduedate.getFullYear()+1);
+		} else if(siteselect.schedule == "Every 3 Yrs"){
+			nextduedate.setFullYear(nextduedate.getFullYear()+3);
+		} else if(siteselect.schedule == "Every 5 Yrs"){
+			nextduedate.setFullYear(nextduedate.getFullYear()+5);
+		} else if(siteselect.schedule == "Every 10 Yrs"){
+			nextduedate.setFullYear(nextduedate.getFullYear()+10);
+		}
+		
+		$("#nextduedate").datepick(
+			{ minDate: new Date(),
+			  defaultDate: nextduedate	
+		 	});		
+	
+	
+	}
+
+    $('#save-trn').click(function() {
+    
+        //1. validation first
+		var validation_error = formutil.validateInputFields("#trn-form");
+		
+        //2. save maintenance
+		if(!validation_error){
+		
+			var trn_data = formutil.serializeObject("#trn-form");
+			
+			var formData = new FormData();
+				formData.append("driverid", Current.driver.id);
+				formData.append("trainingdata", JSON.stringify(trn_data));
+				
+				//set the file
+				var files = d3.select("#certs_file").node().files;
+				for(var i=0; i<files.length;i++){				
+					formData.append(i, files[i], files[i].name);	
+				}			
+				
+				// send via XHR - look ma, no headers being set!
+		    	$.ajax({
+		            url: '/api/driver/training/save',
+		            type: 'post', 
+		            cache: false,
+		            data: formData,				        	
+		            processData: false, //otherwise jQuery tries to transform your FormData object to a string,
+		            contentType: false,	
+		            success: function(resp) {
+
+							aftersave.changetext("#cancel","Done"); //changetext enables the el
+							aftersave.setStatusMessage(resp);
+    					
+		            }
+		            //return false; //
+	       		 });
+		}
+	});    
+        
+    
+    $('#cancel').click(function() {    
+    	//current modal, only one modal can be open at any time
+    	modal.close();
+    	
+    	//reload list
+    	loadtab("/pages/driver/training/driver_training_list.html");
+    	
+	});    
+	    
+} //editTraining
+
+
+
+
+</script>

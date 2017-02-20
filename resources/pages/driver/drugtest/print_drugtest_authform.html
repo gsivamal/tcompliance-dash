@@ -1,0 +1,230 @@
+
+<div style="padding-left:10px;font-size: 85%;">
+
+	<div id="drugtest-dialog">
+
+		<div class="row center">
+			<div class="col-8">
+				<h2> DRUG TEST AUTHORIZATION FORM </h2>
+			</div>
+			<div class="col-4 center" style="padding-top:10px;">
+				<div id="barcode"></div>
+			</div>
+		</div>	
+	
+		<b>Employer Information</b>
+		<div class="hrLine"></div>
+
+		<div id="companyblock" class="grid noborder">		
+			<div class="cell">
+				<label> Name</label>
+				<input type="text" data-dbcolname="name" style="border:none"></input>
+			</div>
+	
+			<div class="cell">
+				<label> Address1</label>
+				<input type="text" data-dbcolname="address1" style="border:none"></input>
+			</div>
+	
+			<div class="cell">
+				<label> Zip</label>
+				<input type="text" data-dbcolname="zip" style="border:none"></input>
+			</div>
+			
+			<div class="cell">
+				<label> Contact</label>
+				<input type="text" data-dbcolname="contact" style="border:none"></input>
+			</div>
+			<div class="cell">
+				<label> Account</label>
+				<input type="text" data-dbcolname="account" style="border:none"></input>
+			</div>
+			
+		</div>	
+
+		<b>Donor Details</b>
+		<div class="hrLine"></div>
+		
+		<div id="driverblock" class="grid noborder">		
+		
+			<div class="cell">
+				<label> First Name</label>
+				<input type="text" data-dbcolname="firstname" style="border:none"></input>
+			</div>
+	
+			<div class="cell">
+				<label> Last Name</label>
+				<input type="text" data-dbcolname="lastname" style="border:none"></input>
+			</div>
+
+			<div class="cell">
+				<label> ID</label>
+				<input type="text" data-dbcolname="license" style="border:none"></input>
+			</div>
+
+			<div class="cell">
+				<label> Address1</label>
+				<input type="text" data-dbcolname="address1" style="border:none"></input>
+			</div>
+	
+			<div class="cell">
+				<label> Zip</label>
+				<input type="text" data-dbcolname="zip" style="border:none"></input>
+			</div>
+			
+			<div class="cell">
+				<label> Cell</label>
+				<input type="text" data-dbcolname="cell" style="border:none"></input>
+			</div>
+		</div>	
+		
+		
+		<b>Service(s) to be performed</b>
+		<div class="hrLine"></div>
+		
+		<div id="drugtestblock" class="grid noborder">		
+		
+			<div class="cell">
+				<label> Test Reason</label>
+				<input type="text" data-dbcolname="testreason" style="border:none"></input>
+			</div>
+	
+			<div class="cell">	
+				<label> Scheduled Date:</label>
+				<div class="field">
+					<input id="scheduledate" data-dbcolname="scheduledate" size="10" type="text" style="border:none"/>
+					<input id="scheduletime" data-dbcolname="scheduletime" size="5" type="text" style="border:none"/>
+				</div>
+			</div>
+		
+			<div class="cell">	
+				<label> Expiration Date:</label>
+				<div class="field">
+					<input id="expirydate" data-dbcolname="expirydate" size="10" type="text" style="border:none"/>
+					<input id="expirytime" data-dbcolname="expirytime" size="5" type="text" style="border:none"/>
+				</div>
+			</div>
+				
+		</div>
+		
+		<b>Lab/Collection Site</b>
+		<div class="hrLine"></div>
+		<div id="siteblock" class="grid noborder">
+			<div class="cell">
+				<label> Lab</label>
+				<input type="text" data-dbcolname="lab" style="border:none"/>
+			</div>
+			<div class="cell">
+				<label> Collection Site</label>
+				<input type="text" data-dbcolname="site" style="border:none"/>
+			</div>
+		</div>			
+		
+		<h3>NOTE: Please bring your government issued photo-ID for identification at the collection site.</h3>
+		
+		<div class="row">
+			<div class="googlemap" id="sitemap"></div>
+		</div>
+
+	</div>
+
+	<div class="row addmargin">
+		<div class="col-5">
+			<input type="checkbox"/>
+			<label> Send a copy to </label>
+			<input id="email" type="text" placeholder="email@domain.com"/>	
+		</div>
+		
+		<div class="col-5">
+			<button type="button" id="print-drugtest">Print Form</button>
+			<button type="button" id="cancel">Cancel</button>
+		</div>		
+		<div class="col-2"></div>
+	</div>
+	
+</div>
+
+
+<script type="text/javascript">
+
+
+	//method called from drugtest_list
+	var editDrugTest = function (selecteddrugtestid){
+	
+		//1.employer block
+		$.getJSON('api/company/get', function(data) {
+			formutil.rebind("#companyblock",data);
+		});
+		
+		//2.employer block
+		formutil.rebind("#driverblock",Current.driver);
+		
+		//3.barcode
+		$.getJSON('api/driver/drugtest/get',  { driverid : Current.driver.id, drugtestid : selecteddrugtestid }, function(data) {
+		
+			console.log("questresponsecode:"+data.questresponsecode);
+		
+			$("#barcode").barcode(data.questresponsecode, "code128");
+			
+			formutil.rebind("#drugtestblock",data);
+			
+			//duplicate block, data is same for gui reson
+			formutil.rebind("#siteblock",data);
+			
+			//set google map
+			d3.json('/data/drugtest/quest/collection-site.json', function(error,sitelist) {
+			
+				var selectedsite = jsonquery(sitelist,"SiteCode", data.site);
+	
+				var myLatLng = new google.maps.LatLng(selectedsite.CollectionSiteDetail.Latitude, selectedsite.CollectionSiteDetail.Longitude);
+				var mapProp = {
+					center : myLatLng,
+					zoom   : 15,
+					mapTypeId:google.maps.MapTypeId.ROADMAP
+				};
+				var map = new google.maps.Map(document.getElementById("sitemap"),mapProp);
+				
+				var marker = new google.maps.Marker({
+		    		position: myLatLng,
+		    		title: selectedsite.CollectionSiteDetail.Address.Name
+		  		});
+		  		marker.setMap(map);
+			  		
+			});
+
+		});     
+		
+		
+	}	
+	
+   	$('#print-drugtest').click(function() {
+   		
+   				html2canvas($("#drugtest-dialog"), {
+   						useCORS:true,
+				        onrendered: function(canvas) {         
+				            var imgData = canvas.toDataURL("image/jpg");              
+				            var doc = new jsPDF('p', 'mm','a4'); //portrait, millimeter
+				                doc.addImage(imgData, 'JPEG', 10, 10);			                
+				                //doc.save('sample-file.pdf');
+				                
+				                //doc.addHTML( $("#sitemap") );
+				                doc.save('Drug-Auth-Form.pdf');
+				                				
+ 						}//onrendered
+				            
+				});				            
+   
+    });
+ 
+    
+	$('#cancel').click(function() {    
+		//current modal, only one modal can be open at any time
+		modal.close();
+		
+		//reload the mvr list
+		loadtab("/pages/driver/drugtest/drugtest_list.html");
+	    
+	}); 
+
+
+</script>

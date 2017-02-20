@@ -1,0 +1,101 @@
+
+<ul id="equiptabs" class="tabs">
+	<li><input type="button" id="equip_btn" value="Equipment Master" class="active"/></li>
+	<li><input type="button" id="certs_btn" value="Certificate"/></li>
+	<li><input type="button" id="maint_btn" value="Maintenance"/></li>
+	<li><input type="button" id="acci_btn" value="Accident/Incidents"/></li>
+</ul>
+
+<div>
+	<div id="tabcontent"></div>
+</div>
+
+<script type="text/javascript">
+
+! function(){
+
+		var inputs = d3.select("#equiptabs").selectAll("li").selectAll("input");
+		
+		//default tab
+		if(Current.equip === null){
+ 			loadtab("/pages/equip/new_equip.html", function(){
+	 			initData();
+	 		});
+ 		}else{
+ 			loadtab("/pages/equip/new_equip.html", function(){
+	 			editEquip();
+	 		});
+ 		}
+		
+ 		// tab1
+ 		d3.select("#equip_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+				if(Current.equip === null){
+		 			loadtab("/pages/equip/new_equip.html", function(){
+			 			initData();
+			 		});
+		 		}else{
+		 			loadtab("/pages/equip/new_equip.html", function(){
+			 			editEquip();
+			 		});
+			 	}
+		});
+		
+		// tab2
+ 		d3.select("#certs_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+				if(Current.equip === null){
+		 			loadtab("/pages/equip/certificate/cert_list.html");
+		 		}else{
+		 			edittab("/pages/equip/certificate/cert_list.html", function(){
+			 			editEquip();
+			 		});
+			 	}
+		});
+		
+ 		d3.select("#maint_btn")
+			.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);					
+				d3.select(this).attr("class", "active");
+			
+				//default tab
+				if(Current.equip === null){
+		 			loadtab("/pages/equip/maintenance/maint_list.html");
+		 		}else{
+		 			edittab("/pages/equip/maintenance/maint_list.html", function(){
+			 			editEquip();
+			 		});
+			 	}
+		});
+		
+ 		d3.select("#acci_btn")
+				.on("click", function(){
+			
+				// remove all previous styles
+				inputs.attr("class", null);					
+				d3.select(this).attr("class", "active");
+			
+				loadtab("/pages/accident/accident_list.html", function(){
+			 		openAccidentList("equip");
+			 	});
+		});
+		
+}();
+	
+	
+</script>
+

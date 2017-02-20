@@ -1,0 +1,84 @@
+<div class="tablepage">
+
+	<div class="tablepagerow">
+		<label><i class="fa fa-lg fa-list-ol">&nbsp;Equipment List </i></label>	
+		<div>
+		  	<i class="fa fa-search">&nbsp;</i>  <input id="equip_filter" style="text-indent:5px;" type="text"></input>
+		  	&nbsp;	  	
+		  	<select id="filtercolumn">
+				 	<option data-colname="equipid">equipid</option>	
+	               	<option data-colname="vin">vin</option>
+			</select>
+		</div>	
+		<ul id="equip_table_pager" class="tabs"></ul>
+	</div>
+
+	<table id="equip_table">
+        <thead>
+            <tr>
+            	<!-- th data-colname="sum(alerts)">Alerts th -->
+               	<th data-colname="equipid">Equipment Id</th>	
+            	<th data-colname="type">Type</th>
+            	<th data-colname="vin">VIN#</th>
+				<th data-colname="status">Status</th>               												                	
+               	<th data-colname="mfgyear">Year Manufactured</th>
+            </tr>
+        </thead>
+    </table>
+
+	<div class="tablepagerow">
+			<span id="totalEquips"></span>
+			<div>
+				<button type="button" id="add-equip"><i class="fa fa-plus">&nbsp;</i>Add Equipment</button>
+				<button type="button" id="edit-equip"><i class="fa fa-edit">&nbsp;</i>Edit Equipment</button>
+				<button type="button" id="delete-equip"><i class="fa fa-minus">&nbsp;</i>Delete</button>
+			</div>
+			<select id="pagesizer">
+				<option>Page size: 5</option>
+				<option>Page size: 10</option>
+				<option>Page size: 15</option>
+				<option>Page size: 20</option>
+			</select>
+	</div>
+										
+</div>
+
+
+<script type="text/javascript">
+
+! function(){
+		
+	    var equiptable = null;
+	    
+	  	//1. populate master data - warehouse
+		$.getJSON('/api/equip/getAll', function(data) {
+			
+			// render the table
+			equiptable = table().createtable("#equip_table")
+				.populatedata(data)
+					.setpagesizeselector("#pagesizer")
+					.setpager("#equip_table_pager")
+					.setinputfilter("#equip_filter")
+					.done();
+
+			d3.select("#totalEquips").text("Total Equipments :"+data.length);	
+		})
+		
+		//2.add equip
+		d3.select("#add-equip")
+	    	.on("click", function(){
+      			loadpage("/pages/equip/equip_tabs.html");					
+	    });
+	    
+	    //1.edit equip
+	    d3.select("#edit-equip")
+	    	.on("click", function(){
+				var selectedequip = equiptable.getselectedids()[0];
+    			Current.equip = selectedequip;      			
+      			loadpage("/pages/equip/equip_tabs.html");					
+	    });
+	    
+	    
+}();
+	
+</script>

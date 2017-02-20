@@ -1,0 +1,184 @@
+
+ <div id="tc-form" class="tablepage">
+	
+		<div class="tablepagerow">
+			<label><i class="fa fa-lg fa-hourglass-half">&nbsp;&nbsp; Weekly Report </i></label>
+			<div>	
+		  		<select id="datefilter"/>
+			</div>
+			<ul id="tcall_table_pager" class="tabs"></ul>
+		</div>	
+		
+		<div class="spacer"/>
+		
+		<table id="tcall_table">
+	        <thead>
+	            <tr>
+	            	<th data-colname="drivername">Driver</th>
+	            	<th data-colname="monthtotalworked">Hours Worked</th>
+	            	<th data-colname="equips">Equipment Used</th>
+	            </tr>
+	        </thead>
+	    </table>
+	
+		<div class="tablepagerow">
+				<span id="totalRows"></span>
+				<div>
+					<button type="button" id="savepdf-tc"><i class="fa fa-file-pdf-o">&nbsp;&nbsp;</i>PDF Report</button>
+				</div>
+				<div></div>
+		</div>
+											
+	</div>
+
+
+<script type="text/javascript">
+
+var timeline = "thisweek";	
+	
+! function(){
+
+	//1.this week
+		var today = new Date();
+		var weekstartday = today.getDay(); //-1 to start from Sat
+		var weekstartdate = new Date().minusDate(weekstartday);  
+		var thisweek = "This week  "+ weekstartdate.getMonthText() + "/" + weekstartdate.getDate() + " - " + today.getMonthText() + "/" + today.getDate();
+		
+		//2.last week
+		var lastweekstart =  weekstartday + 7;		
+		var lastweekenddate = new Date().minusDate(weekstartday);
+		var lastweekstartdate = new Date().minusDate(lastweekstart);
+		var lastweek = "Last week  "+ lastweekstartdate.getMonthText() + "/" + lastweekstartdate.getDate() + " - " + lastweekenddate.getMonthText() + "/" + lastweekenddate.getDate();
+		
+		//3.this month
+		var thismonth = "This month - "+ today.getMonthText() + ", " + today.getFullYear();
+		
+		var datefilterdata = [ { "id" : "thisweek", "name": thisweek},  { "id" : "lastweek", "name": lastweek}, {"id" : "thismonth", "name": thismonth} ];
+	
+		var datefilter =  dropdown().create("#datefilter")
+							.populatedata(datefilterdata);
+
+		datefilter.onchange(function(){
+			timeline = d3.select("#datefilter").node().value;			
+	      	// populate data
+	      	onselect();
+		});	
+		
+		
+		var onselect = function(){
+				
+			$.getJSON('/api/driver/timecard/getForAllDrivers', { year:today.getFullYear(), month:today.getMonthIdx()}, function(tcalldriverdata) {
+			
+				if(tcalldriverdata.length > 0){
+				
+					var timecardarray = [];
+					
+					tcalldriverdata.forEach(function(drivertimecard, index) {
+					  	var drivername = drivertimecard.driver;
+					  	var tcmonthdata = drivertimecard.timecard;
+					  	
+						var tablerow = {};
+					  	//console.log("drivertimecard:"+JSON.stringify(drivertimecard));
+					  	
+				  		//console.log("drivername:"+drivername);
+					  
+					  	var grandTotal = 0;
+					  	var equiplist = [];
+					  	tcmonthdata.forEach(function(timecardentry, index) {
+						  	//var timecarddate = timecard.dutydate.substr( 0, timecard.dutydate.indexOf(",") );
+						  	var dutydate = new Date(timecardentry.dutydate);
+						  	var totalworked = parseFloat(timecardentry.totalworked);
+						  	var equips = timecardentry.equips;
+					  	
+							if( !isNaN(totalworked) ){ //this checks for undefined and "" and "Total Hrs->" entries
+							    if(timeline === "thisweek"){
+							    	if(dutydate >= weekstartdate && dutydate <= today ){
+										grandTotal = grandTotal + totalworked;
+										equiplist = mergecsv(equiplist,equips);
+							    	}
+							    } else if(timeline === "lastweek") {
+							    	if(dutydate >= lastweekstartdate && dutydate <= lastweekenddate ){
+										grandTotal = grandTotal + totalworked;
+										equiplist = mergecsv(equiplist,equips);
+							    	}
+							    } else if(timeline === "thismonth") {
+										grandTotal = grandTotal + totalworked;
+									   	equiplist = mergecsv(equiplist,equips);
+							    }				    
+							}
+					  });
+					  
+		    		  tablerow.drivername = drivername;
+		    		  tablerow.monthtotalworked = grandTotal;
+					  tablerow.equips = equiplist.toString();
+					  
+					  timecardarray.push(tablerow);
+		
+					});
+					
+				  	showtable(timecardarray);
+			  	
+			  	}
+			
+			});
+		
+		} //onselect
+		
+		var showtable = function(timecardarray) {	
+		
+			table().createtable("#tcall_table")
+					.populatedata(timecardarray)
+					//.setpagesizeselector("#pagesizer")
+					.done();
+					
+			d3.select("#totalRows").text("Total Rows:"+timecardarray.length)			
+	      	
+		} //showtable
+		
+		
+		//default this week
+		onselect();
+		
+		var mergecsv = function(list, csv){
+			//concat 2 array, and call unique pro function
+			return list.concat(csv.split(",")).unique();		
+		}	
+				
+		//save as pdf
+		$('#savepdf-tc').click(function() {			
+			html2canvas($("#tc-form"), {
+   						useCORS:true,
+				        onrendered: function(canvas) {				            
+				            var imgData = canvas.toDataURL("image/jpg");
+				            
+							/* Here are the numbers (paper width and height) that I found to work. 
+								It still creates a little overlap part between the pages, but good enough for me.
+								if you can find an official number from jsPDF, use them. */
+								
+							var imgWidth = 200; 
+							var pageHeight = 250;  
+							var imgHeight = canvas.height * imgWidth / canvas.width;
+							var heightLeft = imgHeight;
+							
+							var doc = new jsPDF('p', 'mm', 'a4');
+							var position = 0;
+							
+							doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+							heightLeft -= pageHeight;
+							
+							while (heightLeft >= 0) {
+								position = heightLeft - imgHeight;
+								doc.addPage();
+								doc.addImage(imgData, 'PNG', 2, position, imgWidth, imgHeight);
+								heightLeft -= pageHeight;
+							}
+							doc.save('Timecard-weekly-report.pdf'); 				
+ 						}//onrendered
+				});			
+		});
+	    
+}();
+
+
+	
+</script>
