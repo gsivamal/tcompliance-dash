@@ -13,7 +13,7 @@
 	
 	if ('WebSocket' in window){
 		// WebSocket is supported. You can proceed with your code
-		var connection = new WebSocket('ws://127.0.0.1:4568/livereload')
+		var connection = new WebSocket('ws://127.0.0.1:4570/livereload')
 		
 		//alert('connected:'+ connection)
 		

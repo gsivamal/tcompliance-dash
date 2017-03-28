@@ -81,6 +81,8 @@ import wjw.shiro.redis.SimpleAuthenticationInfoExt;
 
 //TODO: Introduce property files for production move
 
+// salai git test
+
 public class TComplainceServer extends SparkServerBase {
 
 	void init() {
@@ -160,6 +162,7 @@ public class TComplainceServer extends SparkServerBase {
 		} , templateEngine);
 		
 		// mech login
+		
 		get("/mech", (req, resp) -> {			
 			resp.cookie("nustone-token", null); // clear the previous token
 
@@ -1130,9 +1133,9 @@ public class TComplainceServer extends SparkServerBase {
 			try {
 				Bootstrap b = new Bootstrap();
 				//b.createPeopleMatrixCompanyUsers();
-				//b.createTruckCompanyUsers();
-				//b.createMroCompanyUsers();
-				b.createDotAgentCompanyUsers();
+				b.createTruckCompanyUsers();
+				b.createMroCompanyUsers();
+				//b.createDotAgentCompanyUsers();
 
 			} catch (Exception e) {
 				e.printStackTrace();

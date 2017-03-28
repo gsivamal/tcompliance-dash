@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/eclipse_45_platform"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Jdk1.8.0"/>
 	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-codec-1.10.jar"/>
 	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="C:/SmartCompliance-prod/app-master/lib/commons-lang-2.6.jar"/>
