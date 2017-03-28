@@ -83,7 +83,7 @@ import wjw.shiro.redis.SimpleAuthenticationInfoExt;
 
 // salai git test
 
-public class TComplainceServer extends SparkServerBase {
+public class TComplianceServer extends SparkServerBase {
 
 	void init() {
 		super.bootstarp();
@@ -1142,7 +1142,7 @@ public class TComplainceServer extends SparkServerBase {
 			}
 		} else {
 
-			TComplainceServer s = new TComplainceServer();
+			TComplianceServer s = new TComplianceServer();
 			s.init();
 			s.startAdminApp();
 
