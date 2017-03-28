@@ -17,7 +17,7 @@ public class AppUtil {
 	
 	public static String app_url = "http://smar.tcompliance.com";
 	public static String nas_static_file_location = "/var/services/homes/admin/resources/";
-	public static String laptop_static_file_location = "/SmartCompliance-prod/app-master/tcomplaince-dash/resources/";
+	public static String laptop_static_file_location = "/SmartCompliance-prod/app-master/tcompliance-dash/resources/";
 	
 	public static String static_file_location = laptop_static_file_location;
 	
